@@ -1,13 +1,23 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { dateInputValue, inputsToTimestamp, timeInputValue } from '../lib/date';
-import type { NewRecordInput, RecordType } from '../types';
+import type {
+  MedicineQuickValue,
+  NewRecordInput,
+  QuickOption,
+  QuickOptionField,
+  QuickOptionsByField,
+  RecordType,
+} from '../types';
 import { Icon, type IconName } from './Icon';
 import { useDialogFocus } from '../hooks/useDialogFocus';
+import { RememberedField } from './RememberedField';
 
 interface QuickAddSheetProps {
   open: boolean;
   onClose: () => void;
   onSave: (record: NewRecordInput) => Promise<void>;
+  quickOptions: QuickOptionsByField;
+  onDeleteQuickOption: (field: QuickOptionField, id: string) => Promise<void>;
 }
 
 const options: Array<{ type: RecordType; label: string; hint: string; icon: IconName; tone: string }> = [
@@ -20,7 +30,33 @@ const options: Array<{ type: RecordType; label: string; hint: string; icon: Icon
   { type: 'note', label: '備註', hint: '其他觀察', icon: 'note', tone: 'sage' },
 ];
 
-export function QuickAddSheet({ open, onClose, onSave }: QuickAddSheetProps) {
+function isMedicineQuickValue(value: QuickOption['value']): value is MedicineQuickValue {
+  return typeof value === 'object' && value !== null && 'medicineName' in value && 'doseMl' in value;
+}
+
+function medicineOptionLabel(option: QuickOption) {
+  if (!isMedicineQuickValue(option.value)) return '已儲存藥物';
+  const concentration = option.value.concentration ? ` · ${option.value.concentration}` : '';
+  return `${option.value.medicineName}${concentration} · ${option.value.doseMl} ml`;
+}
+
+const noteFieldByType: Record<RecordType, QuickOptionField> = {
+  feed: 'feedNote',
+  nappy: 'nappyNote',
+  temperature: 'temperatureNote',
+  sleep: 'sleepNote',
+  medicine: 'medicineNote',
+  weight: 'weightNote',
+  note: 'noteContent',
+};
+
+export function QuickAddSheet({
+  open,
+  onClose,
+  onSave,
+  quickOptions,
+  onDeleteQuickOption,
+}: QuickAddSheetProps) {
   const [type, setType] = useState<RecordType | null>(null);
   const [date, setDate] = useState(dateInputValue());
   const [time, setTime] = useState(timeInputValue());
@@ -158,6 +194,13 @@ export function QuickAddSheet({ open, onClose, onSave }: QuickAddSheetProps) {
   };
 
   const selected = options.find((option) => option.type === type);
+  const selectedMedicinePreset: MedicineQuickValue | undefined = medicineName.trim() && Number(doseMl) > 0
+    ? {
+        medicineName: medicineName.trim(),
+        concentration: concentration.trim() || undefined,
+        doseMl: Number(doseMl),
+      }
+    : undefined;
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !saving && resetAndClose()}>
@@ -203,10 +246,30 @@ export function QuickAddSheet({ open, onClose, onSave }: QuickAddSheetProps) {
                         <button type="button" key={value} className={side === value ? 'selected' : ''} onClick={() => setSide(value as typeof side)}>{label}</button>
                       ))}
                     </div></fieldset>
-                    <label className="field"><span>大約幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="300" value={durationMinutes} onChange={(event) => setDurationMinutes(event.target.value)} placeholder="例如 20" /></label>
+                    <RememberedField
+                      field="feedDurationMinutes"
+                      label="母乳時間"
+                      suffix="分鐘"
+                      options={quickOptions.feedDurationMinutes}
+                      selectedValue={durationMinutes ? Number(durationMinutes) : undefined}
+                      onSelect={(option) => setDurationMinutes(String(option.value))}
+                      onDelete={onDeleteQuickOption}
+                    >
+                      <label className="field"><span>大約幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="300" value={durationMinutes} onChange={(event) => setDurationMinutes(event.target.value)} placeholder="例如 20" /></label>
+                    </RememberedField>
                   </>
                 ) : (
-                  <label className="field"><span>奶量（ml）</span><input type="number" inputMode="decimal" min="1" max="1000" step="0.1" value={amountMl} onChange={(event) => setAmountMl(event.target.value)} placeholder="例如 90" /></label>
+                  <RememberedField
+                    field="feedAmountMl"
+                    label="奶量"
+                    suffix="ml"
+                    options={quickOptions.feedAmountMl}
+                    selectedValue={amountMl ? Number(amountMl) : undefined}
+                    onSelect={(option) => setAmountMl(String(option.value))}
+                    onDelete={onDeleteQuickOption}
+                  >
+                    <label className="field"><span>奶量（ml）</span><input type="number" inputMode="decimal" min="1" max="1000" step="0.1" value={amountMl} onChange={(event) => setAmountMl(event.target.value)} placeholder="例如 90" /></label>
+                  </RememberedField>
                 )}
               </>
             )}
@@ -218,33 +281,102 @@ export function QuickAddSheet({ open, onClose, onSave }: QuickAddSheetProps) {
                     <button type="button" key={value} className={nappyType === value ? 'selected' : ''} onClick={() => setNappyType(value as typeof nappyType)}>{label}</button>
                   ))}
                 </div></fieldset>
-                {nappyType !== 'wet' && <label className="field"><span>便便顏色</span><input value={stoolColour} onChange={(event) => setStoolColour(event.target.value)} maxLength={80} placeholder="例如 黃色、綠色" /></label>}
+                {nappyType !== 'wet' && (
+                  <RememberedField
+                    field="nappyStoolColour"
+                    label="便便顏色"
+                    options={quickOptions.nappyStoolColour}
+                    selectedValue={stoolColour}
+                    onSelect={(option) => setStoolColour(String(option.value))}
+                    onDelete={onDeleteQuickOption}
+                  >
+                    <label className="field"><span>便便顏色</span><input value={stoolColour} onChange={(event) => setStoolColour(event.target.value)} maxLength={80} placeholder="例如 黃色、綠色" /></label>
+                  </RememberedField>
+                )}
               </>
             )}
 
             {type === 'temperature' && (
               <div className="form-row two-columns">
-                <label className="field"><span>體溫（°C）</span><input type="number" inputMode="decimal" min="30" max="45" step="0.1" value={temperature} onChange={(event) => setTemperature(event.target.value)} placeholder="36.8" required /></label>
+                <RememberedField
+                  field="temperatureCelsius"
+                  label="體溫"
+                  suffix="°C"
+                  options={quickOptions.temperatureCelsius}
+                  selectedValue={temperature ? Number(temperature) : undefined}
+                  onSelect={(option) => setTemperature(String(option.value))}
+                  onDelete={onDeleteQuickOption}
+                >
+                  <label className="field"><span>體溫（°C）</span><input type="number" inputMode="decimal" min="30" max="45" step="0.1" value={temperature} onChange={(event) => setTemperature(event.target.value)} placeholder="36.8" required /></label>
+                </RememberedField>
                 <label className="field"><span>量度位置</span><select value={measurementSite} onChange={(event) => setMeasurementSite(event.target.value)}><option>腋下</option><option>耳探</option><option>其他</option></select></label>
               </div>
             )}
 
-            {type === 'sleep' && <label className="field"><span>睡咗幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="1440" value={sleepMinutes} onChange={(event) => setSleepMinutes(event.target.value)} placeholder="例如 45" /></label>}
+            {type === 'sleep' && (
+              <RememberedField
+                field="sleepMinutes"
+                label="睡眠時間"
+                suffix="分鐘"
+                options={quickOptions.sleepMinutes}
+                selectedValue={sleepMinutes ? Number(sleepMinutes) : undefined}
+                onSelect={(option) => setSleepMinutes(String(option.value))}
+                onDelete={onDeleteQuickOption}
+              >
+                <label className="field"><span>睡咗幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="1440" value={sleepMinutes} onChange={(event) => setSleepMinutes(event.target.value)} placeholder="例如 45" /></label>
+              </RememberedField>
+            )}
 
             {type === 'medicine' && (
               <>
-                <label className="field"><span>藥物名稱</span><input value={medicineName} onChange={(event) => setMedicineName(event.target.value)} maxLength={120} placeholder="依藥物標籤填寫" required /></label>
-                <div className="form-row two-columns">
-                  <label className="field"><span>濃度</span><input value={concentration} onChange={(event) => setConcentration(event.target.value)} maxLength={120} placeholder="例如 120 mg/5 ml" /></label>
-                  <label className="field"><span>劑量（ml）</span><input type="number" inputMode="decimal" min="0.01" max="100" step="0.01" value={doseMl} onChange={(event) => setDoseMl(event.target.value)} placeholder="例如 2.5" /></label>
-                </div>
+                <RememberedField
+                  field="medicinePreset"
+                  label="藥物組合"
+                  options={quickOptions.medicinePreset}
+                  selectedValue={selectedMedicinePreset}
+                  formatOption={medicineOptionLabel}
+                  onSelect={(option) => {
+                    if (!isMedicineQuickValue(option.value)) return;
+                    setMedicineName(option.value.medicineName);
+                    setConcentration(option.value.concentration || '');
+                    setDoseMl(String(option.value.doseMl));
+                  }}
+                  onDelete={onDeleteQuickOption}
+                >
+                  <label className="field"><span>藥物名稱</span><input value={medicineName} onChange={(event) => setMedicineName(event.target.value)} maxLength={120} placeholder="依藥物標籤填寫" required /></label>
+                  <div className="form-row two-columns">
+                    <label className="field"><span>濃度</span><input value={concentration} onChange={(event) => setConcentration(event.target.value)} maxLength={120} placeholder="例如 120 mg/5 ml" /></label>
+                    <label className="field"><span>劑量（ml）</span><input type="number" inputMode="decimal" min="0.01" max="100" step="0.01" value={doseMl} onChange={(event) => setDoseMl(event.target.value)} placeholder="例如 2.5" /></label>
+                  </div>
+                </RememberedField>
                 <div className="inline-warning"><Icon name="alert" size={18} /> 只依照醫護或藥物標籤指示記錄，網站唔會計算劑量。</div>
               </>
             )}
 
-            {type === 'weight' && <label className="field"><span>體重（kg）</span><input type="number" inputMode="decimal" min="0.3" max="30" step="0.01" value={weightKg} onChange={(event) => setWeightKg(event.target.value)} placeholder="例如 3.65" /></label>}
+            {type === 'weight' && (
+              <RememberedField
+                field="weightKg"
+                label="體重"
+                suffix="kg"
+                options={quickOptions.weightKg}
+                selectedValue={weightKg ? Number(weightKg) : undefined}
+                onSelect={(option) => setWeightKg(String(option.value))}
+                onDelete={onDeleteQuickOption}
+              >
+                <label className="field"><span>體重（kg）</span><input type="number" inputMode="decimal" min="0.3" max="30" step="0.01" value={weightKg} onChange={(event) => setWeightKg(event.target.value)} placeholder="例如 3.65" /></label>
+              </RememberedField>
+            )}
 
-            <label className="field"><span>{type === 'note' ? '內容' : '備註（可留空）'}</span><textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={1000} placeholder="記低其他觀察…" required={type === 'note'} /></label>
+            <RememberedField
+              field={noteFieldByType[type]}
+              label={type === 'note' ? '內容' : '備註'}
+              options={quickOptions[noteFieldByType[type]]}
+              selectedValue={note}
+              onSelect={(option) => setNote(String(option.value))}
+              onDelete={onDeleteQuickOption}
+            >
+              <label className="field"><span>{type === 'note' ? '內容' : '備註（可留空）'}</span><textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={1000} placeholder="記低其他觀察…" required={type === 'note'} /></label>
+            </RememberedField>
 
             {error && <div className="form-error" role="alert">{error}</div>}
             <button className="primary-button save-record" disabled={saving}>{saving ? '儲存中…' : '儲存紀錄'}</button>

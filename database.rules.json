@@ -28,6 +28,28 @@
         }
       },
 
+      "quickOptions": {
+        "$field": {
+          "$optionId": {
+            ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid')",
+            ".validate": "!newData.exists() || ($optionId.matches(/^[a-f0-9]{64}$/) && newData.hasChildren(['value', 'lastUsedAt', 'updatedBy']) && newData.child('lastUsedAt').isNumber() && newData.child('lastUsedAt').val() >= 1577836800000 && newData.child('lastUsedAt').val() <= now + 600000 && newData.child('updatedBy').val() === auth.uid && (($field === 'feedDurationMinutes' && newData.child('value').isNumber() && newData.child('value').val() >= 1 && newData.child('value').val() <= 300) || ($field === 'feedAmountMl' && newData.child('value').isNumber() && newData.child('value').val() >= 1 && newData.child('value').val() <= 1000) || ($field === 'nappyStoolColour' && newData.child('value').isString() && newData.child('value').val().length > 0 && newData.child('value').val().length <= 80) || ($field === 'temperatureCelsius' && newData.child('value').isNumber() && newData.child('value').val() >= 30 && newData.child('value').val() <= 45) || ($field === 'sleepMinutes' && newData.child('value').isNumber() && newData.child('value').val() >= 1 && newData.child('value').val() <= 1440) || ($field === 'weightKg' && newData.child('value').isNumber() && newData.child('value').val() >= 0.3 && newData.child('value').val() <= 30) || (($field === 'feedNote' || $field === 'nappyNote' || $field === 'temperatureNote' || $field === 'sleepNote' || $field === 'medicineNote' || $field === 'weightNote' || $field === 'noteContent') && newData.child('value').isString() && newData.child('value').val().length > 0 && newData.child('value').val().length <= 1000) || ($field === 'medicinePreset' && newData.child('value').hasChildren(['medicineName', 'doseMl']) && newData.child('value').child('medicineName').isString() && newData.child('value').child('medicineName').val().length > 0 && newData.child('value').child('medicineName').val().length <= 120 && (!newData.child('value').child('concentration').exists() || (newData.child('value').child('concentration').isString() && newData.child('value').child('concentration').val().length <= 120)) && newData.child('value').child('doseMl').isNumber() && newData.child('value').child('doseMl').val() > 0 && newData.child('value').child('doseMl').val() <= 100)))",
+            "value": {
+              "medicineName": {},
+              "concentration": {},
+              "doseMl": {},
+              "$other": {
+                ".validate": false
+              }
+            },
+            "lastUsedAt": {},
+            "updatedBy": {},
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      },
+
       "records": {
         "$recordId": {
           ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid') && (!data.exists() || data.child('createdBy').val() === auth.uid || auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid')",

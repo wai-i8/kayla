@@ -2,6 +2,39 @@ export type ViewKey = 'today' | 'records' | 'guide' | 'calendar' | 'settings';
 
 export type RecordType = 'feed' | 'nappy' | 'temperature' | 'sleep' | 'medicine' | 'weight' | 'note';
 
+export type QuickOptionField =
+  | 'feedDurationMinutes'
+  | 'feedAmountMl'
+  | 'feedNote'
+  | 'nappyStoolColour'
+  | 'nappyNote'
+  | 'temperatureCelsius'
+  | 'temperatureNote'
+  | 'sleepMinutes'
+  | 'sleepNote'
+  | 'medicinePreset'
+  | 'medicineNote'
+  | 'weightKg'
+  | 'weightNote'
+  | 'noteContent';
+
+export interface MedicineQuickValue {
+  medicineName: string;
+  concentration?: string;
+  doseMl: number;
+}
+
+export type QuickOptionValue = string | number | MedicineQuickValue;
+
+export interface QuickOption<T extends QuickOptionValue = QuickOptionValue> {
+  id: string;
+  value: T;
+  lastUsedAt: number;
+  updatedBy: string;
+}
+
+export type QuickOptionsByField = Partial<Record<QuickOptionField, QuickOption[]>>;
+
 export interface BabyProfile {
   name: string;
   dateOfBirth: string;

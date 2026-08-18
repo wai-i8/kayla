@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { onValue, push, ref, remove, set } from 'firebase/database';
+import { onValue, push, ref, remove, set, update } from 'firebase/database';
 import { database } from '../lib/firebase';
-import type { AuthUser, BabyProfile, BabyRecord, NewRecordInput } from '../types';
+import { isQuickOptionField, isQuickOptionValue, quickOptionEntries, quickOptionId } from '../lib/quickOptions';
+import type {
+  AuthUser,
+  BabyProfile,
+  BabyRecord,
+  NewRecordInput,
+  QuickOption,
+  QuickOptionField,
+  QuickOptionsByField,
+} from '../types';
 
 const now = Date.now();
 const demoProfile: BabyProfile = {
@@ -47,11 +56,66 @@ function withoutUndefined<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
+function parseQuickOptions(value: unknown): QuickOptionsByField {
+  if (!value || typeof value !== 'object') return {};
+  const parsed: QuickOptionsByField = {};
+
+  Object.entries(value as Record<string, unknown>).forEach(([fieldName, storedOptions]) => {
+    if (!isQuickOptionField(fieldName) || !storedOptions || typeof storedOptions !== 'object') return;
+
+    const options = Object.entries(storedOptions as Record<string, unknown>)
+      .flatMap(([id, stored]) => {
+        if (!/^[a-f0-9]{64}$/.test(id) || !stored || typeof stored !== 'object') return [];
+        const candidate = stored as Partial<Omit<QuickOption, 'id'>>;
+        if (
+          !isQuickOptionValue(fieldName, candidate.value)
+          || typeof candidate.lastUsedAt !== 'number'
+          || !Number.isFinite(candidate.lastUsedAt)
+          || typeof candidate.updatedBy !== 'string'
+        ) return [];
+        return [{
+          id,
+          value: candidate.value,
+          lastUsedAt: candidate.lastUsedAt,
+          updatedBy: candidate.updatedBy,
+        } satisfies QuickOption];
+      })
+      .sort((a, b) => b.lastUsedAt - a.lastUsedAt);
+
+    if (options.length) parsed[fieldName] = options;
+  });
+
+  return parsed;
+}
+
+async function preparedQuickOptions(input: NewRecordInput, userId: string) {
+  const lastUsedAt = Date.now();
+  return Promise.all(quickOptionEntries(input).map(async ({ field, value }) => ({
+    field,
+    option: withoutUndefined({
+      id: await quickOptionId(field, value),
+      value,
+      lastUsedAt,
+      updatedBy: userId,
+    }) as QuickOption,
+  })));
+}
+
+function mergeQuickOptions(current: QuickOptionsByField, additions: Awaited<ReturnType<typeof preparedQuickOptions>>) {
+  const next: QuickOptionsByField = { ...current };
+  additions.forEach(({ field, option }) => {
+    const others = (next[field] || []).filter((item) => item.id !== option.id);
+    next[field] = [option, ...others];
+  });
+  return next;
+}
+
 export function useKaylaData(user: AuthUser | null) {
   const isDemo = Boolean(user?.isDemo);
   const userId = user?.uid;
   const [profile, setProfile] = useState<BabyProfile | null>(isDemo ? demoProfile : null);
   const [records, setRecords] = useState<BabyRecord[]>(isDemo ? demoRecords : []);
+  const [quickOptions, setQuickOptions] = useState<QuickOptionsByField>({});
   const [loading, setLoading] = useState(Boolean(user && !isDemo));
   const [error, setError] = useState<string | null>(null);
   const [dataUserId, setDataUserId] = useState<string | undefined>(isDemo ? userId : undefined);
@@ -63,6 +127,7 @@ export function useKaylaData(user: AuthUser | null) {
       setDataUserId(undefined);
       setProfile(null);
       setRecords([]);
+      setQuickOptions({});
       setLoading(false);
       return undefined;
     }
@@ -71,6 +136,7 @@ export function useKaylaData(user: AuthUser | null) {
       setDataUserId(userId);
       setProfile(demoProfile);
       setRecords(demoRecords);
+      setQuickOptions({});
       setLoading(false);
       return undefined;
     }
@@ -81,6 +147,7 @@ export function useKaylaData(user: AuthUser | null) {
     setDataUserId(userId);
     setProfile(null);
     setRecords([]);
+    setQuickOptions({});
     setLoading(true);
     let profileReady = false;
     let recordsReady = false;
@@ -124,9 +191,16 @@ export function useKaylaData(user: AuthUser | null) {
       },
     );
 
+    const stopQuickOptions = onValue(
+      ref(database, 'kayla/quickOptions'),
+      (snapshot) => setQuickOptions(parseQuickOptions(snapshot.val())),
+      () => setQuickOptions({}),
+    );
+
     return () => {
       stopProfile();
       stopRecords();
+      stopQuickOptions();
     };
   }, [userId, isDemo]);
 
@@ -166,9 +240,26 @@ export function useKaylaData(user: AuthUser | null) {
           { ...value, id: `demo-${Date.now()}` },
           ...current,
         ]);
+        const additions = await preparedQuickOptions(input, user.uid);
+        setQuickOptions((current) => mergeQuickOptions(current, additions));
         return;
       }
       await push(ref(database, 'kayla/records'), value);
+
+      // The record is already safely stored at this point. Remembering quick
+      // values is an optional convenience, so a Rules/network failure here
+      // must not make the user retry and accidentally create a duplicate.
+      try {
+        const additions = await preparedQuickOptions(input, user.uid);
+        const changes: Record<string, unknown> = {};
+        additions.forEach(({ field, option }) => {
+          const { id, ...storedOption } = option;
+          changes[`kayla/quickOptions/${field}/${id}`] = storedOption;
+        });
+        if (Object.keys(changes).length) await update(ref(database), changes);
+      } catch {
+        // The actual BB record succeeded; leave quick values unchanged.
+      }
     },
     [isDemo, user],
   );
@@ -185,14 +276,32 @@ export function useKaylaData(user: AuthUser | null) {
     [isDemo, user],
   );
 
+  const deleteQuickOption = useCallback(
+    async (field: QuickOptionField, optionId: string) => {
+      if (!/^[a-f0-9]{64}$/.test(optionId)) throw new Error('無效快捷選項');
+      if (isDemo) {
+        setQuickOptions((current) => ({
+          ...current,
+          [field]: (current[field] || []).filter((option) => option.id !== optionId),
+        }));
+        return;
+      }
+      if (!user) throw new Error('需要先登入');
+      await remove(ref(database, `kayla/quickOptions/${field}/${optionId}`));
+    },
+    [isDemo, user],
+  );
+
   const dataBelongsToCurrentUser = Boolean(userId && dataUserId === userId);
   return useMemo(() => ({
     profile: dataBelongsToCurrentUser ? profile : null,
     records: dataBelongsToCurrentUser ? records : [],
+    quickOptions: dataBelongsToCurrentUser ? quickOptions : {},
     loading: Boolean(userId && !isDemo && !dataBelongsToCurrentUser) || loading,
     error,
     saveProfile,
     addRecord,
     deleteRecord,
-  }), [dataBelongsToCurrentUser, profile, records, userId, isDemo, loading, error, saveProfile, addRecord, deleteRecord]);
+    deleteQuickOption,
+  }), [dataBelongsToCurrentUser, profile, records, quickOptions, userId, isDemo, loading, error, saveProfile, addRecord, deleteRecord, deleteQuickOption]);
 }

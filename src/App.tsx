@@ -74,7 +74,13 @@ export default function App() {
       </div>
 
       <BottomNavigation active={view} onChange={changeView} onAdd={() => setQuickAddOpen(true)} />
-      <QuickAddSheet open={quickAddOpen} onClose={() => setQuickAddOpen(false)} onSave={data.addRecord} />
+      <QuickAddSheet
+        open={quickAddOpen}
+        quickOptions={data.quickOptions}
+        onClose={() => setQuickAddOpen(false)}
+        onSave={data.addRecord}
+        onDeleteQuickOption={data.deleteQuickOption}
+      />
     </div>
   );
 }

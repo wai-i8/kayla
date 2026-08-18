@@ -8,7 +8,7 @@
 - 密碼只可以喺 Firebase Authentication 或網站登入畫面輸入；唔好放入任何程式碼、`.env`、JSON、GitHub commit 或對話。
 - `firebaseConfig` 係前端 Firebase project 設定，唔係管理員密碼；但 service-account JSON、private key 同密碼絕對唔可以放入 repository。
 - 未登入或唔係白名單內嘅帳戶，唔可以讀取或寫入 `/kayla`。
-- 只係 React 畫面隱藏資料並不足夠，真正權限由 `database.rules.json` 強制執行。
+- 只係 React 畫面隱藏資料並不足夠，真正權限由 Firebase Console 已發布嘅 Realtime Database Rules（CLI 使用本機 `database.rules.local.json`）強制執行。
 
 ## 1. 建立兩個登入帳戶
 
@@ -51,12 +51,15 @@ REPLACE_FAMILY_LOGIN_ID@example.invalid
 | `/kayla/settings` | 讀寫 | 只讀 |
 | `/kayla/contentOverrides` | 讀寫 | 只讀 |
 | `/kayla/members/{uid}` | 自動建立自己嘅 Owner UI 標記 | 不可建立 Owner 標記 |
+| `/kayla/quickOptions/{field}/{id}` | 讀寫 | 讀寫 |
 | `/kayla/records/{id}` | 讀寫全部紀錄 | 新增及修改／刪除自己建立嘅紀錄 |
 | `/kayla/appointments/{id}` | 讀寫 | 讀寫 |
 | `/kayla/vaccinations/{id}` | 讀寫 | 讀寫 |
 | `/kayla/checklists/{id}` | 讀寫 | 讀寫 |
 
 Owner 第一次登入時，網站會嘗試喺自己 UID 下建立 `role: "owner"`。Firebase Rules 只容許白名單 Owner 完成呢個寫入；Family 會被拒絕並保持家庭成員介面。呢個安排令公開網站程式唔需要包含完整登入 ID 或由登入 ID 衍生嘅值。
+
+記錄表格會將成功儲存過嘅輸入同步到 `/kayla/quickOptions`，下次可以一撳填入。快捷選項係兩個家庭帳戶共用，刪除快捷選項只會移除常用答案，唔會刪除或修改舊紀錄。數字會以標準格式去重，例如 `20`、`20.0` 同 `020` 只會保留一個；藥物會將藥名、濃度同劑量整組保存，避免將獨立劑量配到另一種藥。一般輸入每欄最多顯示最近六項，進入「管理」仍可檢視及刪除其餘項目。
 
 每個新日常紀錄必須包含：
 
@@ -82,15 +85,15 @@ React 程式建立紀錄時必須跟呢個格式，否則 Firebase 會回覆 `PE
 
 **重要：部署 Realtime Database rules 係更換成個 database instance 嘅根規則，唔係只追加 `/kayla`。**
 
-呢份 `database.rules.json` 採用安全預設：根目錄 `.read` 同 `.write` 都係 `false`，只明確開放 `/kayla`。如果直接部署，現有 `/e`、`/clothes`、`/orders`、`/users` 等路徑會繼續受到保護，但原本 App 即使係合法使用者亦會失去存取權。
+呢份 `database.rules.json` 只係公開範本：根目錄 `.read` 同 `.write` 都係 `false`，只明確開放 `/kayla`。如果將範本當成完整 Rules 部署，現有 `/e`、`/clothes`、`/orders`、`/users` 等路徑嘅合法使用者會失去存取權。
 
 正式部署前：
 
 1. 到 `Firebase Console → Realtime Database → Rules`。
-2. 複製並安全保存目前完整 rules。
+2. 複製並安全保存目前完整 rules；如果使用 CLI，就將完整內容存成已被 Git 忽略嘅 `database.rules.local.json`。
 3. 保留目前 `/e` 等仍然需要使用嘅受保護規則。
-4. 將呢份檔案內嘅 `"kayla": { ... }` 節點合併入現有根 `"rules"` 物件。
-5. 確認根目錄冇使用 `".read": true` 或 `".write": true`。
+4. 將公開範本 `database.rules.json` 內嘅 `"kayla": { ... }` 節點合併入完整 Rules 根 `"rules"` 物件，並只喺本機完整檔案換入兩個登入 ID。
+5. 確認根目錄冇使用 `".read": true` 或 `".write": true`，亦確認 `database.rules.local.json` 繼續被 Git 忽略。
 6. 喺 Rules Playground 分別測試 Owner、Family、其他已登入帳戶及未登入狀態。
 7. 測試 `/e` 原有 App 正常後，先正式 Publish。
 
@@ -106,13 +109,15 @@ React 程式建立紀錄時必須跟呢個格式，否則 Firebase 會回覆 `PE
 - Owner 讀寫 `/kayla/baby`：成功。
 - Family 讀 `/kayla/baby`：成功；寫入：拒絕。
 - Owner 同 Family 新增合規 record：成功。
+- Owner 同 Family 新增及刪除自己需要嘅 `/kayla/quickOptions`：成功；其他帳戶：拒絕。
+- 新增紀錄後，相應快捷選項出現；刪除快捷選項後，舊紀錄仍然存在。
 - Family 修改另一位使用者嘅 record：拒絕。
 - Owner 修改或刪除任何 record：成功。
 - `/e` 原有指定帳戶仍然可以正常讀寫。
 
 ## 6. Firebase CLI／本機 Emulator（可選）
 
-`firebase.json` 只設定 Realtime Database rules 同本機 emulator，刻意冇 Firebase Hosting 設定，因為網站會部署到 GitHub Pages。
+`firebase.json` 只設定 Realtime Database rules 同本機 emulator，刻意冇 Firebase Hosting 設定，因為網站會部署到 GitHub Pages。佢只會讀取被 Git 忽略嘅 `database.rules.local.json`，唔會直接部署公開 placeholder 範本；本機完整檔案未準備好時，CLI 會安全地停止。
 
 已安裝 Firebase CLI 後，可以喺專案目錄登入及選擇現有 project：
 
@@ -126,13 +131,13 @@ Emulator UI 預設係 `http://127.0.0.1:4000`，Realtime Database emulator 預�
 
 `firebase login` 係你自己喺瀏覽器登入 Google／Firebase 管理員帳戶；唔需要亦唔應該將 Google 密碼交畀開發者或寫入專案。
 
-當你已經手動合併現有 rules、用本機設定換好兩個 placeholder 及完成測試後，先部署：
+當你已經喺 `database.rules.local.json` 合併現有完整 rules、換好兩個 placeholder 及完成測試後，先部署：
 
 ```powershell
 firebase deploy --only database
 ```
 
-如果你選擇直接喺 Firebase Console 編輯及 Publish 合併後嘅規則，就唔需要用 CLI 部署。
+如果你選擇直接喺 Firebase Console 編輯及 Publish 合併後嘅規則，就唔需要建立 `database.rules.local.json` 或使用 CLI。
 
 ## 7. GitHub Pages 唔會儲存私人紀錄
 
