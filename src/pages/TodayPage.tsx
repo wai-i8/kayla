@@ -1,14 +1,15 @@
-import { ageInDays, describeAge, formatLongDate, formatTime, startOfToday, ukHour } from '../lib/date';
+import { ageInDays, describeAge, formatLongDate, formatTime, startOfUkDay, ukHour } from '../lib/date';
 import { ageTimelineSections } from '../data/guideSections';
 import type { BabyProfile, BabyRecord, RecordType } from '../types';
 import { Icon } from '../components/Icon';
-import { RecordCard } from '../components/RecordCard';
+
+type SummaryRecordType = Extract<RecordType, 'feed' | 'nappy' | 'temperature'>;
 
 interface TodayPageProps {
   profile: BabyProfile | null;
   records: BabyRecord[];
   onAdd: () => void;
-  onQuickAdd: (type: RecordType) => void;
+  onOpenRecords: (type: SummaryRecordType) => void;
   onOpenGuide: (sectionId?: string) => void;
   onOpenSettings: () => void;
 }
@@ -27,28 +28,38 @@ function currentGuideIndex(days: number) {
   return 10;
 }
 
-function latest(records: BabyRecord[], type: BabyRecord['type']) {
-  return records.find((record) => record.type === type);
+function summariseDay(records: BabyRecord[]) {
+  const ordered = [...records].sort((a, b) => b.occurredAt - a.occurredAt);
+  const feeds = ordered.filter((record) => record.type === 'feed');
+  const nappies = ordered.filter((record) => record.type === 'nappy');
+  return {
+    records: ordered,
+    feeds,
+    nappies,
+    wetNappies: nappies.filter((record) => record.details.nappyType !== 'dirty'),
+    dirtyNappies: nappies.filter((record) => record.details.nappyType !== 'wet'),
+    lastFeed: feeds[0],
+    lastTemperature: ordered.find((record) => record.type === 'temperature'),
+  };
 }
 
-export function TodayPage({ profile, records, onAdd, onQuickAdd, onOpenGuide, onOpenSettings }: TodayPageProps) {
-  const todayRecords = records.filter((record) => record.occurredAt >= startOfToday());
-  const feeds = todayRecords.filter((record) => record.type === 'feed');
-  const nappies = todayRecords.filter((record) => record.type === 'nappy');
-  const wetNappies = nappies.filter((record) => record.details.nappyType !== 'dirty');
-  const dirtyNappies = nappies.filter((record) => record.details.nappyType !== 'wet');
-  const lastFeed = latest(records, 'feed');
-  const lastTemperature = latest(records, 'temperature');
+export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenSettings }: TodayPageProps) {
+  const now = Date.now();
+  const yesterdayStart = startOfUkDay(-1, now);
+  const todayStart = startOfUkDay(0, now);
+  const tomorrowStart = startOfUkDay(1, now);
+  const today = summariseDay(records.filter((record) => record.occurredAt >= todayStart && record.occurredAt < tomorrowStart));
+  const yesterday = summariseDay(records.filter((record) => record.occurredAt >= yesterdayStart && record.occurredAt < todayStart));
   const ageDays = ageInDays(profile?.dateOfBirth);
   const guide = ageTimelineSections[currentGuideIndex(ageDays)];
-  const hour = ukHour();
+  const hour = ukHour(now);
   const greeting = hour < 12 ? '早晨' : hour < 18 ? '午安' : '晚上好';
 
   return (
     <div className="page today-page">
       <header className="mobile-page-header">
         <div>
-          <p className="eyebrow">{formatLongDate(Date.now())}</p>
+          <p className="eyebrow">{formatLongDate(now)}</p>
           <h1>{greeting}，{profile?.name || '屋企人'}</h1>
         </div>
         <button className="avatar-button" onClick={onOpenSettings} aria-label="開啟設定"><Icon name="user" /></button>
@@ -69,27 +80,51 @@ export function TodayPage({ profile, records, onAdd, onQuickAdd, onOpenGuide, on
             <div className="baby-hero-copy">
               <p className="eyebrow">TODAY WITH {(profile.name || 'BB').toUpperCase()}</p>
               <h2>{describeAge(profile.dateOfBirth)}</h2>
-              <p>{feeds.length || nappies.length ? `今日已經有 ${todayRecords.length} 項紀錄` : '今日未有紀錄，慢慢嚟。'}</p>
+              <p>{today.records.length ? `今日已經有 ${today.records.length} 項紀錄` : '今日未有紀錄，慢慢嚟。'}</p>
             </div>
             <button className="hero-add" onClick={onAdd}><Icon name="plus" size={19} />記一筆</button>
           </section>
 
-          <section className="stat-grid" aria-label="今日摘要快捷記錄">
-            <button type="button" className="stat-card" data-testid="quick-add-feed" aria-haspopup="dialog" aria-label={`新增餵奶紀錄；今日已有 ${feeds.length} 次；${lastFeed ? `最近 ${formatTime(lastFeed.occurredAt)}` : '未有紀錄'}`} onClick={() => onQuickAdd('feed')}>
-              <span className="stat-top"><span className="record-icon tone-peach"><Icon name="bottle" size={19} /></span><span>餵奶</span><span className="stat-action" aria-hidden="true"><Icon name="plus" size={15} /></span></span>
-              <strong>{feeds.length}<small> 次</small></strong>
-              <span className="stat-detail">{lastFeed ? `最近 ${formatTime(lastFeed.occurredAt)}` : '未有紀錄'}</span>
+          <section className="stat-grid" aria-label="今日摘要；選擇類型查看紀錄">
+            <button type="button" className="stat-card" data-testid="open-records-feed" aria-label={`查看餵奶紀錄；今日已有 ${today.feeds.length} 次；${today.lastFeed ? `最近 ${formatTime(today.lastFeed.occurredAt)}` : '未有紀錄'}`} onClick={() => onOpenRecords('feed')}>
+              <span className="stat-top"><span className="record-icon tone-peach"><Icon name="bottle" size={19} /></span><span>餵奶</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
+              <strong>{today.feeds.length}<small> 次</small></strong>
+              <span className="stat-detail">{today.lastFeed ? `最近 ${formatTime(today.lastFeed.occurredAt)}` : '未有紀錄'}</span>
             </button>
-            <button type="button" className="stat-card" data-testid="quick-add-nappy" aria-haspopup="dialog" aria-label={`新增尿片紀錄；今日已有 ${nappies.length} 塊；${wetNappies.length} 濕、${dirtyNappies.length} 便`} onClick={() => onQuickAdd('nappy')}>
-              <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="plus" size={15} /></span></span>
-              <strong>{nappies.length}<small> 塊</small></strong>
-              <span className="stat-detail">{wetNappies.length} 濕 · {dirtyNappies.length} 便</span>
+            <button type="button" className="stat-card" data-testid="open-records-nappy" aria-label={`查看尿片紀錄；今日已有 ${today.nappies.length} 塊；${today.wetNappies.length} 濕、${today.dirtyNappies.length} 便`} onClick={() => onOpenRecords('nappy')}>
+              <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
+              <strong>{today.nappies.length}<small> 塊</small></strong>
+              <span className="stat-detail">{today.wetNappies.length} 濕 · {today.dirtyNappies.length} 便</span>
             </button>
-            <button type="button" className="stat-card wide-mobile" data-testid="quick-add-temperature" aria-haspopup="dialog" aria-label={`新增體溫紀錄；最近體溫 ${lastTemperature?.details.valueCelsius?.toFixed(1) || '未有紀錄'}${lastTemperature ? ' 度' : ''}；${lastTemperature?.details.measurementSite || '未有量度位置'}`} onClick={() => onQuickAdd('temperature')}>
-              <span className="stat-top"><span className="record-icon tone-rose"><Icon name="temperature" size={19} /></span><span>最近體溫</span><span className="stat-action" aria-hidden="true"><Icon name="plus" size={15} /></span></span>
-              <strong>{lastTemperature?.details.valueCelsius?.toFixed(1) || '—'}<small>{lastTemperature ? ' °C' : ''}</small></strong>
-              <span className="stat-detail">{lastTemperature?.details.measurementSite || '未有紀錄'}</span>
+            <button type="button" className="stat-card wide-mobile" data-testid="open-records-temperature" aria-label={`查看體溫紀錄；今日最近體溫 ${today.lastTemperature?.details.valueCelsius?.toFixed(1) || '未有紀錄'}${today.lastTemperature ? ' 度' : ''}；${today.lastTemperature?.details.measurementSite || '未有量度位置'}`} onClick={() => onOpenRecords('temperature')}>
+              <span className="stat-top"><span className="record-icon tone-rose"><Icon name="temperature" size={19} /></span><span>最近體溫</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
+              <strong>{today.lastTemperature?.details.valueCelsius?.toFixed(1) || '—'}<small>{today.lastTemperature ? ' °C' : ''}</small></strong>
+              <span className="stat-detail">{today.lastTemperature?.details.measurementSite || '未有紀錄'}</span>
             </button>
+          </section>
+
+          <section className="section-block yesterday-block" aria-labelledby="yesterday-heading" data-testid="yesterday-summary">
+            <div className="section-heading">
+              <div><p className="eyebrow">YESTERDAY · {formatLongDate(yesterdayStart)}</p><h2 id="yesterday-heading">昨日紀錄</h2></div>
+              <span>{yesterday.records.length} 項</span>
+            </div>
+            <div className="yesterday-summary">
+              <article className="yesterday-stat" data-testid="yesterday-feed">
+                <span className="record-icon tone-peach"><Icon name="bottle" size={19} /></span>
+                <span className="yesterday-stat-copy"><strong>餵奶</strong><small>{yesterday.lastFeed ? `最後 ${formatTime(yesterday.lastFeed.occurredAt)}` : '未有紀錄'}</small></span>
+                <strong className="yesterday-stat-value">{yesterday.feeds.length}<small> 次</small></strong>
+              </article>
+              <article className="yesterday-stat" data-testid="yesterday-nappy">
+                <span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span>
+                <span className="yesterday-stat-copy"><strong>尿片</strong><small>{yesterday.wetNappies.length} 濕 · {yesterday.dirtyNappies.length} 便</small></span>
+                <strong className="yesterday-stat-value">{yesterday.nappies.length}<small> 塊</small></strong>
+              </article>
+              <article className="yesterday-stat" data-testid="yesterday-temperature">
+                <span className="record-icon tone-rose"><Icon name="temperature" size={19} /></span>
+                <span className="yesterday-stat-copy"><strong>最近體溫</strong><small>{yesterday.lastTemperature?.details.measurementSite || '未有紀錄'}</small></span>
+                <strong className="yesterday-stat-value">{yesterday.lastTemperature?.details.valueCelsius?.toFixed(1) || '—'}<small>{yesterday.lastTemperature ? ' °C' : ''}</small></strong>
+              </article>
+            </div>
           </section>
 
           <section className="guide-feature">
@@ -106,14 +141,6 @@ export function TodayPage({ profile, records, onAdd, onQuickAdd, onOpenGuide, on
             <button onClick={() => onOpenGuide('emergency')} aria-label="開啟緊急判斷"><Icon name="chevron" /></button>
           </section>
 
-          <section className="section-block recent-block">
-            <div className="section-heading"><div><p className="eyebrow">TODAY</p><h2>最近紀錄</h2></div>{records.length > 0 && <span>{records.length} 項</span>}</div>
-            {records.length ? (
-              <div className="record-list">{records.slice(0, 4).map((record) => <RecordCard key={record.id} record={record} compact />)}</div>
-            ) : (
-              <div className="empty-list"><Icon name="clock" /><p>第一項紀錄會喺呢度出現。</p><button className="secondary-button" onClick={onAdd}>新增紀錄</button></div>
-            )}
-          </section>
         </>
       )}
     </div>

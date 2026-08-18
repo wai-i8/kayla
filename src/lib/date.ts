@@ -62,8 +62,19 @@ export function inputsToTimestamp(date: string, time: string) {
   return wallClockAsUtc - offsetAt(firstPass);
 }
 
+export function startOfUkDay(dayOffset = 0, timestamp = Date.now()) {
+  const [year, month, day] = dateInputValue(timestamp).split('-').map(Number);
+  const target = new Date(Date.UTC(year, month - 1, day + dayOffset, 12));
+  const targetDate = [
+    target.getUTCFullYear(),
+    String(target.getUTCMonth() + 1).padStart(2, '0'),
+    String(target.getUTCDate()).padStart(2, '0'),
+  ].join('-');
+  return inputsToTimestamp(targetDate, '00:00');
+}
+
 export function startOfToday() {
-  return inputsToTimestamp(dateInputValue(), '00:00');
+  return startOfUkDay();
 }
 
 function calendarDayNumber(date: string) {

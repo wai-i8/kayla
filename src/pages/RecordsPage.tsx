@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { BabyRecord, RecordType } from '../types';
+import type { BabyRecord, RecordFilter, RecordType } from '../types';
 import { dateInputValue, formatLongDate, inputsToTimestamp } from '../lib/date';
 import { Icon } from '../components/Icon';
 import { RecordCard } from '../components/RecordCard';
@@ -7,6 +7,8 @@ import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface RecordsPageProps {
   records: BabyRecord[];
+  filter: RecordFilter;
+  onFilterChange: (filter: RecordFilter) => void;
   currentUserId: string;
   canManageAll: boolean;
   onAdd: () => void;
@@ -24,8 +26,7 @@ const filters: Array<{ value: 'all' | RecordType; label: string }> = [
   { value: 'note', label: '備註' },
 ];
 
-export function RecordsPage({ records, currentUserId, canManageAll, onAdd, onDelete }: RecordsPageProps) {
-  const [filter, setFilter] = useState<'all' | RecordType>('all');
+export function RecordsPage({ records, filter, onFilterChange, currentUserId, canManageAll, onAdd, onDelete }: RecordsPageProps) {
   const [deleting, setDeleting] = useState<BabyRecord | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState('');
@@ -67,7 +68,7 @@ export function RecordsPage({ records, currentUserId, canManageAll, onAdd, onDel
       </header>
 
       <div className="filter-scroller" role="group" aria-label="篩選紀錄">
-        {filters.map((item) => <button key={item.value} type="button" className={filter === item.value ? 'active' : ''} aria-pressed={filter === item.value} onClick={() => setFilter(item.value)}>{item.label}</button>)}
+        {filters.map((item) => <button key={item.value} type="button" data-testid={`records-filter-${item.value}`} className={filter === item.value ? 'active' : ''} aria-pressed={filter === item.value} onClick={() => onFilterChange(item.value)}>{item.label}</button>)}
       </div>
 
       {grouped.length ? grouped.map(([date, items]) => (

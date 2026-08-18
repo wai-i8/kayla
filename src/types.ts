@@ -2,6 +2,8 @@ export type ViewKey = 'today' | 'records' | 'guide' | 'calendar' | 'settings';
 
 export type RecordType = 'feed' | 'nappy' | 'temperature' | 'sleep' | 'medicine' | 'weight' | 'note';
 
+export type RecordFilter = 'all' | RecordType;
+
 export type QuickOptionField =
   | 'feedDurationMinutes'
   | 'feedAmountMl'

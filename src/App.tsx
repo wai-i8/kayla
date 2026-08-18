@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { useKaylaData } from './hooks/useKaylaData';
 import { useOwnerRole } from './hooks/useOwnerRole';
-import type { RecordType, ViewKey } from './types';
+import type { RecordFilter, RecordType, ViewKey } from './types';
 import { LoginScreen } from './components/LoginScreen';
 import { BottomNavigation, SideNavigation } from './components/Navigation';
 import { QuickAddSheet } from './components/QuickAddSheet';
@@ -25,13 +25,20 @@ export default function App() {
     import.meta.env.DEV && allowedViews.includes(previewView as ViewKey) ? (previewView as ViewKey) : 'today',
   );
   const [quickAddOpen, setQuickAddOpen] = useState(import.meta.env.DEV && previewParams.has('add'));
-  const [quickAddType, setQuickAddType] = useState<RecordType | null>(null);
+  const [recordsFilter, setRecordsFilter] = useState<RecordFilter>('all');
   const [guideFocus, setGuideFocus] = useState<string | null>(
     import.meta.env.DEV ? previewParams.get('section') : null,
   );
 
   const changeView = (nextView: ViewKey) => {
+    if (nextView === 'records') setRecordsFilter('all');
     setView(nextView);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openFilteredRecords = (filter: Extract<RecordType, 'feed' | 'nappy' | 'temperature'>) => {
+    setRecordsFilter(filter);
+    setView('records');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -42,15 +49,8 @@ export default function App() {
 
   const clearGuideFocus = useCallback(() => setGuideFocus(null), []);
 
-  const openQuickAdd = (type?: RecordType) => {
-    setQuickAddType(type || null);
-    setQuickAddOpen(true);
-  };
-
-  const closeQuickAdd = () => {
-    setQuickAddOpen(false);
-    setQuickAddType(null);
-  };
+  const openQuickAdd = () => setQuickAddOpen(true);
+  const closeQuickAdd = () => setQuickAddOpen(false);
 
   if (authState.loading) {
     return <div className="app-loading"><span className="brand-mark">K</span><p>正在確認私人登入…</p></div>;
@@ -60,7 +60,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <SideNavigation active={view} onChange={changeView} onAdd={() => openQuickAdd()} />
+      <SideNavigation active={view} onChange={changeView} onAdd={openQuickAdd} />
       <div className="app-content">
         <header className="desktop-topbar">
           <div><strong>{data.profile?.name || 'KAYLA Family'}</strong><span>{authState.isDemo ? '示範模式' : '私人家庭空間'}</span></div>
@@ -74,8 +74,8 @@ export default function App() {
             <div className="content-loading"><span /><p>載入家庭資料…</p></div>
           ) : (
             <Suspense fallback={<div className="content-loading page-loading"><span /><p>載入頁面…</p></div>}>
-              {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={() => openQuickAdd()} onQuickAdd={openQuickAdd} onOpenGuide={openGuide} onOpenSettings={() => changeView('settings')} />}
-              {view === 'records' && <RecordsPage records={data.records} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={() => openQuickAdd()} onDelete={data.deleteRecord} />}
+              {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={openQuickAdd} onOpenRecords={openFilteredRecords} onOpenGuide={openGuide} onOpenSettings={() => changeView('settings')} />}
+              {view === 'records' && <RecordsPage records={data.records} filter={recordsFilter} onFilterChange={setRecordsFilter} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={openQuickAdd} onDelete={data.deleteRecord} />}
               {view === 'guide' && <GuidePageView initialSectionId={guideFocus} onSectionOpened={clearGuideFocus} />}
               {view === 'calendar' && <CalendarPage profile={data.profile} onOpenSettings={() => changeView('settings')} />}
               {view === 'settings' && <SettingsPage user={authState.user} profile={data.profile} isDemo={authState.isDemo} canEditProfile={isOwner} onSaveProfile={data.saveProfile} onLogout={authState.logout} />}
@@ -84,10 +84,9 @@ export default function App() {
         </main>
       </div>
 
-      <BottomNavigation active={view} onChange={changeView} onAdd={() => openQuickAdd()} />
+      <BottomNavigation active={view} onChange={changeView} onAdd={openQuickAdd} />
       <QuickAddSheet
         open={quickAddOpen}
-        initialType={quickAddType}
         quickOptions={data.quickOptions}
         onClose={closeQuickAdd}
         onSave={data.addRecord}

@@ -258,10 +258,20 @@ h1, h2, h3 { font-family: 'Avenir Next', 'Noto Sans HK', system-ui, sans-serif; 
 .emergency-strip strong { font-size: 12px; }
 .emergency-strip p { margin: 3px 0 0; color: #906669; font-size: 10px; line-height: 1.45; }
 .emergency-strip button { display: grid; width: 44px; height: 44px; place-items: center; padding: 0; border: 0; background: transparent; color: #99494d; }
-.recent-block { grid-column: 2; grid-row: 3 / span 2; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); }
+.yesterday-block { grid-column: 2; grid-row: 3 / span 2; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 16px; }
 .section-heading h2 { margin: 0; font-size: 20px; }
 .section-heading > span { color: var(--soft-muted); font-size: 10px; }
+.yesterday-summary { display: grid; }
+.yesterday-stat { display: grid; min-width: 0; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 11px; padding: 14px 0; border-top: 1px solid var(--line); }
+.yesterday-stat:first-child { padding-top: 3px; border-top: 0; }
+.yesterday-stat:last-child { padding-bottom: 2px; }
+.yesterday-stat > .record-icon { width: 38px; height: 38px; border-radius: 11px; }
+.yesterday-stat-copy { display: grid; min-width: 0; gap: 3px; }
+.yesterday-stat-copy > strong { font-size: 12px; }
+.yesterday-stat-copy > small { overflow: hidden; color: var(--soft-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.yesterday-stat-value { font-family: 'Nunito', sans-serif; font-size: 21px; white-space: nowrap; }
+.yesterday-stat-value small { color: var(--muted); font-size: 10px; }
 .empty-list { display: grid; justify-items: center; gap: 8px; padding: 28px 10px; color: var(--soft-muted); text-align: center; }
 .empty-list p { margin: 0; font-size: 12px; }
 .empty-list .secondary-button { min-height: 38px; margin-top: 5px; font-size: 11px; }
@@ -463,7 +473,7 @@ h1, h2, h3 { font-family: 'Avenir Next', 'Noto Sans HK', system-ui, sans-serif; 
 
 @media (max-width: 1080px) {
   .today-page { grid-template-columns: 1fr; }
-  .recent-block { grid-column: auto; grid-row: auto; }
+  .yesterday-block { grid-column: auto; grid-row: auto; }
   .calendar-page { grid-template-columns: 1fr; }
   .calendar-page > .page-header, .calendar-page > .large-empty { grid-column: auto; }
   .settings-layout { grid-template-columns: 1fr; }
@@ -527,8 +537,7 @@ h1, h2, h3 { font-family: 'Avenir Next', 'Noto Sans HK', system-ui, sans-serif; 
   .stat-card.wide-mobile > strong, .stat-card.wide-mobile > .stat-detail { grid-column: 2; }
   .guide-feature { min-height: 220px; margin-bottom: 11px; padding: 24px 21px; border-radius: 20px; }
   .guide-feature h2 { font-size: 21px; }
-  .recent-block { margin-top: 18px; padding: 0; border: 0; background: transparent; }
-  .recent-block .record-card { background: var(--card); }
+  .yesterday-block { margin-bottom: 12px; padding: 18px; border-radius: 20px; }
   .empty-profile-card { min-height: 520px; padding: 30px 24px; border-radius: 21px; }
 
   .records-page .record-list { grid-template-columns: 1fr; }

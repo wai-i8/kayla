@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useState, type FormEvent } from 'react';
+import { useEffect, useId, useState, type FormEvent } from 'react';
 import { dateInputValue, inputsToTimestamp, timeInputValue } from '../lib/date';
 import type {
   MedicineQuickValue,
@@ -14,7 +14,6 @@ import { RememberedField } from './RememberedField';
 
 interface QuickAddSheetProps {
   open: boolean;
-  initialType?: RecordType | null;
   onClose: () => void;
   onSave: (record: NewRecordInput) => Promise<void>;
   quickOptions: QuickOptionsByField;
@@ -53,7 +52,6 @@ const noteFieldByType: Record<RecordType, QuickOptionField> = {
 
 export function QuickAddSheet({
   open,
-  initialType,
   onClose,
   onSave,
   quickOptions,
@@ -98,13 +96,12 @@ export function QuickAddSheet({
   };
   const dialogRef = useDialogFocus(open, resetAndClose, !saving);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!open) return;
-    setType(initialType || null);
     setDate(dateInputValue());
     setTime(timeInputValue());
     setError('');
-  }, [initialType, open]);
+  }, [open]);
 
   if (!open) return null;
 
