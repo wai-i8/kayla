@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useId, useLayoutEffect, useState, type FormEvent } from 'react';
 import { dateInputValue, inputsToTimestamp, timeInputValue } from '../lib/date';
 import type {
   MedicineQuickValue,
@@ -14,6 +14,7 @@ import { RememberedField } from './RememberedField';
 
 interface QuickAddSheetProps {
   open: boolean;
+  initialType?: RecordType | null;
   onClose: () => void;
   onSave: (record: NewRecordInput) => Promise<void>;
   quickOptions: QuickOptionsByField;
@@ -52,6 +53,7 @@ const noteFieldByType: Record<RecordType, QuickOptionField> = {
 
 export function QuickAddSheet({
   open,
+  initialType,
   onClose,
   onSave,
   quickOptions,
@@ -76,6 +78,7 @@ export function QuickAddSheet({
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const titleId = useId();
 
   const resetAndClose = () => {
     setType(null);
@@ -95,12 +98,13 @@ export function QuickAddSheet({
   };
   const dialogRef = useDialogFocus(open, resetAndClose, !saving);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
+    setType(initialType || null);
     setDate(dateInputValue());
     setTime(timeInputValue());
     setError('');
-  }, [open]);
+  }, [initialType, open]);
 
   if (!open) return null;
 
@@ -204,12 +208,12 @@ export function QuickAddSheet({
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !saving && resetAndClose()}>
-      <section ref={dialogRef} className="quick-sheet" role="dialog" aria-modal="true" aria-label="新增 BB 紀錄" data-testid="quick-add-sheet">
+      <section ref={dialogRef} className="quick-sheet" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="quick-add-sheet" data-record-type={type || 'picker'}>
         <div className="sheet-handle" />
         <header className="sheet-header">
           <div>
             {type && <button className="text-button" type="button" onClick={() => setType(null)}>← 返回</button>}
-            <h2>{type ? `新增${selected?.label}紀錄` : '想記低咩？'}</h2>
+            <h2 id={titleId}>{type ? `新增${selected?.label}紀錄` : '想記低咩？'}</h2>
             {!type && <p>揀一項，預設會使用而家時間。</p>}
           </div>
           <button className="icon-button" onClick={resetAndClose} disabled={saving} aria-label="關閉新增紀錄"><Icon name="close" /></button>

@@ -1,6 +1,6 @@
 import { ageInDays, describeAge, formatLongDate, formatTime, startOfToday, ukHour } from '../lib/date';
 import { ageTimelineSections } from '../data/guideSections';
-import type { BabyProfile, BabyRecord } from '../types';
+import type { BabyProfile, BabyRecord, RecordType } from '../types';
 import { Icon } from '../components/Icon';
 import { RecordCard } from '../components/RecordCard';
 
@@ -8,6 +8,7 @@ interface TodayPageProps {
   profile: BabyProfile | null;
   records: BabyRecord[];
   onAdd: () => void;
+  onQuickAdd: (type: RecordType) => void;
   onOpenGuide: (sectionId?: string) => void;
   onOpenSettings: () => void;
 }
@@ -30,7 +31,7 @@ function latest(records: BabyRecord[], type: BabyRecord['type']) {
   return records.find((record) => record.type === type);
 }
 
-export function TodayPage({ profile, records, onAdd, onOpenGuide, onOpenSettings }: TodayPageProps) {
+export function TodayPage({ profile, records, onAdd, onQuickAdd, onOpenGuide, onOpenSettings }: TodayPageProps) {
   const todayRecords = records.filter((record) => record.occurredAt >= startOfToday());
   const feeds = todayRecords.filter((record) => record.type === 'feed');
   const nappies = todayRecords.filter((record) => record.type === 'nappy');
@@ -73,22 +74,22 @@ export function TodayPage({ profile, records, onAdd, onOpenGuide, onOpenSettings
             <button className="hero-add" onClick={onAdd}><Icon name="plus" size={19} />記一筆</button>
           </section>
 
-          <section className="stat-grid" aria-label="今日摘要">
-            <article className="stat-card">
-              <div className="stat-top"><span className="record-icon tone-peach"><Icon name="bottle" size={19} /></span><span>餵奶</span></div>
+          <section className="stat-grid" aria-label="今日摘要快捷記錄">
+            <button type="button" className="stat-card" data-testid="quick-add-feed" aria-haspopup="dialog" aria-label={`新增餵奶紀錄；今日已有 ${feeds.length} 次；${lastFeed ? `最近 ${formatTime(lastFeed.occurredAt)}` : '未有紀錄'}`} onClick={() => onQuickAdd('feed')}>
+              <span className="stat-top"><span className="record-icon tone-peach"><Icon name="bottle" size={19} /></span><span>餵奶</span><span className="stat-action" aria-hidden="true"><Icon name="plus" size={15} /></span></span>
               <strong>{feeds.length}<small> 次</small></strong>
-              <p>{lastFeed ? `最近 ${formatTime(lastFeed.occurredAt)}` : '未有紀錄'}</p>
-            </article>
-            <article className="stat-card">
-              <div className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span></div>
+              <span className="stat-detail">{lastFeed ? `最近 ${formatTime(lastFeed.occurredAt)}` : '未有紀錄'}</span>
+            </button>
+            <button type="button" className="stat-card" data-testid="quick-add-nappy" aria-haspopup="dialog" aria-label={`新增尿片紀錄；今日已有 ${nappies.length} 塊；${wetNappies.length} 濕、${dirtyNappies.length} 便`} onClick={() => onQuickAdd('nappy')}>
+              <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="plus" size={15} /></span></span>
               <strong>{nappies.length}<small> 塊</small></strong>
-              <p>{wetNappies.length} 濕 · {dirtyNappies.length} 便</p>
-            </article>
-            <article className="stat-card wide-mobile">
-              <div className="stat-top"><span className="record-icon tone-rose"><Icon name="temperature" size={19} /></span><span>最近體溫</span></div>
+              <span className="stat-detail">{wetNappies.length} 濕 · {dirtyNappies.length} 便</span>
+            </button>
+            <button type="button" className="stat-card wide-mobile" data-testid="quick-add-temperature" aria-haspopup="dialog" aria-label={`新增體溫紀錄；最近體溫 ${lastTemperature?.details.valueCelsius?.toFixed(1) || '未有紀錄'}${lastTemperature ? ' 度' : ''}；${lastTemperature?.details.measurementSite || '未有量度位置'}`} onClick={() => onQuickAdd('temperature')}>
+              <span className="stat-top"><span className="record-icon tone-rose"><Icon name="temperature" size={19} /></span><span>最近體溫</span><span className="stat-action" aria-hidden="true"><Icon name="plus" size={15} /></span></span>
               <strong>{lastTemperature?.details.valueCelsius?.toFixed(1) || '—'}<small>{lastTemperature ? ' °C' : ''}</small></strong>
-              <p>{lastTemperature?.details.measurementSite || '未有紀錄'}</p>
-            </article>
+              <span className="stat-detail">{lastTemperature?.details.measurementSite || '未有紀錄'}</span>
+            </button>
           </section>
 
           <section className="guide-feature">

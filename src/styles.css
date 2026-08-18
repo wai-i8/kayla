@@ -234,12 +234,15 @@ h1, h2, h3 { font-family: 'Avenir Next', 'Noto Sans HK', system-ui, sans-serif; 
 .baby-hero-copy p:last-child { margin: 0; color: #587168; font-size: 13px; }
 .hero-add { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; padding: 10px 15px; border: 1px solid rgba(64,101,88,.2); border-radius: 11px; background: rgba(255,255,255,.65); color: var(--sage-dark); font-size: 12px; font-weight: 700; }
 .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 13px; margin-bottom: 16px; }
-.stat-card { padding: 17px 18px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
+.stat-card { width: 100%; min-width: 0; padding: 17px 18px; border: 1px solid var(--line); border-radius: var(--radius-md); appearance: none; background: var(--card); text-align: left; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.stat-card:hover { border-color: #cbd8d2; box-shadow: 0 8px 24px rgba(35, 52, 47, .07); transform: translateY(-1px); }
+.stat-card:active { box-shadow: none; transform: translateY(0); }
 .stat-top { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; color: var(--muted); font-size: 12px; font-weight: 700; }
 .stat-top .record-icon { width: 34px; height: 34px; border-radius: 10px; }
+.stat-action { display: grid; width: 28px; height: 28px; place-items: center; margin-left: auto; border-radius: 9px; background: var(--paper); color: var(--sage-dark); }
 .stat-card > strong { display: block; margin-bottom: 2px; font-family: 'Nunito', sans-serif; font-size: 25px; }
 .stat-card > strong small { color: var(--muted); font-size: 12px; }
-.stat-card > p { margin: 0; color: var(--soft-muted); font-size: 10px; }
+.stat-card > .stat-detail { display: block; margin: 0; color: var(--soft-muted); font-size: 10px; }
 .today-page { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr); gap: 17px; }
 .today-page .baby-hero, .today-page .stat-grid, .today-page .empty-profile-card { grid-column: 1 / -1; }
 .guide-feature { position: relative; min-height: 228px; overflow: hidden; padding: 28px; border-radius: var(--radius-lg); background: #293e39; color: #fff; }
@@ -521,7 +524,7 @@ h1, h2, h3 { font-family: 'Avenir Next', 'Noto Sans HK', system-ui, sans-serif; 
   .stat-card > strong { font-size: 22px; }
   .stat-card.wide-mobile { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 11px; }
   .stat-card.wide-mobile .stat-top { grid-row: 1 / span 2; margin: 0; }
-  .stat-card.wide-mobile > strong, .stat-card.wide-mobile > p { grid-column: 2; }
+  .stat-card.wide-mobile > strong, .stat-card.wide-mobile > .stat-detail { grid-column: 2; }
   .guide-feature { min-height: 220px; margin-bottom: 11px; padding: 24px 21px; border-radius: 20px; }
   .guide-feature h2 { font-size: 21px; }
   .recent-block { margin-top: 18px; padding: 0; border: 0; background: transparent; }
