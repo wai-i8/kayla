@@ -1,0 +1,57 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "kayla": {
+      ".read": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid')",
+
+      "baby": {
+        ".write": "auth != null && auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid'",
+        "profile": {
+          ".validate": "!newData.exists() || (newData.hasChildren(['name', 'dateOfBirth']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 80 && newData.child('dateOfBirth').isString() && newData.child('dateOfBirth').val().matches(/^(19|20)[0-9][0-9]-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) && (!newData.child('timeOfBirth').exists() || (newData.child('timeOfBirth').isString() && newData.child('timeOfBirth').val().matches(/^([01][0-9]|2[0-3]):[0-5][0-9]$/))) && (!newData.child('gestationalWeeks').exists() || (newData.child('gestationalWeeks').isNumber() && newData.child('gestationalWeeks').val() >= 20 && newData.child('gestationalWeeks').val() <= 45)) && (!newData.child('birthWeightKg').exists() || (newData.child('birthWeightKg').isNumber() && newData.child('birthWeightKg').val() >= 0.3 && newData.child('birthWeightKg').val() <= 30)) && (!newData.child('feedingMethod').exists() || newData.child('feedingMethod').val() === '' || newData.child('feedingMethod').val() === 'breast' || newData.child('feedingMethod').val() === 'formula' || newData.child('feedingMethod').val() === 'mixed') && (!newData.child('gpName').exists() || (newData.child('gpName').isString() && newData.child('gpName').val().length <= 200)) && (!newData.child('notes').exists() || (newData.child('notes').isString() && newData.child('notes').val().length <= 2000)) && (!newData.child('updatedAt').exists() || (newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() <= now + 600000)))"
+        }
+      },
+
+      "settings": {
+        ".write": "auth != null && auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid'"
+      },
+
+      "contentOverrides": {
+        ".write": "auth != null && auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid'"
+      },
+
+      "members": {
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid'",
+          ".validate": "!newData.exists() || (newData.hasChildren(['role']) && newData.child('role').val() === 'owner')"
+        }
+      },
+
+      "records": {
+        "$recordId": {
+          ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid') && (!data.exists() || data.child('createdBy').val() === auth.uid || auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid')",
+          ".validate": "!newData.exists() || (newData.hasChildren(['type', 'occurredAt', 'createdAt', 'createdBy', 'details']) && newData.child('type').isString() && (newData.child('type').val() === 'feed' || newData.child('type').val() === 'nappy' || newData.child('type').val() === 'temperature' || newData.child('type').val() === 'sleep' || newData.child('type').val() === 'medicine' || newData.child('type').val() === 'weight' || newData.child('type').val() === 'note') && newData.child('occurredAt').isNumber() && newData.child('occurredAt').val() >= 1577836800000 && newData.child('occurredAt').val() <= now + 600000 && newData.child('createdAt').isNumber() && newData.child('createdAt').val() <= now + 600000 && ((!data.exists() && newData.child('createdBy').val() === auth.uid) || (data.exists() && newData.child('createdBy').val() === data.child('createdBy').val())) && (!newData.child('details').child('note').exists() || (newData.child('details').child('note').isString() && newData.child('details').child('note').val().length <= 1000)) && (newData.child('type').val() !== 'feed' || ((newData.child('details').child('method').val() === 'breast' || newData.child('details').child('method').val() === 'formula' || newData.child('details').child('method').val() === 'expressed') && (newData.child('details').child('method').val() === 'breast' || (newData.child('details').child('amountMl').isNumber() && newData.child('details').child('amountMl').val() > 0 && newData.child('details').child('amountMl').val() <= 1000)))) && (newData.child('type').val() !== 'nappy' || (newData.child('details').child('nappyType').val() === 'wet' || newData.child('details').child('nappyType').val() === 'dirty' || newData.child('details').child('nappyType').val() === 'both')) && (newData.child('type').val() !== 'temperature' || (newData.child('details').child('valueCelsius').isNumber() && newData.child('details').child('valueCelsius').val() >= 30 && newData.child('details').child('valueCelsius').val() <= 45)) && (newData.child('type').val() !== 'sleep' || (newData.child('details').child('sleepMinutes').isNumber() && newData.child('details').child('sleepMinutes').val() > 0 && newData.child('details').child('sleepMinutes').val() <= 1440)) && (newData.child('type').val() !== 'medicine' || (newData.child('details').child('medicineName').isString() && newData.child('details').child('medicineName').val().length > 0 && newData.child('details').child('medicineName').val().length <= 120 && newData.child('details').child('doseMl').isNumber() && newData.child('details').child('doseMl').val() > 0 && newData.child('details').child('doseMl').val() <= 100)) && (newData.child('type').val() !== 'weight' || (newData.child('details').child('weightKg').isNumber() && newData.child('details').child('weightKg').val() >= 0.3 && newData.child('details').child('weightKg').val() <= 30)) && (newData.child('type').val() !== 'note' || (newData.child('details').child('note').isString() && newData.child('details').child('note').val().length > 0)))"
+        }
+      },
+
+      "appointments": {
+        "$appointmentId": {
+          ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid')"
+        }
+      },
+
+      "vaccinations": {
+        "$vaccinationId": {
+          ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid')"
+        }
+      },
+
+      "checklists": {
+        "$checklistId": {
+          ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid')"
+        }
+      }
+    }
+  }
+}

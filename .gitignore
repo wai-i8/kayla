@@ -1,0 +1,15 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+*.local
+*.log
+.DS_Store
+.browser-test-*
+*-preview.png
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+firebase-access.local.json
+database.rules.local.json
