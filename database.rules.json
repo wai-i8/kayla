@@ -50,6 +50,44 @@
         }
       },
 
+      "photos": {
+        ".indexOn": ["capturedAt"],
+        "$photoId": {
+          ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid')",
+          ".validate": "!newData.exists() || ($photoId.matches(/^[A-Za-z0-9_-]{20,128}$/) && newData.hasChildren(['storagePath', 'thumbnailPath', 'capturedAt', 'createdAt', 'createdBy', 'width', 'height']))",
+          "storagePath": {
+            ".validate": "newData.isString() && newData.val() === 'kayla/photos/bb_' + $photoId + '.jpg'"
+          },
+          "thumbnailPath": {
+            ".validate": "newData.isString() && newData.val() === 'kayla/photos/bb_' + $photoId + '_thumb.jpg'"
+          },
+          "capturedAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 946684800000 && newData.val() <= now + 600000"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 1577836800000 && newData.val() <= now + 600000 && (!data.exists() || newData.val() === data.val())"
+          },
+          "createdBy": {
+            ".validate": "newData.isString() && ((!data.exists() && newData.val() === auth.uid) || (data.exists() && newData.val() === data.val()))"
+          },
+          "createdByLabel": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+          },
+          "caption": {
+            ".validate": "newData.isString() && newData.val().length <= 500"
+          },
+          "width": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4096"
+          },
+          "height": {
+            ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 4096"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      },
+
       "records": {
         "$recordId": {
           ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid') && (!data.exists() || data.child('createdBy').val() === auth.uid || auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid')",

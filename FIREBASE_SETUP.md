@@ -9,6 +9,7 @@
 - `firebaseConfig` 係前端 Firebase project 設定，唔係管理員密碼；但 service-account JSON、private key 同密碼絕對唔可以放入 repository。
 - 未登入或唔係白名單內嘅帳戶，唔可以讀取或寫入 `/kayla`。
 - 只係 React 畫面隱藏資料並不足夠，真正權限由 Firebase Console 已發布嘅 Realtime Database Rules（CLI 使用本機 `database.rules.local.json`）強制執行。
+- 相片檔案由 Firebase Storage Rules 獨立保護；發布 Realtime Database Rules 唔會自動更新 Storage Rules，反之亦然。
 
 ## 1. 建立兩個登入帳戶
 
@@ -52,6 +53,7 @@ REPLACE_FAMILY_LOGIN_ID@example.invalid
 | `/kayla/contentOverrides` | 讀寫 | 只讀 |
 | `/kayla/members/{uid}` | 自動建立自己嘅 Owner UI 標記 | 不可建立 Owner 標記 |
 | `/kayla/quickOptions/{field}/{id}` | 讀寫 | 讀寫 |
+| `/kayla/photos/{id}` | 讀寫 metadata | 讀寫 metadata |
 | `/kayla/records/{id}` | 讀寫全部紀錄 | 新增及修改／刪除自己建立嘅紀錄 |
 | `/kayla/appointments/{id}` | 讀寫 | 讀寫 |
 | `/kayla/vaccinations/{id}` | 讀寫 | 讀寫 |
@@ -99,7 +101,104 @@ React 程式建立紀錄時必須跟呢個格式，否則 Firebase 會回覆 `PE
 
 唔好估計或重寫 `/e` 嘅規則；應以 Firebase Console 目前真正運作緊嗰份規則為準。例如現有 `/e` 只有一個指定登入 ID 可以使用，就應該保留同一條件。
 
-## 5. 建議測試清單
+### 相簿 metadata 亦要合併及發布
+
+新版 `database.rules.json` 嘅 `"kayla"` 節點已包括 `"photos"`。如果 Firebase Console 仲係較早版本嘅 `/kayla` Rules，必須將呢個 `"photos": { ... }` block 一併合併入現有 `/kayla` 節點再 Publish；只更新 Storage Rules 並不足夠，否則相片檔案可能上傳成功，但網站會因為無權寫 `/kayla/photos/{id}` 而清理剛上傳嘅檔案並顯示錯誤。
+
+每張相只會喺 Realtime Database 儲存 metadata，例如：
+
+```json
+{
+  "kayla": {
+    "photos": {
+      "RANDOM_PHOTO_ID": {
+        "storagePath": "kayla/photos/bb_RANDOM_PHOTO_ID.jpg",
+        "thumbnailPath": "kayla/photos/bb_RANDOM_PHOTO_ID_thumb.jpg",
+        "capturedAt": 1787076000000,
+        "createdAt": 1787076000000,
+        "createdBy": "目前登入者的 Firebase UID",
+        "createdByLabel": "家庭成員",
+        "caption": "可選說明",
+        "width": 1920,
+        "height": 1280
+      }
+    }
+  }
+}
+```
+
+- `RANDOM_PHOTO_ID` 係每張相獨立產生、不可預測嘅 ID。
+- `storagePath` 同 `thumbnailPath` 必須完全對應該 ID；資料庫唔會接受任意路徑。
+- `createdBy` 必須係目前登入者 `auth.uid`；日期、尺寸、文字長度同額外欄位亦由 Rules 驗證。
+- 相簿 metadata 唔係日常照顧紀錄，唔會混入 `/kayla/records`。
+
+## 5. 設定私人 Firebase Storage 相簿
+
+### 5.1 確認 bucket 名稱
+
+呢個 project 新建立嘅 default bucket 正確名稱係：
+
+```text
+elegant-moment-284814.firebasestorage.app
+```
+
+`.env` 亦應該使用：
+
+```text
+VITE_FIREBASE_STORAGE_BUCKET=elegant-moment-284814.firebasestorage.app
+```
+
+唔好改成舊式 `elegant-moment-284814.appspot.com`；新 default bucket 名稱唔會因為加入 Blaze plan 而改變。
+
+### 5.2 合併並發布 Storage Rules
+
+`storage.rules.example` 係可以提交到 GitHub 嘅 placeholder 範本。佢只針對 `/kayla/photos/{fileName}`，規則效果如下：
+
+- 只有兩個白名單 Firebase Authentication 帳戶先可以 `get`、`create` 同 `delete`。
+- 禁止列出成個 folder（`list`）同覆寫現有 object（`update`）。網站只會經受保護嘅 Realtime Database metadata 得知準確 path，再逐張 `get`。
+- 只接受 `bb_*.jpg`、MIME type `image/jpeg`、每個 object 最多 `2 MiB`。
+- 原圖同縮圖都係獨立 JPEG object；兩者使用同一組限制。
+
+正式發布前：
+
+1. 到 `Firebase Console → Storage → Rules`，先複製並安全保存現有完整 Storage Rules。
+2. 將 `storage.rules.example` 嘅 `match /kayla/photos/{fileName}` 同 `isKaylaFamily()` 合併入現有 rules，唔好刪走其他仍然使用緊嘅 `match`。
+3. 喺本機副本 `storage.rules.local` 將兩個 `REPLACE_...` placeholder 換成完整登入 ID；呢個檔案已被 `.gitignore` 排除。
+4. 喺 Rules Playground 測試兩個家庭帳戶、其他帳戶同未登入狀態，再 Publish。
+
+唔好將兩個真實登入 ID、密碼或 service account key 寫入 `storage.rules.example` 或 commit。隨機檔名只係減少猜測風險，真正私隱保障仍然係 Authentication 加 Storage Rules。
+
+如果目前仍有 `match /{allPaths=**}` 並對家庭帳戶 `allow read, write` 嘅舊規則，必須移除或收窄；Firebase Storage 多條符合嘅 `allow` 係「任何一條成功就放行」，所以另外加一條 `allow list, update: if false` 唔會抵消舊嘅廣泛放行規則。
+
+### 5.3 設定及驗證 CORS
+
+網站用 Firebase SDK `getBlob()` 直接讀取私人 JPEG，再建立短暫嘅 browser object URL；呢個方法每次讀取都會經 Storage Rules。由 GitHub Pages 或本機開發／預覽網址直接讀 blob 前，bucket 要容許指定 origin 嘅 `GET` CORS。`storage.cors.example.json` 只包括正式網站、Vite dev (`5173`) 同 preview (`4173`) 嘅本機 origin，冇使用 `"*"`。
+
+安裝及登入 Google Cloud CLI 後套用：
+
+```powershell
+gcloud storage buckets update gs://elegant-moment-284814.firebasestorage.app --cors-file=storage.cors.example.json
+```
+
+再讀回設定確認：
+
+```powershell
+gcloud storage buckets describe gs://elegant-moment-284814.firebasestorage.app --format="default(cors_config)"
+```
+
+如果日後正式網站搬去另一個 domain，必須先將準確 origin 加入 CORS，再重新套用。CORS 唔係登入授權，亦唔應該用 `"*"` 代替 Storage Rules；佢只係容許指定網頁 origin 喺瀏覽器發出跨來源讀取。
+
+### 5.4 相片下載私隱
+
+KAYLA 唔會呼叫 `getDownloadURL()`，亦唔會將帶長期 download token 嘅 URL 存入 Realtime Database。網站只保存 Storage path，登入後以 `getBlob()` 讀取，並喺離開畫面或登出時撤銷短暫 object URL。唔好手動將 Firebase Console 產生嘅下載連結貼入 database、GitHub、訊息或公開頁面。
+
+### 5.5 Blaze、Always Free 同預算
+
+由 2026 年 2 月 3 日開始，Cloud Storage for Firebase project 必須使用按量付費 Blaze plan 先可以維持 bucket 存取；Blaze 仍然可以享用無費用額度，但唔等於設定咗硬性「永遠零收費」。呢個 bucket 位於 `us-east1`，符合 Google Cloud Storage Always Free 指定地區，目前包括每月 `5 GB-month` Standard storage，另有操作及 data transfer 免費限額；超額、其他服務或日後價格變更仍可能產生費用。
+
+建議喺 Google Cloud Billing 設定細額 budget alerts，並定期查看 Firebase Storage Usage／Google Cloud Billing。Budget alert 係通知，唔係自動停機上限。詳情以 [Firebase Storage billing FAQ](https://firebase.google.com/docs/storage/faqs-storage-changes-announced-sept-2024) 同 [Google Cloud Storage pricing](https://cloud.google.com/storage/pricing) 最新內容為準。
+
+## 6. 建議測試清單
 
 部署前至少確認：
 
@@ -113,9 +212,15 @@ React 程式建立紀錄時必須跟呢個格式，否則 Firebase 會回覆 `PE
 - 新增紀錄後，相應快捷選項出現；刪除快捷選項後，舊紀錄仍然存在。
 - Family 修改另一位使用者嘅 record：拒絕。
 - Owner 修改或刪除任何 record：成功。
+- Owner 同 Family 新增合規 `/kayla/photos/{id}` metadata：成功；其他帳戶及未登入：拒絕。
+- metadata path 唔符合 `bb_<相同 ID>.jpg`，或嘗試加入未知欄位：拒絕。
+- Owner 同 Family 上傳／讀取／刪除合規 JPEG：成功。
+- 上傳非 JPEG、超過 2 MiB、錯誤檔名、覆寫現有 object 或列出 `/kayla/photos`：拒絕。
+- 登出後，已載入相片唔會繼續顯示；直接嘗試取得私人 object：拒絕。
+- GitHub Pages 同列入 CORS 嘅本機 dev／preview origin 可以載入相片；未加入 CORS 嘅其他 origin 唔可以由 browser script 直接讀 blob。
 - `/e` 原有指定帳戶仍然可以正常讀寫。
 
-## 6. Firebase CLI／本機 Emulator（可選）
+## 7. Firebase CLI／本機 Emulator（可選）
 
 `firebase.json` 只設定 Realtime Database rules 同本機 emulator，刻意冇 Firebase Hosting 設定，因為網站會部署到 GitHub Pages。佢只會讀取被 Git 忽略嘅 `database.rules.local.json`，唔會直接部署公開 placeholder 範本；本機完整檔案未準備好時，CLI 會安全地停止。
 
@@ -139,7 +244,9 @@ firebase deploy --only database
 
 如果你選擇直接喺 Firebase Console 編輯及 Publish 合併後嘅規則，就唔需要建立 `database.rules.local.json` 或使用 CLI。
 
-## 7. GitHub Pages 唔會儲存私人紀錄
+Storage Rules 目前以 `storage.rules.example` 提供，正式帳戶 ID 只應放入被忽略嘅 `storage.rules.local`。如使用 Firebase CLI 部署 Storage Rules，必須先喺自己本機 Firebase 設定將 `storage.rules.local` 指定為 Storage rules file；否則請直接喺 Firebase Console 合併及 Publish，唔好部署仍有 placeholder 嘅 example。
+
+## 8. GitHub Pages 唔會儲存私人紀錄
 
 GitHub Pages 只提供 React 編譯後嘅 HTML、CSS、JavaScript 同公開育兒指南。BB 真實紀錄由登入後嘅 Firebase SDK讀取，唔可以把以下內容放入 `public`、`src` 靜態資料或 GitHub：
 
@@ -147,6 +254,6 @@ GitHub Pages 只提供 React 編譯後嘅 HTML、CSS、JavaScript 同公開育�
 - 登入密碼
 - Firebase service-account JSON／private key
 - Database 匯出備份
-- 私人圖片或無權限保護嘅下載網址
+- 私人圖片、相片 metadata 或無權限保護嘅下載網址
 
-日後如果加入圖片，圖片應存入 Firebase Storage，並另外設定 Storage Security Rules；Realtime Database Rules 唔會自動保護 Storage。
+相片只應存入上述私人 Firebase Storage path，並同時由 Storage Security Rules、Realtime Database Rules 及登入狀態保護。GitHub Pages 內嘅相簿 icon 等公開介面素材唔屬於 BB 私人相片。

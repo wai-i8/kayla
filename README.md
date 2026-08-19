@@ -10,6 +10,7 @@
 - 餵奶、尿片、體溫、睡眠、藥物、體重及備註紀錄
 - 記錄欄位會自動學習常用數值，兩個家庭帳戶可共用及管理快捷選項
 - 今日摘要及家庭紀錄時間線
+- 私人家庭相簿：瀏覽器先壓縮成 JPEG，再以 Firebase Storage 儲存原圖及縮圖
 - `raw.pdf` 46 頁全文搜尋及主題導覽
 - 手機底部操作列及響應式電腦版
 - 本機示範模式，不會接觸正式 Firebase
@@ -35,9 +36,9 @@ http://127.0.0.1:5173/?demo=1
 
 ## Firebase
 
-App 已連接現有 Firebase project `elegant-moment-284814`，私人資料固定寫入 `/kayla`，不會觸碰 pronunciation 使用的 `/e`。
+App 已連接現有 Firebase project `elegant-moment-284814`，私人資料固定寫入 `/kayla`，不會觸碰 pronunciation 使用的 `/e`。相片檔案使用私人 Firebase Storage bucket `elegant-moment-284814.firebasestorage.app`；Realtime Database 只保存相片 metadata 同 Storage path，唔保存圖片本身或永久下載網址。
 
-兩個家庭登入 ID 只保存於被 Git 忽略嘅本機設定，唔會公開到 repository。正式使用前必須閱讀 [FIREBASE_SETUP.md](./FIREBASE_SETUP.md)，填入本機 ID 並將 `/kayla` 節點合併到現有 Realtime Database Rules。不要直接部署整份範本規則，否則可能令舊 `/e` App 失去權限。
+兩個家庭登入 ID 只保存於被 Git 忽略嘅本機設定，唔會公開到 repository。正式使用前必須閱讀 [FIREBASE_SETUP.md](./FIREBASE_SETUP.md)，填入本機 ID，將 `/kayla`（包括新版 `/kayla/photos`）合併到現有 Realtime Database Rules，亦要合併及發布私人 Storage Rules 同設定 CORS。不要直接部署整份範本規則，否則可能令舊 `/e` App 失去權限。
 
 密碼、service-account JSON 及管理員金鑰不可放入 GitHub。
 

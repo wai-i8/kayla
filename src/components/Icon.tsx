@@ -24,7 +24,9 @@ export type IconName =
   | 'check'
   | 'user'
   | 'close'
-  | 'edit';
+  | 'edit'
+  | 'camera'
+  | 'image';
 
 interface IconProps extends SVGProps<SVGSVGElement> {
   name: IconName;
@@ -70,6 +72,8 @@ export function Icon({ name, size = 22, ...props }: IconProps) {
     user: <><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>,
     close: <path d="M18 6 6 18M6 6l12 12"/>,
     edit: <><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></>,
+    camera: <><path d="M14.5 5 13 3h-2L9.5 5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12.5" r="4"/></>,
+    image: <><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m4 17 4.5-4 3.5 3 2.5-2 5.5 5"/></>,
   };
 
   return <svg {...common}>{paths[name]}</svg>;

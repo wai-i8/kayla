@@ -50,6 +50,33 @@ const demoRecords: BabyRecord[] = [
     createdByLabel: '你',
     details: { valueCelsius: 36.8, measurementSite: '腋下' },
   },
+  {
+    id: 'demo-sleep-1',
+    type: 'sleep',
+    occurredAt: now - 7.25 * 3_600_000,
+    createdAt: now - 7.2 * 3_600_000,
+    createdBy: 'demo-family',
+    createdByLabel: '屋企人',
+    details: { sleepMinutes: 80 },
+  },
+  {
+    id: 'demo-medicine-1',
+    type: 'medicine',
+    occurredAt: now - 22 * 3_600_000,
+    createdAt: now - 21.9 * 3_600_000,
+    createdBy: 'demo-owner',
+    createdByLabel: '你',
+    details: { medicineName: '維他命 D', doseMl: 0.5 },
+  },
+  {
+    id: 'demo-weight-1',
+    type: 'weight',
+    occurredAt: now - 3 * 86_400_000,
+    createdAt: now - 3 * 86_400_000 + 60_000,
+    createdBy: 'demo-owner',
+    createdByLabel: '你',
+    details: { weightKg: 3.54 },
+  },
 ];
 
 function withoutUndefined<T>(value: T): T {

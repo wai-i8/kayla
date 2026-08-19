@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isKaylaFamily() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && (
+          request.auth.token.email == 'REPLACE_OWNER_LOGIN_ID@example.invalid'
+          || request.auth.token.email == 'REPLACE_FAMILY_LOGIN_ID@example.invalid'
+        );
+    }
+
+    match /kayla/photos/{fileName} {
+      allow get: if isKaylaFamily();
+
+      allow create: if isKaylaFamily()
+        && fileName.matches('^bb_[A-Za-z0-9_-]+[.]jpg$')
+        && request.resource.contentType == 'image/jpeg'
+        && request.resource.size > 0
+        && request.resource.size <= 2 * 1024 * 1024;
+
+      allow delete: if isKaylaFamily();
+      allow list, update: if false;
+    }
+  }
+}

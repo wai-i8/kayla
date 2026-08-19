@@ -9,6 +9,7 @@ interface TodayPageProps {
   onAdd: () => void;
   onOpenRecords: (filter: RecordFilter) => void;
   onOpenGuide: (sectionId?: string) => void;
+  onOpenPhotos: () => void;
   onOpenSettings: () => void;
 }
 
@@ -38,10 +39,31 @@ function summariseDay(records: BabyRecord[]) {
     dirtyNappies: nappies.filter((record) => record.details.nappyType !== 'wet'),
     lastFeed: feeds[0],
     lastTemperature: ordered.find((record) => record.type === 'temperature'),
+    lastSleep: ordered.find((record) => record.type === 'sleep'),
+    lastMedicine: ordered.find((record) => record.type === 'medicine'),
+    lastWeight: ordered.find((record) => record.type === 'weight'),
   };
 }
 
-export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenSettings }: TodayPageProps) {
+function formatRecentTime(record: BabyRecord | undefined, now: number) {
+  if (!record) return '未有紀錄';
+  const recordDate = dateInputValue(record.occurredAt);
+  const todayDate = dateInputValue(startOfUkDay(0, now));
+  const yesterdayDate = dateInputValue(startOfUkDay(-1, now));
+  if (recordDate === todayDate) return `今日 ${formatTime(record.occurredAt)}`;
+  if (recordDate === yesterdayDate) return `昨日 ${formatTime(record.occurredAt)}`;
+  return `${new Intl.DateTimeFormat('zh-HK', { timeZone: 'Europe/London', month: 'numeric', day: 'numeric' }).format(record.occurredAt)} ${formatTime(record.occurredAt)}`;
+}
+
+function formatSleep(minutes: number | undefined) {
+  if (minutes === undefined) return '—';
+  if (minutes < 60) return `${minutes}分`;
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return remainder ? `${hours}時${remainder}分` : `${hours}小時`;
+}
+
+export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onOpenSettings }: TodayPageProps) {
   const now = Date.now();
   const yesterdayStart = startOfUkDay(-1, now);
   const yesterdayDate = dateInputValue(yesterdayStart);
@@ -49,6 +71,7 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
   const tomorrowStart = startOfUkDay(1, now);
   const today = summariseDay(records.filter((record) => record.occurredAt >= todayStart && record.occurredAt < tomorrowStart));
   const yesterday = summariseDay(records.filter((record) => record.occurredAt >= yesterdayStart && record.occurredAt < todayStart));
+  const latest = summariseDay(records);
   const ageDays = ageInDays(profile?.dateOfBirth);
   const guide = ageTimelineSections[currentGuideIndex(ageDays)];
   const hour = ukHour(now);
@@ -61,7 +84,10 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
           <p className="eyebrow">{formatLongDate(now)}</p>
           <h1>{greeting}，{profile?.name || '屋企人'}</h1>
         </div>
-        <button className="avatar-button" onClick={onOpenSettings} aria-label="開啟設定"><Icon name="user" /></button>
+        <div className="mobile-header-actions">
+          <button className="album-button" onClick={onOpenPhotos} aria-label="開啟私人相簿" data-testid="mobile-open-photos"><img src={`${import.meta.env.BASE_URL}kayla-album.webp`} alt="" /></button>
+          <button className="avatar-button" onClick={onOpenSettings} aria-label="開啟設定"><Icon name="user" /></button>
+        </div>
       </header>
 
       {!profile ? (
@@ -95,11 +121,28 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
               <strong>{today.nappies.length}<small> 塊</small></strong>
               <span className="stat-detail">{today.wetNappies.length} 濕 · {today.dirtyNappies.length} 便</span>
             </button>
-            <button type="button" className="stat-card wide-mobile" data-testid="open-records-temperature" aria-label={`查看體溫紀錄；今日最近體溫 ${today.lastTemperature?.details.valueCelsius?.toFixed(1) || '未有紀錄'}${today.lastTemperature ? ' 度' : ''}；${today.lastTemperature?.details.measurementSite || '未有量度位置'}`} onClick={() => onOpenRecords({ type: 'temperature', date: null })}>
-              <span className="stat-top"><span className="record-icon tone-rose"><Icon name="temperature" size={19} /></span><span>最近體溫</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
-              <strong>{today.lastTemperature?.details.valueCelsius?.toFixed(1) || '—'}<small>{today.lastTemperature ? ' °C' : ''}</small></strong>
-              <span className="stat-detail">{today.lastTemperature?.details.measurementSite || '未有紀錄'}</span>
-            </button>
+            <div className="recent-stat-grid" role="group" data-testid="recent-records" aria-label="最近體溫、睡眠、藥物及體重紀錄">
+              <button type="button" className="recent-stat-card" data-testid="open-records-temperature" aria-label={`查看體溫紀錄；最近 ${latest.lastTemperature?.details.valueCelsius?.toFixed(1) || '未有紀錄'}${latest.lastTemperature ? ' 度' : ''}；${formatRecentTime(latest.lastTemperature, now)}`} onClick={() => onOpenRecords({ type: 'temperature', date: null })}>
+                <span className="record-icon tone-rose" aria-hidden="true"><Icon name="temperature" size={18} /></span>
+                <strong>{latest.lastTemperature?.details.valueCelsius?.toFixed(1) || '—'}<small>{latest.lastTemperature ? '°C' : ''}</small></strong>
+                <span>{formatRecentTime(latest.lastTemperature, now)}</span>
+              </button>
+              <button type="button" className="recent-stat-card" data-testid="open-records-sleep" aria-label={`查看睡眠紀錄；最近 ${latest.lastSleep ? formatSleep(latest.lastSleep.details.sleepMinutes) : '未有紀錄'}；${formatRecentTime(latest.lastSleep, now)}`} onClick={() => onOpenRecords({ type: 'sleep', date: null })}>
+                <span className="record-icon tone-blue" aria-hidden="true"><Icon name="moon" size={18} /></span>
+                <strong>{formatSleep(latest.lastSleep?.details.sleepMinutes)}</strong>
+                <span>{formatRecentTime(latest.lastSleep, now)}</span>
+              </button>
+              <button type="button" className="recent-stat-card" data-testid="open-records-medicine" aria-label={`查看藥物紀錄；最近 ${latest.lastMedicine?.details.medicineName || '未有紀錄'}${latest.lastMedicine?.details.doseMl !== undefined ? ` ${latest.lastMedicine.details.doseMl} ml` : ''}；${formatRecentTime(latest.lastMedicine, now)}`} onClick={() => onOpenRecords({ type: 'medicine', date: null })}>
+                <span className="record-icon tone-gold" aria-hidden="true"><Icon name="medicine" size={18} /></span>
+                <strong title={latest.lastMedicine?.details.medicineName}>{latest.lastMedicine?.details.medicineName || '—'}</strong>
+                <span>{latest.lastMedicine?.details.doseMl !== undefined ? `${latest.lastMedicine.details.doseMl} ml · ` : ''}{formatRecentTime(latest.lastMedicine, now)}</span>
+              </button>
+              <button type="button" className="recent-stat-card" data-testid="open-records-weight" aria-label={`查看體重紀錄；最近 ${latest.lastWeight?.details.weightKg?.toFixed(2) || '未有紀錄'}${latest.lastWeight ? ' 公斤' : ''}；${formatRecentTime(latest.lastWeight, now)}`} onClick={() => onOpenRecords({ type: 'weight', date: null })}>
+                <span className="record-icon tone-sage" aria-hidden="true"><Icon name="weight" size={18} /></span>
+                <strong>{latest.lastWeight?.details.weightKg?.toFixed(2) || '—'}<small>{latest.lastWeight ? 'kg' : ''}</small></strong>
+                <span>{formatRecentTime(latest.lastWeight, now)}</span>
+              </button>
+            </div>
           </section>
 
           <section className="guide-feature">

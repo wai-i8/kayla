@@ -1,4 +1,4 @@
-export type ViewKey = 'today' | 'records' | 'guide' | 'calendar' | 'settings';
+export type ViewKey = 'today' | 'records' | 'guide' | 'calendar' | 'photos' | 'settings';
 
 export type RecordType = 'feed' | 'nappy' | 'temperature' | 'sleep' | 'medicine' | 'weight' | 'note';
 
@@ -83,6 +83,29 @@ export interface NewRecordInput {
   type: RecordType;
   occurredAt: number;
   details: BabyRecord['details'];
+}
+
+export interface BabyPhoto {
+  id: string;
+  storagePath: string;
+  thumbnailPath: string;
+  capturedAt: number;
+  createdAt: number;
+  createdBy: string;
+  createdByLabel?: string;
+  caption?: string;
+  width: number;
+  height: number;
+  /** Demo-mode object URLs are never written to Firebase. */
+  demoUrl?: string;
+  demoThumbnailUrl?: string;
+}
+
+export interface NewPhotoInput {
+  file: File;
+  capturedAt: number;
+  caption?: string;
+  signal?: AbortSignal;
 }
 
 export interface AuthUser {
