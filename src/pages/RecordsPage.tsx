@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { BabyRecord, RecordFilter, RecordType } from '../types';
-import { dateInputValue, formatLongDate, inputsToTimestamp } from '../lib/date';
+import { dateInputValue, formatLongDate, inputsToTimestamp, startOfUkDay } from '../lib/date';
 import { Icon } from '../components/Icon';
 import { RecordCard } from '../components/RecordCard';
 import { useDialogFocus } from '../hooks/useDialogFocus';
@@ -16,7 +16,7 @@ interface RecordsPageProps {
 }
 
 const filters: Array<{ value: 'all' | RecordType; label: string }> = [
-  { value: 'all', label: '全部' },
+  { value: 'all', label: '所有類型' },
   { value: 'feed', label: '餵奶' },
   { value: 'nappy', label: '尿片' },
   { value: 'temperature', label: '體溫' },
@@ -37,7 +37,11 @@ export function RecordsPage({ records, filter, onFilterChange, currentUserId, ca
   };
   const deleteDialogRef = useDialogFocus(Boolean(deleting), closeDeleteDialog, !deleteBusy);
 
-  const filtered = filter === 'all' ? records : records.filter((record) => record.type === filter);
+  const filtered = records.filter((record) => {
+    const matchesType = filter.type === 'all' || record.type === filter.type;
+    const matchesDate = filter.date === null || dateInputValue(record.occurredAt) === filter.date;
+    return matchesType && matchesDate;
+  });
   const grouped = useMemo(() => {
     const groups = new Map<string, BabyRecord[]>();
     filtered.forEach((record) => {
@@ -46,6 +50,11 @@ export function RecordsPage({ records, filter, onFilterChange, currentUserId, ca
     });
     return [...groups.entries()];
   }, [filtered]);
+  const yesterdayDate = dateInputValue(startOfUkDay(-1));
+  const activeDateLabel = filter.date
+    ? `${filter.date === yesterdayDate ? '昨日 · ' : ''}${formatLongDate(inputsToTimestamp(filter.date, '12:00'))}`
+    : '';
+  const hasActiveFilter = filter.type !== 'all' || filter.date !== null;
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -68,16 +77,23 @@ export function RecordsPage({ records, filter, onFilterChange, currentUserId, ca
       </header>
 
       <div className="filter-scroller" role="group" aria-label="篩選紀錄">
-        {filters.map((item) => <button key={item.value} type="button" data-testid={`records-filter-${item.value}`} className={filter === item.value ? 'active' : ''} aria-pressed={filter === item.value} onClick={() => onFilterChange(item.value)}>{item.label}</button>)}
+        {filters.map((item) => <button key={item.value} type="button" data-testid={`records-filter-${item.value}`} className={filter.type === item.value ? 'active' : ''} aria-pressed={filter.type === item.value} onClick={() => onFilterChange({ ...filter, type: item.value })}>{item.label}</button>)}
       </div>
 
+      {filter.date && (
+        <div className="active-date-filter" data-testid="records-date-filter" data-date={filter.date} aria-label="已套用日期篩選">
+          <span role="status"><Icon name="calendar" size={17} /><span><small>只顯示</small><strong>{activeDateLabel}</strong></span></span>
+          <button type="button" onClick={() => onFilterChange({ ...filter, date: null })}>清除日期</button>
+        </div>
+      )}
+
       {grouped.length ? grouped.map(([date, items]) => (
-        <section className="record-day" key={date}>
-          <div className="day-heading"><h2>{date === dateInputValue() ? '今日' : formatLongDate(inputsToTimestamp(date, '12:00'))}</h2><span>{items.length} 項</span></div>
+        <section className="record-day" key={date} data-date={date}>
+          <div className="day-heading"><h2>{date === dateInputValue() ? '今日' : date === yesterdayDate ? '昨日' : formatLongDate(inputsToTimestamp(date, '12:00'))}</h2><span>{items.length} 項</span></div>
           <div className="record-list">{items.map((record) => <RecordCard key={record.id} record={record} onDelete={canManageAll || record.createdBy === currentUserId ? (item) => { setDeleteError(''); setDeleting(item); } : undefined} />)}</div>
         </section>
       )) : (
-        <div className="large-empty"><span className="large-empty-icon"><Icon name="records" size={30} /></span><h2>未有相關紀錄</h2><p>新增紀錄後，所有家庭成員都可以喺呢度睇到。</p><button className="primary-button" onClick={onAdd}>記低第一項</button></div>
+        <div className="large-empty"><span className="large-empty-icon"><Icon name="records" size={30} /></span><h2>未有相關紀錄</h2><p>{hasActiveFilter ? '呢個篩選暫時未有紀錄，可以清除篩選再睇全部。' : '新增紀錄後，所有家庭成員都可以喺呢度睇到。'}</p><button className="primary-button" onClick={hasActiveFilter ? () => onFilterChange({ type: 'all', date: null }) : onAdd}>{hasActiveFilter ? '清除篩選' : '記低第一項'}</button></div>
       )}
 
       {deleting && (

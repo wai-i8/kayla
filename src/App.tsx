@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { useKaylaData } from './hooks/useKaylaData';
 import { useOwnerRole } from './hooks/useOwnerRole';
-import type { RecordFilter, RecordType, ViewKey } from './types';
+import type { RecordFilter, ViewKey } from './types';
 import { LoginScreen } from './components/LoginScreen';
 import { BottomNavigation, SideNavigation } from './components/Navigation';
 import { QuickAddSheet } from './components/QuickAddSheet';
@@ -25,18 +25,18 @@ export default function App() {
     import.meta.env.DEV && allowedViews.includes(previewView as ViewKey) ? (previewView as ViewKey) : 'today',
   );
   const [quickAddOpen, setQuickAddOpen] = useState(import.meta.env.DEV && previewParams.has('add'));
-  const [recordsFilter, setRecordsFilter] = useState<RecordFilter>('all');
+  const [recordsFilter, setRecordsFilter] = useState<RecordFilter>({ type: 'all', date: null });
   const [guideFocus, setGuideFocus] = useState<string | null>(
     import.meta.env.DEV ? previewParams.get('section') : null,
   );
 
   const changeView = (nextView: ViewKey) => {
-    if (nextView === 'records') setRecordsFilter('all');
+    if (nextView === 'records') setRecordsFilter({ type: 'all', date: null });
     setView(nextView);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const openFilteredRecords = (filter: Extract<RecordType, 'feed' | 'nappy' | 'temperature'>) => {
+  const openFilteredRecords = (filter: RecordFilter) => {
     setRecordsFilter(filter);
     setView('records');
     window.scrollTo({ top: 0, behavior: 'smooth' });
