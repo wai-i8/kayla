@@ -66,7 +66,7 @@ const demoRecords: BabyRecord[] = [
     createdAt: now - 21.9 * 3_600_000,
     createdBy: 'demo-owner',
     createdByLabel: '你',
-    details: { medicineName: '維他命 D', doseMl: 0.5 },
+    details: { medicineName: '維他命 D', concentration: '400 IU / 1 滴', doseMl: 1 },
   },
   {
     id: 'demo-weight-1',

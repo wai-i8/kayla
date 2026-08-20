@@ -4,6 +4,7 @@ import type {
   QuickOptionField,
   QuickOptionValue,
 } from '../types';
+import { formatMedicineConcentration } from './medicine';
 
 export const quickOptionFields: QuickOptionField[] = [
   'feedDurationMinutes',
@@ -31,12 +32,18 @@ export function isQuickOptionField(value: string): value is QuickOptionField {
 export function isMedicineQuickValue(value: unknown): value is MedicineQuickValue {
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Partial<MedicineQuickValue>;
-  return (
+  const validName = (
     typeof candidate.medicineName === 'string'
     && candidate.medicineName.trim().length > 0
     && candidate.medicineName.length <= 120
-    && (candidate.concentration === undefined || typeof candidate.concentration === 'string')
-    && (candidate.concentration === undefined || candidate.concentration.length <= 120)
+  );
+  if (!validName) return false;
+
+  return (
+    (candidate.concentration === undefined || (
+      typeof candidate.concentration === 'string'
+      && candidate.concentration.length <= 120
+    ))
     && typeof candidate.doseMl === 'number'
     && Number.isFinite(candidate.doseMl)
     && candidate.doseMl > 0
@@ -108,7 +115,7 @@ function normalizedValue(value: QuickOptionValue) {
   if (typeof value === 'string') return normalizedText(value);
   return [
     normalizedText(value.medicineName),
-    normalizedText(value.concentration || ''),
+    normalizedText(formatMedicineConcentration(value)),
     String(value.doseMl),
   ].join('|');
 }

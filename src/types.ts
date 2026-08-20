@@ -25,9 +25,14 @@ export type QuickOptionField =
   | 'weightNote'
   | 'noteContent';
 
+export type MedicineActiveUnit = 'mg' | 'µg' | 'IU';
+
+export type MedicineAdministrationUnit = 'mL' | '滴';
+
 export interface MedicineQuickValue {
   medicineName: string;
   concentration?: string;
+  /** Legacy property name retained for Firebase Rules compatibility; unit is read from concentration. */
   doseMl: number;
 }
 
@@ -73,6 +78,7 @@ export interface BabyRecord {
     sleepMinutes?: number;
     medicineName?: string;
     concentration?: string;
+    /** Legacy property name retained for existing data and Firebase Rules compatibility. */
     doseMl?: number;
     weightKg?: number;
     note?: string;

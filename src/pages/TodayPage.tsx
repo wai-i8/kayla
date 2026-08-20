@@ -2,6 +2,7 @@ import { ageInDays, dateInputValue, describeAge, formatLongDate, formatTime, sta
 import { ageTimelineSections } from '../data/guideSections';
 import type { BabyProfile, BabyRecord, RecordFilter } from '../types';
 import { Icon } from '../components/Icon';
+import { formatMedicineAdministration } from '../lib/medicine';
 
 interface TodayPageProps {
   profile: BabyProfile | null;
@@ -73,6 +74,9 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
   const today = summariseDay(records.filter((record) => record.occurredAt >= todayStart && record.occurredAt < tomorrowStart));
   const yesterday = summariseDay(records.filter((record) => record.occurredAt >= yesterdayStart && record.occurredAt < todayStart));
   const latest = summariseDay(records);
+  const latestMedicineAdministration = latest.lastMedicine
+    ? formatMedicineAdministration(latest.lastMedicine.details)
+    : '';
   const ageDays = ageInDays(profile?.dateOfBirth);
   const guide = ageTimelineSections[currentGuideIndex(ageDays)];
   const hour = ukHour(now);
@@ -97,7 +101,7 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
           <div className="empty-illustration"><Icon name="user" size={34} /></div>
           <p className="eyebrow">第一步</p>
           <h2>先建立 BB 基本資料</h2>
-          <p>設定出生日期後，首頁就會自動顯示日齡、今週指南同疫苗日期。</p>
+          <p>設定出生日期後，首頁就會自動顯示日齡、本週指南同疫苗日期。</p>
           <button className="primary-button" onClick={onOpenSettings}>開始設定</button>
         </section>
       ) : (
@@ -134,10 +138,10 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
                 <strong>{formatSleep(latest.lastSleep?.details.sleepMinutes)}</strong>
                 <span>{formatRecentTime(latest.lastSleep, now)}</span>
               </button>
-              <button type="button" className="recent-stat-card" data-testid="open-records-medicine" aria-label={`查看藥物紀錄；最近 ${latest.lastMedicine?.details.medicineName || '未有紀錄'}${latest.lastMedicine?.details.doseMl !== undefined ? ` ${latest.lastMedicine.details.doseMl} ml` : ''}；${formatRecentTime(latest.lastMedicine, now)}`} onClick={() => onOpenRecords({ type: 'medicine', date: null })}>
+              <button type="button" className="recent-stat-card" data-testid="open-records-medicine" aria-label={`查看藥物紀錄；最近 ${latest.lastMedicine?.details.medicineName || '未有紀錄'}${latestMedicineAdministration ? ` ${latestMedicineAdministration}` : ''}；${formatRecentTime(latest.lastMedicine, now)}`} onClick={() => onOpenRecords({ type: 'medicine', date: null })}>
                 <span className="record-icon tone-gold" aria-hidden="true"><Icon name="medicine" size={18} /></span>
                 <strong title={latest.lastMedicine?.details.medicineName}>{latest.lastMedicine?.details.medicineName || '—'}</strong>
-                <span>{latest.lastMedicine?.details.doseMl !== undefined ? `${latest.lastMedicine.details.doseMl} ml · ` : ''}{formatRecentTime(latest.lastMedicine, now)}</span>
+                <span>{latestMedicineAdministration ? `${latestMedicineAdministration} · ` : ''}{formatRecentTime(latest.lastMedicine, now)}</span>
               </button>
               <button type="button" className="recent-stat-card" data-testid="open-records-weight" aria-label={`查看體重紀錄；最近 ${latest.lastWeight?.details.weightKg?.toFixed(2) || '未有紀錄'}${latest.lastWeight ? ' 公斤' : ''}；${formatRecentTime(latest.lastWeight, now)}`} onClick={() => onOpenRecords({ type: 'weight', date: null })}>
                 <span className="record-icon tone-sage" aria-hidden="true"><Icon name="weight" size={18} /></span>
@@ -148,11 +152,11 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
           </section>
 
           <section className="guide-feature">
-            <div className="guide-feature-badge"><Icon name="book" size={18} /> 今週指南</div>
+            <div className="guide-feature-badge"><Icon name="book" size={18} /> 本週指南</div>
             <p className="eyebrow">{guide.ageLabel}</p>
             <h2>{guide.title}</h2>
             <p>根據《初生 BB 由第 1 日到半歲》2026–27 英國版整理。</p>
-            <button onClick={() => onOpenGuide(guide.id)}>睇今週重點 <Icon name="chevron" size={17} /></button>
+            <button onClick={() => onOpenGuide(guide.id)}>睇本週重點 <Icon name="chevron" size={17} /></button>
           </section>
 
           <section className="section-block yesterday-block" aria-labelledby="yesterday-heading" data-testid="yesterday-summary">

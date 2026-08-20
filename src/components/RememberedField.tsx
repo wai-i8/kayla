@@ -1,5 +1,6 @@
 import { useId, useMemo, useState, type ReactNode } from 'react';
 import type { QuickOption, QuickOptionField, QuickOptionValue } from '../types';
+import { formatMedicineConcentration } from '../lib/medicine';
 import { Icon } from './Icon';
 
 interface RememberedFieldProps {
@@ -19,7 +20,7 @@ function valuesMatch(current: QuickOptionValue | undefined, option: QuickOptionV
   if (typeof current === 'object' || typeof option === 'object') {
     if (typeof current !== 'object' || typeof option !== 'object') return false;
     return current.medicineName.trim() === option.medicineName.trim()
-      && (current.concentration || '').trim() === (option.concentration || '').trim()
+      && formatMedicineConcentration(current) === formatMedicineConcentration(option)
       && current.doseMl === option.doseMl;
   }
   if (typeof current === 'number' || typeof option === 'number') {

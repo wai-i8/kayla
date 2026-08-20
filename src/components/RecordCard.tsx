@@ -1,5 +1,11 @@
 import type { BabyRecord, RecordType } from '../types';
 import { formatTime } from '../lib/date';
+import {
+  calculateStoredMedicineActiveAmount,
+  formatMedicineAdministration,
+  formatMedicineConcentration,
+  formatMedicineNumber,
+} from '../lib/medicine';
 import { Icon, type IconName } from './Icon';
 
 const meta: Record<RecordType, { label: string; icon: IconName; tone: string }> = {
@@ -24,8 +30,11 @@ export function recordTitle(record: BabyRecord) {
     return details.nappyType === 'both' ? '濕片＋便便' : details.nappyType === 'dirty' ? '便便' : '濕片';
   }
   if (record.type === 'temperature') return `${details.valueCelsius?.toFixed(1)}°C · ${details.measurementSite || '腋下'}`;
-  if (record.type === 'sleep') return `睡咗 ${details.sleepMinutes || 0} 分鐘`;
-  if (record.type === 'medicine') return `${details.medicineName || '藥物'} ${details.doseMl || ''}${details.doseMl ? ' ml' : ''}`;
+  if (record.type === 'sleep') return `瞓咗 ${details.sleepMinutes || 0} 分鐘`;
+  if (record.type === 'medicine') {
+    const administration = formatMedicineAdministration(details);
+    return [details.medicineName || '藥物', administration].filter(Boolean).join(' · ');
+  }
   if (record.type === 'weight') return `${details.weightKg?.toFixed(2)} kg`;
   return details.note || '一般備註';
 }
@@ -38,6 +47,18 @@ interface RecordCardProps {
 
 export function RecordCard({ record, compact, onDelete }: RecordCardProps) {
   const item = meta[record.type] || meta.note;
+  const medicineConcentration = record.type === 'medicine'
+    ? formatMedicineConcentration(record.details)
+    : '';
+  const medicineActiveAmount = record.type === 'medicine'
+    ? calculateStoredMedicineActiveAmount(record.details)
+    : null;
+  const medicineDetail = [
+    medicineConcentration,
+    medicineActiveAmount
+      ? `實際劑量：${formatMedicineNumber(medicineActiveAmount.amount)} ${medicineActiveAmount.unit}`
+      : '',
+  ].filter(Boolean).join(' · ');
   return (
     <article className={`record-card ${compact ? 'compact' : ''}`}>
       <div className={`record-icon tone-${item.tone}`}><Icon name={item.icon} size={20} /></div>
@@ -46,6 +67,7 @@ export function RecordCard({ record, compact, onDelete }: RecordCardProps) {
           <span>{item.label}</span><time>{formatTime(record.occurredAt)}</time>
         </div>
         <strong>{recordTitle(record)}</strong>
+        {!compact && medicineDetail && <p>{medicineDetail}</p>}
         {!compact && (record.details.note || record.details.stoolColour) && (
           <p>{record.details.note || `便便顏色：${record.details.stoolColour}`}</p>
         )}

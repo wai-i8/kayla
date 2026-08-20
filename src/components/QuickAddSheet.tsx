@@ -1,6 +1,8 @@
 import { useEffect, useId, useState, type FormEvent } from 'react';
 import { dateInputValue, inputsToTimestamp, timeInputValue } from '../lib/date';
 import type {
+  MedicineActiveUnit,
+  MedicineAdministrationUnit,
   MedicineQuickValue,
   NewRecordInput,
   QuickOption,
@@ -8,6 +10,17 @@ import type {
   QuickOptionsByField,
   RecordType,
 } from '../types';
+import {
+  calculateMedicineActiveAmount,
+  calculateStoredMedicineActiveAmount,
+  canonicalMedicineConcentration,
+  formatMedicineAdministration,
+  formatMedicineConcentration,
+  formatMedicineNumber,
+  hasStructuredMedicineValue,
+  parseMedicineConcentration,
+} from '../lib/medicine';
+import { isMedicineQuickValue } from '../lib/quickOptions';
 import { Icon, type IconName } from './Icon';
 import { useDialogFocus } from '../hooks/useDialogFocus';
 import { RememberedField } from './RememberedField';
@@ -25,19 +38,20 @@ const options: Array<{ type: RecordType; label: string; hint: string; icon: Icon
   { type: 'nappy', label: '尿片', hint: '濕片或便便', icon: 'nappy', tone: 'sage' },
   { type: 'temperature', label: '體溫', hint: '數值及位置', icon: 'temperature', tone: 'rose' },
   { type: 'sleep', label: '睡眠', hint: '睡眠時間', icon: 'moon', tone: 'blue' },
-  { type: 'medicine', label: '藥物', hint: '名稱及劑量', icon: 'medicine', tone: 'gold' },
+  { type: 'medicine', label: '藥物', hint: '名稱、濃度及份量', icon: 'medicine', tone: 'gold' },
   { type: 'weight', label: '體重', hint: '公斤', icon: 'weight', tone: 'blue' },
   { type: 'note', label: '備註', hint: '其他觀察', icon: 'note', tone: 'sage' },
 ];
 
-function isMedicineQuickValue(value: QuickOption['value']): value is MedicineQuickValue {
-  return typeof value === 'object' && value !== null && 'medicineName' in value && 'doseMl' in value;
-}
-
 function medicineOptionLabel(option: QuickOption) {
   if (!isMedicineQuickValue(option.value)) return '已儲存藥物';
-  const concentration = option.value.concentration ? ` · ${option.value.concentration}` : '';
-  return `${option.value.medicineName}${concentration} · ${option.value.doseMl} ml`;
+  const concentration = formatMedicineConcentration(option.value);
+  const administration = formatMedicineAdministration(option.value);
+  const activeAmount = calculateStoredMedicineActiveAmount(option.value);
+  const summary = [option.value.medicineName, concentration, administration].filter(Boolean).join(' · ');
+  return activeAmount
+    ? `${summary} → ${formatMedicineNumber(activeAmount.amount)} ${activeAmount.unit}`
+    : summary;
 }
 
 const noteFieldByType: Record<RecordType, QuickOptionField> = {
@@ -70,8 +84,13 @@ export function QuickAddSheet({
   const [measurementSite, setMeasurementSite] = useState('腋下');
   const [sleepMinutes, setSleepMinutes] = useState('');
   const [medicineName, setMedicineName] = useState('');
-  const [concentration, setConcentration] = useState('');
-  const [doseMl, setDoseMl] = useState('');
+  const [medicineConcentrationAmount, setMedicineConcentrationAmount] = useState('');
+  const [medicineConcentrationUnit, setMedicineConcentrationUnit] = useState<MedicineActiveUnit>('mg');
+  const [medicineConcentrationPerAmount, setMedicineConcentrationPerAmount] = useState('');
+  const [medicineConcentrationPerUnit, setMedicineConcentrationPerUnit] = useState<MedicineAdministrationUnit>('mL');
+  const [medicineAmount, setMedicineAmount] = useState('');
+  const [medicineAmountUnit, setMedicineAmountUnit] = useState<MedicineAdministrationUnit>('mL');
+  const [legacyMedicineNotice, setLegacyMedicineNotice] = useState('');
   const [weightKg, setWeightKg] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
@@ -86,8 +105,13 @@ export function QuickAddSheet({
     setTemperature('');
     setSleepMinutes('');
     setMedicineName('');
-    setConcentration('');
-    setDoseMl('');
+    setMedicineConcentrationAmount('');
+    setMedicineConcentrationUnit('mg');
+    setMedicineConcentrationPerAmount('');
+    setMedicineConcentrationPerUnit('mL');
+    setMedicineAmount('');
+    setMedicineAmountUnit('mL');
+    setLegacyMedicineNotice('');
     setWeightKg('');
     setNote('');
     setError('');
@@ -161,14 +185,44 @@ export function QuickAddSheet({
         setError('請輸入藥物名稱。');
         return;
       }
-      details.medicineName = medicineName.trim();
-      details.concentration = concentration.trim() || undefined;
-      const dose = Number(doseMl);
-      if (!dose || dose <= 0 || dose > 100) {
-        setError('請依藥物標籤輸入有效 ml 劑量。');
+      const concentrationAmount = Number(medicineConcentrationAmount);
+      const concentrationPerAmount = Number(medicineConcentrationPerAmount);
+      const administeredAmount = Number(medicineAmount);
+      if (!administeredAmount || administeredAmount <= 0 || administeredAmount > 100) {
+        setError('請輸入有效嘅服用份量。');
         return;
       }
-      details.doseMl = dose;
+      if (!concentrationAmount || concentrationAmount <= 0 || concentrationAmount > 1_000_000) {
+        setError('請依藥物標籤輸入有效濃度含量。');
+        return;
+      }
+      if (!concentrationPerAmount || concentrationPerAmount <= 0 || concentrationPerAmount > 1_000) {
+        setError('請輸入濃度標籤上「每多少」嘅數值。');
+        return;
+      }
+      if (medicineConcentrationPerUnit === '滴' && !Number.isInteger(concentrationPerAmount)) {
+        setError('濃度以滴為單位時，請輸入完整滴數。');
+        return;
+      }
+      if (medicineAmountUnit === '滴' && !Number.isInteger(administeredAmount)) {
+        setError('服用份量以滴為單位時，請輸入完整滴數。');
+        return;
+      }
+      if (medicineConcentrationPerUnit !== medicineAmountUnit) {
+        setError('濃度嘅基準單位同服用份量單位要一致。');
+        return;
+      }
+      details.medicineName = medicineName.trim();
+      details.concentration = canonicalMedicineConcentration({
+        medicineConcentrationAmount: concentrationAmount,
+        medicineConcentrationUnit,
+        medicineConcentrationPerAmount: concentrationPerAmount,
+        medicineConcentrationPerUnit,
+        medicineAmount: administeredAmount,
+        medicineAmountUnit,
+      });
+      // Keep the established key so current live Database Rules and old clients remain compatible.
+      details.doseMl = administeredAmount;
     }
     if (type === 'weight') {
       const weight = Number(weightKg);
@@ -195,13 +249,22 @@ export function QuickAddSheet({
   };
 
   const selected = options.find((option) => option.type === type);
-  const selectedMedicinePreset: MedicineQuickValue | undefined = medicineName.trim() && Number(doseMl) > 0
+  const currentMedicineValue = {
+    medicineConcentrationAmount: Number(medicineConcentrationAmount),
+    medicineConcentrationUnit,
+    medicineConcentrationPerAmount: Number(medicineConcentrationPerAmount),
+    medicineConcentrationPerUnit,
+    medicineAmount: Number(medicineAmount),
+    medicineAmountUnit,
+  };
+  const selectedMedicinePreset: MedicineQuickValue | undefined = medicineName.trim() && hasStructuredMedicineValue(currentMedicineValue)
     ? {
         medicineName: medicineName.trim(),
-        concentration: concentration.trim() || undefined,
-        doseMl: Number(doseMl),
+        concentration: canonicalMedicineConcentration(currentMedicineValue),
+        doseMl: currentMedicineValue.medicineAmount,
       }
     : undefined;
+  const actualMedicineAmount = calculateMedicineActiveAmount(currentMedicineValue);
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !saving && resetAndClose()}>
@@ -324,7 +387,7 @@ export function QuickAddSheet({
                 onSelect={(option) => setSleepMinutes(String(option.value))}
                 onDelete={onDeleteQuickOption}
               >
-                <label className="field"><span>睡咗幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="1440" value={sleepMinutes} onChange={(event) => setSleepMinutes(event.target.value)} placeholder="例如 45" /></label>
+                <label className="field"><span>瞓咗幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="1440" value={sleepMinutes} onChange={(event) => setSleepMinutes(event.target.value)} placeholder="例如 45" /></label>
               </RememberedField>
             )}
 
@@ -339,18 +402,55 @@ export function QuickAddSheet({
                   onSelect={(option) => {
                     if (!isMedicineQuickValue(option.value)) return;
                     setMedicineName(option.value.medicineName);
-                    setConcentration(option.value.concentration || '');
-                    setDoseMl(String(option.value.doseMl));
+                    setMedicineAmount(String(option.value.doseMl));
+                    const parsed = parseMedicineConcentration(option.value.concentration);
+                    if (parsed) {
+                      setMedicineConcentrationAmount(String(parsed.medicineConcentrationAmount));
+                      setMedicineConcentrationUnit(parsed.medicineConcentrationUnit);
+                      setMedicineConcentrationPerAmount(String(parsed.medicineConcentrationPerAmount));
+                      setMedicineConcentrationPerUnit(parsed.medicineConcentrationPerUnit);
+                      setMedicineAmountUnit(parsed.medicineConcentrationPerUnit);
+                      setLegacyMedicineNotice('');
+                    } else {
+                      setMedicineConcentrationAmount('');
+                      setMedicineConcentrationUnit('mg');
+                      setMedicineConcentrationPerAmount('');
+                      setMedicineConcentrationPerUnit('mL');
+                      setMedicineAmountUnit('mL');
+                      setLegacyMedicineNotice(option.value.concentration
+                        ? `舊濃度「${option.value.concentration}」未能自動拆分，請照藥物標籤重新填寫。`
+                        : '呢個舊常用組合未有濃度，請照藥物標籤補充。');
+                    }
                   }}
                   onDelete={onDeleteQuickOption}
                 >
                   <label className="field"><span>藥物名稱</span><input value={medicineName} onChange={(event) => setMedicineName(event.target.value)} maxLength={120} placeholder="依藥物標籤填寫" required /></label>
-                  <div className="form-row two-columns">
-                    <label className="field"><span>濃度</span><input value={concentration} onChange={(event) => setConcentration(event.target.value)} maxLength={120} placeholder="例如 120 mg/5 ml" /></label>
-                    <label className="field"><span>劑量（ml）</span><input type="number" inputMode="decimal" min="0.01" max="100" step="0.01" value={doseMl} onChange={(event) => setDoseMl(event.target.value)} placeholder="例如 2.5" /></label>
+                  <fieldset className="medicine-field-group">
+                    <legend>濃度</legend>
+                    <p>照藥物標籤填寫，例如：120 mg / 5 mL</p>
+                    <div className="medicine-ratio-grid">
+                      <label className="field"><span>含量</span><input type="number" inputMode="decimal" min="0.0001" max="1000000" step="any" value={medicineConcentrationAmount} onChange={(event) => { setMedicineConcentrationAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="120" required /></label>
+                      <label className="field"><span>單位</span><select value={medicineConcentrationUnit} onChange={(event) => setMedicineConcentrationUnit(event.target.value as MedicineActiveUnit)}><option value="mg">mg</option><option value="µg">µg</option><option value="IU">IU</option></select></label>
+                      <label className="field"><span>每多少</span><input type="number" inputMode={medicineConcentrationPerUnit === '滴' ? 'numeric' : 'decimal'} min={medicineConcentrationPerUnit === '滴' ? '1' : '0.0001'} max="1000" step={medicineConcentrationPerUnit === '滴' ? '1' : 'any'} value={medicineConcentrationPerAmount} onChange={(event) => { setMedicineConcentrationPerAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="5" required /></label>
+                      <label className="field"><span>基準單位</span><select value={medicineConcentrationPerUnit} onChange={(event) => { const unit = event.target.value as MedicineAdministrationUnit; setMedicineConcentrationPerUnit(unit); setMedicineAmountUnit(unit); }}><option value="mL">mL</option><option value="滴">滴</option></select></label>
+                    </div>
+                  </fieldset>
+
+                  <div className="form-row two-columns medicine-administration-row">
+                    <label className="field"><span>服用份量</span><input type="number" inputMode={medicineAmountUnit === '滴' ? 'numeric' : 'decimal'} min={medicineAmountUnit === '滴' ? '1' : '0.0001'} max="100" step={medicineAmountUnit === '滴' ? '1' : 'any'} value={medicineAmount} onChange={(event) => setMedicineAmount(event.target.value)} placeholder={medicineAmountUnit === '滴' ? '例如 1' : '例如 2.5'} required /></label>
+                    <label className="field"><span>單位</span><select value={medicineAmountUnit} onChange={(event) => setMedicineAmountUnit(event.target.value as MedicineAdministrationUnit)}><option value="mL">mL</option><option value="滴">滴</option></select></label>
                   </div>
+
+                  <output className="medicine-calculation" aria-live="polite">
+                    <span>實際劑量</span>
+                    <strong>{actualMedicineAmount ? `${formatMedicineNumber(actualMedicineAmount.amount)} ${actualMedicineAmount.unit}` : '—'}</strong>
+                    <small>{medicineConcentrationPerUnit !== medicineAmountUnit
+                      ? '濃度同服用份量嘅單位要一致先可以換算。'
+                      : '填好濃度同服用份量後會自動換算。'}</small>
+                  </output>
+                  {legacyMedicineNotice && <p className="medicine-legacy-notice" role="status">{legacyMedicineNotice}</p>}
                 </RememberedField>
-                <div className="inline-warning"><Icon name="alert" size={18} /> 只依照醫護或藥物標籤指示記錄，網站唔會計算劑量。</div>
+                <div className="inline-warning"><Icon name="alert" size={18} /> 自動結果只係根據你輸入嘅濃度同服用份量換算，唔係服藥建議。只依照醫護或藥物標籤指示用藥。</div>
               </>
             )}
 
