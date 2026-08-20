@@ -10,6 +10,7 @@ interface TodayPageProps {
   onOpenRecords: (filter: RecordFilter) => void;
   onOpenGuide: (sectionId?: string) => void;
   onOpenPhotos: () => void;
+  onQuickCamera: () => void;
   onOpenSettings: () => void;
 }
 
@@ -63,7 +64,7 @@ function formatSleep(minutes: number | undefined) {
   return remainder ? `${hours}時${remainder}分` : `${hours}小時`;
 }
 
-export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onOpenSettings }: TodayPageProps) {
+export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onQuickCamera, onOpenSettings }: TodayPageProps) {
   const now = Date.now();
   const yesterdayStart = startOfUkDay(-1, now);
   const yesterdayDate = dateInputValue(yesterdayStart);
@@ -86,6 +87,7 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
         </div>
         <div className="mobile-header-actions">
           <button className="album-button" onClick={onOpenPhotos} aria-label="開啟私人相簿" data-testid="mobile-open-photos"><img src={`${import.meta.env.BASE_URL}kayla-album.webp`} alt="" /></button>
+          <button className="header-camera-button" type="button" onClick={onQuickCamera} aria-label="快捷影相" data-testid="mobile-quick-camera"><Icon name="camera" /></button>
           <button className="avatar-button" onClick={onOpenSettings} aria-label="開啟設定"><Icon name="user" /></button>
         </div>
       </header>
@@ -116,6 +118,17 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
               <strong>{today.feeds.length}<small> 次</small></strong>
               <span className="stat-detail">{today.lastFeed ? `最近 ${formatTime(today.lastFeed.occurredAt)}` : '未有紀錄'}</span>
             </button>
+            <div className="yesterday-compare" data-testid="yesterday-comparison">
+              <div className="comparison-heading"><div><p className="eyebrow">YESTERDAY · {formatLongDate(yesterdayStart)}</p><h2>昨日紀錄</h2></div><span>{yesterday.records.length} 項</span></div>
+              <div className="yesterday-card-grid">
+                <button type="button" className="stat-card yesterday-card" data-testid="open-records-yesterday-feed-card" aria-label={`查看昨日餵奶紀錄，${yesterday.feeds.length} 次`} onClick={() => onOpenRecords({ type: 'feed', date: yesterdayDate })}>
+                  <span className="stat-top"><span className="record-icon tone-peach"><Icon name="bottle" size={19} /></span><span>餵奶</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span><strong>{yesterday.feeds.length}<small> 次</small></strong><span className="stat-detail">{yesterday.lastFeed ? `最近 ${formatTime(yesterday.lastFeed.occurredAt)}` : '未有紀錄'}</span>
+                </button>
+                <button type="button" className="stat-card yesterday-card" data-testid="open-records-yesterday-nappy-card" aria-label={`查看昨日尿片紀錄，${yesterday.nappies.length} 塊`} onClick={() => onOpenRecords({ type: 'nappy', date: yesterdayDate })}>
+                  <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span><strong>{yesterday.nappies.length}<small> 塊</small></strong><span className="stat-detail">{yesterday.wetNappies.length} 濕 · {yesterday.dirtyNappies.length} 便</span>
+                </button>
+              </div>
+            </div>
             <button type="button" className="stat-card" data-testid="open-records-nappy" aria-label={`查看尿片紀錄；今日已有 ${today.nappies.length} 塊；${today.wetNappies.length} 濕、${today.dirtyNappies.length} 便`} onClick={() => onOpenRecords({ type: 'nappy', date: null })}>
               <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
               <strong>{today.nappies.length}<small> 塊</small></strong>

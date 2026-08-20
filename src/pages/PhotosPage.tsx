@@ -11,6 +11,8 @@ interface PhotosPageProps {
   error: string | null;
   onAdd: (input: NewPhotoInput) => Promise<void>;
   onDelete: (photo: BabyPhoto) => Promise<void>;
+  initialFile?: File | null;
+  onInitialFileConsumed?: () => void;
 }
 
 function photoAlt(photo: BabyPhoto) {
@@ -27,7 +29,7 @@ function groupPhotos(photos: BabyPhoto[]) {
   return [...groups.entries()];
 }
 
-export function PhotosPage({ photos, loading, error, onAdd, onDelete }: PhotosPageProps) {
+export function PhotosPage({ photos, loading, error, onAdd, onDelete, initialFile, onInitialFileConsumed }: PhotosPageProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -94,6 +96,17 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete }: PhotosPa
   }, [file]);
 
   useEffect(() => () => uploadController.current?.abort(), []);
+
+  useEffect(() => {
+    if (!initialFile) return;
+    setFile(initialFile);
+    setDate(dateInputValue());
+    setTime(timeInputValue());
+    setCaption('');
+    setFormError('');
+    setAddOpen(true);
+    onInitialFileConsumed?.();
+  }, [initialFile, onInitialFileConsumed]);
 
   useEffect(() => {
     if (viewingId && !viewing) closeViewer();

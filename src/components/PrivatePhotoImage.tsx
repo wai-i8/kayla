@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getBlob, ref as storageRef } from 'firebase/storage';
+import { getBlob, getBytes, ref as storageRef } from 'firebase/storage';
 import { storage } from '../lib/firebase';
 import type { BabyPhoto } from '../types';
 import { Icon } from './Icon';
@@ -56,14 +56,29 @@ export function PrivatePhotoImage({ photo, variant, alt, className = '' }: Priva
     let active = true;
     let objectUrl = '';
     setUrl('');
-    getBlob(storageRef(storage, path), 2 * 1024 * 1024)
+    const reference = storageRef(storage, path);
+    getBlob(reference, 2 * 1024 * 1024)
+      .catch(async (firstError) => {
+        // Some mobile WebViews fail Firebase's Blob response even though the
+        // authenticated byte download succeeds. Keep the same private Rules
+        // check and fall back without creating a public download URL.
+        try {
+          const bytes = await getBytes(reference, 2 * 1024 * 1024);
+          return new Blob([bytes], { type: 'image/jpeg' });
+        } catch {
+          throw firstError;
+        }
+      })
       .then((blob) => {
         if (!active) return;
         objectUrl = URL.createObjectURL(blob);
         setUrl(objectUrl);
       })
-      .catch(() => {
-        if (active) setFailed(true);
+      .catch((error) => {
+        if (active) {
+          console.error('Private photo download failed', { path, error });
+          setFailed(true);
+        }
       });
 
     return () => {
