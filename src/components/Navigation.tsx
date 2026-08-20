@@ -17,7 +17,16 @@ const items: Array<{ key: ViewKey; label: string; icon: IconName }> = [
 export function SideNavigation({ active, onChange, onAdd }: NavigationProps) {
   return (
     <aside className="side-nav">
-      <div className="side-brand"><span className="brand-mark">K</span><span>KAYLA</span></div>
+      <button
+        type="button"
+        className="side-brand"
+        aria-label="返回今日首頁"
+        aria-current={active === 'today' ? 'page' : undefined}
+        data-testid="desktop-home-brand"
+        onClick={() => onChange('today')}
+      >
+        <span className="brand-mark">K</span><span>KAYLA</span>
+      </button>
       <nav aria-label="主要選單">
         {items.map((item) => (
           <button key={item.key} className={active === item.key ? 'active' : ''} aria-current={active === item.key ? 'page' : undefined} onClick={() => onChange(item.key)}>

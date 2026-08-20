@@ -167,6 +167,12 @@ h1, h2, h3 { font-family: 'Avenir Next', 'Noto Sans HK', system-ui, sans-serif; 
   background: #f8f7f2;
 }
 .side-brand { padding: 0 11px 37px; }
+button.side-brand {
+  width: fit-content;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
 .side-nav nav { display: grid; gap: 5px; }
 .side-nav nav button, .side-settings {
   display: flex;

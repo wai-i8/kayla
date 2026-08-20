@@ -197,7 +197,7 @@ export function QuickAddSheet({
         return;
       }
       if (!concentrationPerAmount || concentrationPerAmount <= 0 || concentrationPerAmount > 1_000) {
-        setError('請輸入濃度標籤上「每多少」嘅數值。');
+        setError('請輸入濃度嘅「基準份量」。');
         return;
       }
       if (medicineConcentrationPerUnit === '滴' && !Number.isInteger(concentrationPerAmount)) {
@@ -209,7 +209,7 @@ export function QuickAddSheet({
         return;
       }
       if (medicineConcentrationPerUnit !== medicineAmountUnit) {
-        setError('濃度嘅基準單位同服用份量單位要一致。');
+        setError('濃度嘅份量單位同服用份量單位要一致。');
         return;
       }
       details.medicineName = medicineName.trim();
@@ -431,8 +431,8 @@ export function QuickAddSheet({
                     <div className="medicine-ratio-grid">
                       <label className="field"><span>含量</span><input type="number" inputMode="decimal" min="0.0001" max="1000000" step="any" value={medicineConcentrationAmount} onChange={(event) => { setMedicineConcentrationAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="120" required /></label>
                       <label className="field"><span>單位</span><select value={medicineConcentrationUnit} onChange={(event) => setMedicineConcentrationUnit(event.target.value as MedicineActiveUnit)}><option value="mg">mg</option><option value="µg">µg</option><option value="IU">IU</option></select></label>
-                      <label className="field"><span>每多少</span><input type="number" inputMode={medicineConcentrationPerUnit === '滴' ? 'numeric' : 'decimal'} min={medicineConcentrationPerUnit === '滴' ? '1' : '0.0001'} max="1000" step={medicineConcentrationPerUnit === '滴' ? '1' : 'any'} value={medicineConcentrationPerAmount} onChange={(event) => { setMedicineConcentrationPerAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="5" required /></label>
-                      <label className="field"><span>基準單位</span><select value={medicineConcentrationPerUnit} onChange={(event) => { const unit = event.target.value as MedicineAdministrationUnit; setMedicineConcentrationPerUnit(unit); setMedicineAmountUnit(unit); }}><option value="mL">mL</option><option value="滴">滴</option></select></label>
+                      <label className="field"><span>基準份量</span><input type="number" inputMode={medicineConcentrationPerUnit === '滴' ? 'numeric' : 'decimal'} min={medicineConcentrationPerUnit === '滴' ? '1' : '0.0001'} max="1000" step={medicineConcentrationPerUnit === '滴' ? '1' : 'any'} value={medicineConcentrationPerAmount} onChange={(event) => { setMedicineConcentrationPerAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="5" required /></label>
+                      <label className="field"><span>份量單位</span><select value={medicineConcentrationPerUnit} onChange={(event) => { const unit = event.target.value as MedicineAdministrationUnit; setMedicineConcentrationPerUnit(unit); setMedicineAmountUnit(unit); }}><option value="mL">mL</option><option value="滴">滴</option></select></label>
                     </div>
                   </fieldset>
 

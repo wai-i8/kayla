@@ -1,12 +1,15 @@
-const CACHE_NAME = 'kayla-shell-v1';
+const CACHE_NAME = 'kayla-shell-v2';
 const BASE = new URL('./', self.registration.scope).pathname;
 const SHELL = [
   BASE,
   `${BASE}index.html`,
   `${BASE}site.webmanifest`,
-  `${BASE}kayla-icon.png`,
-  `${BASE}kayla-icon-192.png`,
-  `${BASE}kayla-icon-512.png`,
+  `${BASE}kayla-favicon-v2-48.png`,
+  `${BASE}kayla-apple-touch-icon-v2-180.png`,
+  `${BASE}kayla-icon-any-v2-192.png`,
+  `${BASE}kayla-icon-any-v2-512.png`,
+  `${BASE}kayla-icon-maskable-v2-192.png`,
+  `${BASE}kayla-icon-maskable-v2-512.png`,
   `${BASE}kayla-album.webp`,
 ];
 
