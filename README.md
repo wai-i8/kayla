@@ -11,7 +11,7 @@
 - 記錄欄位會自動學習常用數值，兩個家庭帳戶可共用及管理快捷選項
 - 今日摘要及家庭紀錄時間線
 - 私人家庭相簿：瀏覽器先壓縮成 JPEG，再以 Firebase Storage 儲存原圖及縮圖
-- `raw.pdf` 46 頁全文搜尋及主題導覽
+- 結構化英格蘭 BB 照顧指南：按主題搜尋、分段官方來源、真人情境圖片及官方示範連結；`raw.pdf` 只保留作歷史參考
 - 手機底部操作列及響應式電腦版
 - 本機示範模式，不會接觸正式 Firebase
 
@@ -42,10 +42,13 @@ App 已連接現有 Firebase project `elegant-moment-284814`，私人資料固�
 
 密碼、service-account JSON 及管理員金鑰不可放入 GitHub。
 
+指南內嘅本地真人相片只採用可重新發布嘅 Public Domain／Creative Commons 素材；完整作者、原始連結、授權同使用限制記錄於 [GUIDE_MEDIA_CREDITS.md](./GUIDE_MEDIA_CREDITS.md)。NHS、UNICEF UK 同 RCUK 等受限制示範只提供官方連結，唔會下載再發布。
+
 ## 檢查與建置
 
 ```powershell
 npm run typecheck
+npm run validate:guides
 npm run build
 npm audit
 ```

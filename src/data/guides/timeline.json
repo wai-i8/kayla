@@ -1,0 +1,101 @@
+[
+  {
+    "id": "birth-2-hours",
+    "ageLabel": "出生至 2 小時",
+    "title": "先相處、保暖、留意食奶訊號",
+    "summary": "Skin-to-skin、早期飢餓訊號同每次仰睡。",
+    "topicId": "timeline",
+    "anchor": "birth-2-hours",
+    "topicIds": ["timeline", "feeding", "sleep"]
+  },
+  {
+    "id": "day-1",
+    "ageLabel": "第 1 日",
+    "title": "密密食同胎糞",
+    "summary": "跟訊號餵，開始記錄食奶同尿片。",
+    "topicId": "timeline",
+    "anchor": "day-1",
+    "topicIds": ["timeline", "feeding", "nappies-care"]
+  },
+  {
+    "id": "days-2-3",
+    "ageLabel": "第 2 至 3 日",
+    "title": "含乳、便便轉色同黃疸",
+    "summary": "睇有效食奶線索，同時留意黃疸緊急警號。",
+    "topicId": "timeline",
+    "anchor": "days-2-3",
+    "topicIds": ["timeline", "feeding", "symptoms"]
+  },
+  {
+    "id": "days-3-7",
+    "ageLabel": "第 3 至 7 日",
+    "title": "尿片、臍帶同 blood spot",
+    "summary": "由第 5 日起睇濕尿片趨勢，按安排完成血點測試。",
+    "topicId": "timeline",
+    "anchor": "days-3-7",
+    "topicIds": ["timeline", "feeding", "nappies-care", "vaccinations"]
+  },
+  {
+    "id": "weeks-1-2",
+    "ageLabel": "第 1 至 2 週",
+    "title": "初生檢查、聽力同支援",
+    "summary": "核對 NIPE、聽力篩查同 health visitor 聯絡。",
+    "topicId": "timeline",
+    "anchor": "weeks-1-2",
+    "topicIds": ["timeline", "vaccinations", "local-help"]
+  },
+  {
+    "id": "weeks-3-4",
+    "ageLabel": "第 3 至 4 週",
+    "title": "短 tummy time 同面對面互動",
+    "summary": "只在清醒、全程看守下逐少增加活動。",
+    "topicId": "timeline",
+    "anchor": "weeks-3-4",
+    "topicIds": ["timeline", "caregiver-wellbeing"]
+  },
+  {
+    "id": "weeks-5-8",
+    "ageLabel": "第 5 至 8 週",
+    "title": "準備 8 週疫苗",
+    "summary": "帶 Red Book，藥物只跟接種團隊同最新官方單張。",
+    "topicId": "timeline",
+    "anchor": "weeks-5-8",
+    "topicIds": ["timeline", "vaccinations", "using-and-recording"]
+  },
+  {
+    "id": "months-2-3",
+    "ageLabel": "2 至 3 個月",
+    "title": "12 週疫苗同聲音互動",
+    "summary": "講、唱、等 BB 回應，繼續短 tummy time。",
+    "topicId": "timeline",
+    "anchor": "months-2-3",
+    "topicIds": ["timeline", "vaccinations"]
+  },
+  {
+    "id": "months-3-4",
+    "ageLabel": "3 至 4 個月",
+    "title": "16 週疫苗同地板活動",
+    "summary": "安全活動空間加上持續安全睡眠。",
+    "topicId": "timeline",
+    "anchor": "months-3-4",
+    "topicIds": ["timeline", "vaccinations", "sleep"]
+  },
+  {
+    "id": "months-4-5",
+    "ageLabel": "4 至 5 個月",
+    "title": "遊戲跟 BB 節奏",
+    "summary": "真人互動為主，唔因夜醒或食手而提早加固。",
+    "topicId": "timeline",
+    "anchor": "months-4-5",
+    "topicIds": ["timeline", "feeding"]
+  },
+  {
+    "id": "months-5-6",
+    "ageLabel": "5 至 6 個月",
+    "title": "睇三個加固準備訊號",
+    "summary": "約 6 個月，同時有頭頸控制、協調同吞嚥能力先開始。",
+    "topicId": "timeline",
+    "anchor": "months-5-6",
+    "topicIds": ["timeline", "feeding"]
+  }
+]

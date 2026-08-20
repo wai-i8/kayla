@@ -1,5 +1,5 @@
 import { ageInDays, dateInputValue, describeAge, formatLongDate, formatTime, startOfUkDay, ukHour } from '../lib/date';
-import { ageTimelineSections } from '../data/guideSections';
+import { ageTimelineSections } from '../data/guides/timeline';
 import type { BabyProfile, BabyRecord, RecordFilter } from '../types';
 import { Icon } from '../components/Icon';
 import { formatMedicineAdministration } from '../lib/medicine';
@@ -155,7 +155,7 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
             <div className="guide-feature-badge"><Icon name="book" size={18} /> 本週指南</div>
             <p className="eyebrow">{guide.ageLabel}</p>
             <h2>{guide.title}</h2>
-            <p>根據《初生 BB 由第 1 日到半歲》2026–27 英國版整理。</p>
+            <p>按 BB 日齡整理 NHS、UKHSA 同英國可信資料最新重點。</p>
             <button onClick={() => onOpenGuide(guide.id)}>睇本週重點 <Icon name="chevron" size={17} /></button>
           </section>
 

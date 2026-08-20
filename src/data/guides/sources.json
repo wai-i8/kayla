@@ -1,0 +1,464 @@
+[
+  {
+    "id": "nhs-seriously-ill",
+    "title": "Is your baby or toddler seriously ill?",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/health/is-your-baby-or-toddler-seriously-ill/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2023-08-24",
+    "note": "National red flags and 999 / GP / NHS 111 routing; due for review 2026-08-24."
+  },
+  {
+    "id": "nhs-fever-children",
+    "title": "High temperature (fever) in children",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/conditions/fever-in-children/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-baby-temperature",
+    "title": "How to take your baby's temperature",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/health/how-to-take-your-babys-temperature/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-choking",
+    "title": "How to stop a child from choking",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/first-aid-and-safety/first-aid/how-to-stop-a-child-from-choking/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2024-10-28"
+  },
+  {
+    "id": "nhs-child-cpr",
+    "title": "How to resuscitate a child",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/first-aid-and-safety/first-aid/how-to-resuscitate-a-child/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2026-05-21"
+  },
+  {
+    "id": "rcuk-guidelines-2025",
+    "title": "2025 Resuscitation Guidelines",
+    "publisher": "Resuscitation Council UK",
+    "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2025-10-27"
+  },
+  {
+    "id": "nhs-breastfeeding-first-days",
+    "title": "Breastfeeding: the first few days",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/breastfeeding/the-first-few-days/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-breastfeeding-latch",
+    "title": "Breastfeeding: positioning and attachment",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/breastfeeding/positioning-and-attachment/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2026-06-23"
+  },
+  {
+    "id": "nhs-breastfeeding-enough",
+    "title": "Breastfeeding: is my baby getting enough milk?",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/breastfeeding-problems/enough-milk/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2026-04-30"
+  },
+  {
+    "id": "nhs-bottle-feed",
+    "title": "Bottle feeding your baby",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/feeding-your-baby/bottle-feeding/bottle-feeding-your-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-formula-preparation",
+    "title": "How to make up a bottle feed",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/feeding-your-baby/bottle-feeding/how-to-make-up-a-feed/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-bottle-advice",
+    "title": "Bottle feeding advice",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/bottle-feeding/advice/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "unicef-responsive-bottle",
+    "title": "Infant formula and responsive bottle feeding",
+    "publisher": "UNICEF UK Baby Friendly Initiative",
+    "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/bottle-feeding-resources/infant-formula-responsive-bottle-feeding-guide-for-parents/",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2024"
+  },
+  {
+    "id": "unicef-positioning-video",
+    "title": "Positioning and attachment video",
+    "publisher": "UNICEF UK Baby Friendly Initiative",
+    "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/breastfeeding-resources/positioning-and-attachment-video/",
+    "region": "UK",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "unicef-meeting-baby-video",
+    "title": "Meeting baby for the first time video",
+    "publisher": "UNICEF UK Baby Friendly Initiative",
+    "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/meeting-baby-for-the-first-time-video/",
+    "region": "UK",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-changing-nappy",
+    "title": "How to change your baby's nappy",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/caring-for-a-newborn/how-to-change-your-babys-nappy/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-nappy-rash",
+    "title": "Nappy rash",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/caring-for-a-newborn/nappy-rash/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-bathing",
+    "title": "Bathing your baby",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/baby-basics/caring-for-your-baby/bathing-your-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-washing-cord",
+    "title": "Washing and bathing your baby",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/caring-for-a-newborn/washing-and-bathing-your-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2024-07-23"
+  },
+  {
+    "id": "nhs-newborn-skin",
+    "title": "Getting to know your newborn",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/pregnancy/labour-and-birth/getting-to-know-your-newborn/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "lullaby-safer-sleep",
+    "title": "Safer sleep overview",
+    "publisher": "The Lullaby Trust",
+    "url": "https://www.lullabytrust.org.uk/baby-safety/safer-sleep-information/safer-sleep-overview/",
+    "region": "UK",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "lullaby-room-temperature",
+    "title": "Room temperature",
+    "publisher": "The Lullaby Trust",
+    "url": "https://www.lullabytrust.org.uk/baby-safety/safer-sleep-information/room-temperature/",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2026-04-30"
+  },
+  {
+    "id": "lullaby-co-sleeping",
+    "title": "Co-sleeping",
+    "publisher": "The Lullaby Trust",
+    "url": "https://www.lullabytrust.org.uk/baby-safety/safer-sleep-information/co-sleeping/",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2026-08-03"
+  },
+  {
+    "id": "nhs-vitamins-baby",
+    "title": "Vitamins for babies",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/baby-basics/caring-for-your-baby/vitamins-for-babies/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-baby-moves",
+    "title": "Baby moves",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/baby-moves/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-first-sounds",
+    "title": "First sounds: 0 to 6 months",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/learning-to-talk/first-sounds-0-to-6-months/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-understanding-baby",
+    "title": "Understanding your baby",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/baby-basics/bonding-with-your-baby/understanding-your-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-soothing-crying",
+    "title": "Soothing a crying baby",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/caring-for-a-newborn/soothing-a-crying-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-start-weaning",
+    "title": "How to start weaning",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/weaning/how-to-start-weaning-your-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "ukhsa-immunisation-2026",
+    "title": "Routine childhood immunisations from 1 January 2026",
+    "publisher": "UK Health Security Agency",
+    "url": "https://www.gov.uk/government/publications/routine-childhood-immunisation-schedule/routine-childhood-immunisations-from-1-july-2025-babies-born-from-1-july-2024",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2025-12-01",
+    "note": "Schedule applying in England from 1 January 2026."
+  },
+  {
+    "id": "ukhsa-complete-schedule",
+    "title": "Complete routine immunisation schedule from 1 July 2026",
+    "publisher": "UK Health Security Agency",
+    "url": "https://www.gov.uk/government/publications/the-complete-routine-immunisation-schedule/complete-routine-immunisation-schedule-from-1-july-2026",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2026-08-17"
+  },
+  {
+    "id": "nhs-postnatal-depression",
+    "title": "Postnatal depression",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/mental-health/conditions/postnatal-depression/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-postpartum-psychosis",
+    "title": "Postpartum psychosis",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/mental-health/conditions/post-partum-psychosis/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-medicines-babies",
+    "title": "Medicines for babies and children",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/health/medicines-for-babies-and-children/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "gov-child-car-seats",
+    "title": "Child car seats: the law",
+    "publisher": "GOV.UK",
+    "url": "https://www.gov.uk/child-car-seats-the-rules",
+    "region": "UK",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "warwickshire-health-visiting",
+    "title": "Your baby and child's health and development",
+    "publisher": "Warwickshire County Council",
+    "url": "https://www.warwickshire.gov.uk/children-families/baby-childs-health-development/2",
+    "region": "England · Warwickshire",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "warwickshire-chathealth",
+    "title": "ChatHealth — message a health visitor",
+    "publisher": "Warwickshire County Council",
+    "url": "https://www.warwickshire.gov.uk/healthchat",
+    "region": "England · Warwickshire",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "geh-maternity",
+    "title": "Maternity",
+    "publisher": "George Eliot Hospital NHS Trust",
+    "url": "https://www.geh.nhs.uk/services/maternity",
+    "region": "England · Warwickshire",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-newborn-jaundice",
+    "title": "Newborn jaundice",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/conditions/jaundice-newborn/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2026-03-24"
+  },
+  {
+    "id": "nhs-dehydration",
+    "title": "Dehydration",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/conditions/dehydration/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2026-05-01"
+  },
+  {
+    "id": "nhs-child-accident",
+    "title": "What to do if your child has an accident",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/first-aid-and-safety/first-aid/what-to-do-if-your-child-has-an-accident/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nhs-call-999",
+    "title": "When to call 999",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-call-999/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "gov-nipe-handbook",
+    "title": "Newborn and infant physical examination: programme handbook",
+    "publisher": "NHS England",
+    "url": "https://www.gov.uk/government/publications/newborn-and-infant-physical-examination-programme-handbook",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2025-10-10"
+  },
+  {
+    "id": "gov-screening-tests-baby",
+    "title": "Screening tests for you and your baby",
+    "publisher": "NHS England",
+    "url": "https://www.gov.uk/government/publications/screening-tests-for-you-and-your-baby-stfyayb",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2026-06-03"
+  },
+  {
+    "id": "gov-hearing-overview",
+    "title": "Newborn hearing screening: programme overview",
+    "publisher": "NHS England",
+    "url": "https://www.gov.uk/guidance/newborn-hearing-screening-programme-overview",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2024-07-08"
+  },
+  {
+    "id": "gov-hearing-operational-2026",
+    "title": "Newborn hearing screening programme: operational guidance",
+    "publisher": "NHS England",
+    "url": "https://www.gov.uk/government/publications/newborn-hearing-screening-programme-nhsp-operational-guidance",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2026-02-25"
+  },
+  {
+    "id": "gov-menb-paracetamol-2026",
+    "title": "MenB vaccine and paracetamol",
+    "publisher": "UK Health Security Agency",
+    "url": "https://www.gov.uk/government/publications/menb-vaccine-and-paracetamol",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2026-06-04",
+    "note": "Use the current official leaflet or clinician advice. The app may do input-based arithmetic for recording or checking, but must never recommend administration."
+  },
+  {
+    "id": "nhs-menb-children",
+    "title": "MenB vaccine for children",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/vaccinations/menb-vaccine-for-children/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2024-03-13"
+  },
+  {
+    "id": "rcuk-baby-cpr-2025",
+    "title": "How to do CPR — baby CPR",
+    "publisher": "Resuscitation Council UK",
+    "url": "https://www.resus.org.uk/public-resource/how-do-cpr",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "note": "Current public guidance reflects the 2025 two-thumb encircling technique. Link to the live page rather than reproducing its graphics."
+  },
+  {
+    "id": "rcuk-choking-2025",
+    "title": "Guidance: Choking",
+    "publisher": "Resuscitation Council UK",
+    "url": "https://www.resus.org.uk/additional-guidance/guidance-choking",
+    "region": "UK",
+    "checkedAt": "2026-08-20",
+    "note": "Links to the current 2025 paediatric choking guideline and algorithm; do not rehost the algorithm without permission."
+  },
+  {
+    "id": "nhs-urgent-under-five-2026",
+    "title": "When to get urgent medical help for babies and children under 5",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/health/when-to-get-urgent-medical-help-for-babies-and-children-under-5/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "reviewedAt": "2026-08-06",
+    "note": "Current canonical NHS emergency routing for temperature, breathing, responsiveness and no-urine thresholds."
+  },
+  {
+    "id": "nhs-diarrhoea-vomiting",
+    "title": "Diarrhoea and vomiting",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/symptoms/diarrhoea-and-vomiting/",
+    "region": "England",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "nice-newborn-jaundice",
+    "title": "Jaundice in newborn babies under 28 days — recommendations",
+    "publisher": "NICE",
+    "url": "https://www.nice.org.uk/guidance/cg98/chapter/recommendations",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "updatedAt": "2023-10-31",
+    "note": "Recommendation 1.4.7 says not to use sunlight as treatment for hyperbilirubinaemia."
+  },
+  {
+    "id": "nhs-poisoning",
+    "title": "Poisoning",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/conditions/poisoning/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "note": "Emergency response and the instruction not to induce vomiting."
+  }
+]

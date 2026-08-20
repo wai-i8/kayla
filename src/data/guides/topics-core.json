@@ -1,0 +1,283 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "emergency",
+    "title": "幾時要即刻求醫",
+    "shortTitle": "緊急求助",
+    "summary": "先分清楚 999、A&E、NHS 111 同 GP；危急時唔好等 App。",
+    "priority": "urgent",
+    "keywords": ["999", "111", "A&E", "呼吸", "抽筋", "發燒", "皮疹", "唔醒", "急症"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["nhs-urgent-under-five-2026", "nhs-child-accident", "nhs-call-999"],
+    "blocks": [
+      {
+        "id": "call-999",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "有以下情況，立即 call 999 或去 A&E",
+        "items": [
+          "停止呼吸；呼吸非常快／困難、呻吟，或者肚／胸吸入。",
+          "反應唔到／點都叫唔醒、身體軟癱、正在抽筋／癲癇發作，或者突然嚴重受傷。",
+          "嘴唇、舌頭或皮膚呈藍、灰、非常蒼白或斑駁；深膚色可留意手掌、腳底。",
+          "嘴、唇、喉嚨或舌頭突然腫脹；或者大量出血、吞咗毒物／過量藥物。",
+          "未滿 3 個月體溫 38°C 或以上；3 至 6 個月體溫 39°C 或以上。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA 單張；如擔心先 call 111。",
+          "體溫低過 36°C，或者過去 12 小時完全冇尿／濕尿片。",
+          "黃色帶綠或綠色嘔吐，或者有按壓後唔退色嘅紅、紫或啡色皮疹。"
+        ],
+        "action": { "label": "Call 999", "href": "tel:999" },
+        "sourceIds": ["nhs-urgent-under-five-2026", "gov-menb-paracetamol-2026", "nhs-menb-children", "nhs-diarrhoea-vomiting", "nhs-child-accident", "nhs-call-999"]
+      },
+      {
+        "id": "under-three-month-fever",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "體溫達 NHS 即時求醫門檻：call 999 或去 A&E",
+        "body": "未滿 3 個月 38°C 或以上；3 至 6 個月 39°C 或以上。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張；如有其他紅旗、你擔心或超過 48 小時仍發燒就求助。3 至 6 個月如過去 2 日打過其他疫苗，亦按接種團隊指示；低過 36°C 仍屬即時求醫門檻。",
+        "action": { "label": "Call 999", "href": "tel:999" },
+        "sourceIds": ["nhs-urgent-under-five-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
+      },
+      {
+        "id": "urgent-signs",
+        "type": "bullets",
+        "items": [
+          "食奶明顯少咗，或者眼淚少、口乾、眼或囟門凹；過去 12 小時完全冇尿／濕尿片要 call 999 或去 A&E。",
+          "BB 越來越冇精神、食唔到，但未有上面 999／A&E 警號；即日 call NHS 111 求判斷。",
+          "黃疸快速加深或 BB 又黃又唔肯食；按黃疸警號決定 999／A&E 或即日聯絡 midwife／GP／111。",
+          "你覺得『唔似平時』而且擔心：未滿 6 個月嘅 BB 可以直接求醫判斷。"
+        ],
+        "sourceIds": ["nhs-urgent-under-five-2026", "nhs-dehydration", "nhs-newborn-jaundice"]
+      },
+      {
+        "id": "menb-fever-exception",
+        "type": "callout",
+        "severity": "info",
+        "title": "特定例外：8／12 週 MenB 後 48 小時內",
+        "body": "如果 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張使用 infant paracetamol；呢個例外只限 MenB。有其他紅旗、你擔心，或超過 48 小時仍發燒就聯絡 GP／111；危急警號仍要 999／A&E。",
+        "sourceIds": ["gov-menb-paracetamol-2026", "nhs-menb-children", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "routing",
+        "type": "callout",
+        "severity": "info",
+        "title": "唔肯定去邊？",
+        "body": "生命危險 call 999。需要即日判斷但未至於危急，call NHS 111；未滿 5 歲要用電話 111。非緊急問題可聯絡 GP、midwife 或 health visitor。",
+        "sourceIds": ["nhs-urgent-under-five-2026", "nhs-call-999"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "timeline",
+    "title": "出生至 6 個月時間線",
+    "shortTitle": "成長時間線",
+    "summary": "按 BB 月齡睇當下最實用嘅餵食、安全、互動同 NHS 安排。",
+    "priority": "important",
+    "keywords": ["時間線", "日齡", "週數", "月齡", "成長", "tummy time", "screening", "檢查"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "nhs-changing-nappy", "gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-start-weaning", "ukhsa-immunisation-2026"],
+    "mediaIds": ["video-unicef-skin-to-skin", "photo-tummy-time"],
+    "blocks": [
+      {
+        "id": "birth-2-hours",
+        "type": "callout",
+        "severity": "info",
+        "title": "出生至 2 小時：先相處、保暖、留意食奶訊號",
+        "items": ["情況容許可 skin-to-skin；望住 BB、輕聲講嘢。", "BB 搵乳、郁嘴、食手已係早期飢餓訊號，唔使等到喊。", "瞓覺每次都要仰睡，放在清空、平坦、堅實嘅獨立睡床。"],
+        "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "lullaby-safer-sleep"]
+      },
+      { "id": "skin-to-skin-official", "type": "media", "mediaId": "video-unicef-skin-to-skin", "sourceIds": ["unicef-meeting-baby-video"] },
+      {
+        "id": "day-1",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 1 日：密密食係常見",
+        "items": ["頭幾星期好多 BB 24 小時會食至少 8 至 12 次；跟早期訊號餵。", "第一啲便便通常係深綠黑色胎糞。", "記低食奶同尿片可幫你同 midwife 對照趨勢。"],
+        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-changing-nappy", "nhs-breastfeeding-enough"]
+      },
+      {
+        "id": "days-2-3",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 2 至 3 日：觀察含乳、便便同黃疸",
+        "items": ["有效含乳通常見到嘴張大、下巴貼乳房、吞嚥有節奏；持續痛就求助。", "便便會由胎糞逐步變啡綠，再變黃。", "出生 24 小時內已黃：call 999 或去 A&E。24 小時後見黃或加深，盡快聯絡 midwife／GP／111；如同時難叫醒、唔食、軟癱／僵硬／抽動、呼吸困難、體溫達 38°C 或以上／36°C 或以下，或者完全冇濕尿片，call 999 或去 A&E。"],
+        "sourceIds": ["nhs-breastfeeding-latch", "nhs-changing-nappy", "nhs-newborn-jaundice", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "days-3-7",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 3 至 7 日：尿片係重要線索",
+        "items": ["由第 5 日起，通常每 24 小時最少 6 塊重濕／明顯濕尿片；如果明顯少咗要盡快問 midwife／health visitor。", "臍帶保持清潔乾爽；污糟先用清水洗，再輕拍乾。", "血點測試通常約第 5 日安排；按 maternity team 指示出席。"],
+        "sourceIds": ["nhs-breastfeeding-enough", "nhs-washing-cord", "gov-screening-tests-baby"]
+      },
+      {
+        "id": "weeks-1-2",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 1 至 2 週：完成初生檢查與支援",
+        "items": ["NIPE 身體檢查主要睇眼、心、髖同男嬰睪丸，初生檢查目標係出生後 72 小時內完成。", "聽力篩查通常在出院前或出生後頭幾星期安排。", "任何食奶、體重、黃疸或照顧疑問，可聯絡 midwife／health visitor。"],
+        "sourceIds": ["gov-nipe-handbook", "gov-hearing-overview", "warwickshire-health-visiting", "nhs-newborn-jaundice"]
+      },
+      {
+        "id": "weeks-3-4",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 3 至 4 週：短時間 tummy time 同互動",
+        "items": ["BB 清醒、有大人全程望住先做 tummy time；可先趴喺你胸口，逐少增加。", "講嘢、唱歌、模仿 BB 聲音；見到擰開頭、打呵欠或閉眼就俾佢休息。", "喊聲可能由約第 2 週開始增加；照顧者頂唔順可安全放 BB 入睡床，短暫行開冷靜。"],
+        "sourceIds": ["nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-soothing-crying"]
+      },
+      {
+        "id": "weeks-5-8",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 5 至 8 週：準備 8 週疫苗",
+        "items": ["英格蘭 2026 常規時間表：8 週有 6-in-1、MenB 同 rotavirus。", "帶 Red Book；如果漏咗預約，主動聯絡 GP。", "MenB 後退燒藥只跟當次接種者／官方單張指示；App 只可按輸入做算術，唔會建議服用。"],
+        "sourceIds": ["ukhsa-immunisation-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
+      },
+      { "id": "tummy-time-photo", "type": "media", "mediaId": "photo-tummy-time", "sourceIds": ["nhs-baby-moves"] },
+      {
+        "id": "months-2-3",
+        "type": "callout",
+        "severity": "info",
+        "title": "2 至 3 個月：12 週疫苗、回應聲音",
+        "items": ["12 週常規疫苗係 6-in-1、MenB 同 rotavirus。", "面對面講嘢、唱歌、停一停等 BB 回應；每個 BB 發展速度唔同。", "繼續每日分幾次短 tummy time，只限清醒同全程看守。"],
+        "sourceIds": ["ukhsa-immunisation-2026", "nhs-first-sounds", "nhs-baby-moves"]
+      },
+      {
+        "id": "months-3-4",
+        "type": "callout",
+        "severity": "info",
+        "title": "3 至 4 個月：16 週疫苗、更多地板活動",
+        "items": ["16 週常規疫苗係 6-in-1 同 pneumococcal（PCV）。", "用安全地墊俾 BB 踢腳、伸手同轉頭；唔好用屏幕代替真人互動。", "睡眠仍然每次仰睡、同房但不同床至至少 6 個月。"],
+        "sourceIds": ["ukhsa-immunisation-2026", "nhs-baby-moves", "lullaby-safer-sleep"]
+      },
+      {
+        "id": "months-4-5",
+        "type": "callout",
+        "severity": "info",
+        "title": "4 至 5 個月：遊戲跟 BB 節奏",
+        "items": ["用歌、表情、布書同安全玩具互動；BB 望開或煩躁就休息。", "除非醫護人員另有建議，固體食物通常約 6 個月先開始。", "奶仍然係主要營養；唔用米糊或其他食物加落奶樽。"],
+        "sourceIds": ["nhs-understanding-baby", "nhs-first-sounds", "nhs-start-weaning", "nhs-bottle-advice"]
+      },
+      {
+        "id": "months-5-6",
+        "type": "callout",
+        "severity": "info",
+        "title": "5 至 6 個月：睇三個加固準備訊號",
+        "items": ["約 6 個月，同時做到：坐穩並控制頭頸、眼手口協調拎食物入口、吞到而唔係推出。", "咬手、夜晚醒多咗或想食多啲奶，單獨都唔代表要提早加固。", "早產 BB 或有醫療需要，先問 health visitor／醫療團隊。"],
+        "sourceIds": ["nhs-start-weaning"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "feeding",
+    "title": "餵母乳、奶樽同安全沖奶",
+    "shortTitle": "餵奶",
+    "summary": "跟 BB 訊號餵、睇有效食奶線索；配方奶每次新鮮安全沖。",
+    "priority": "important",
+    "keywords": ["母乳", "奶粉", "配方奶", "奶樽", "含乳", "餵奶", "掃風", "維他命D"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-latch", "nhs-breastfeeding-enough", "nhs-bottle-feed", "nhs-formula-preparation", "nhs-bottle-advice", "unicef-responsive-bottle", "nhs-vitamins-baby"],
+    "mediaIds": ["video-nhs-latch", "video-unicef-positioning", "photo-breastfeeding", "photo-bottle-feeding"],
+    "blocks": [
+      { "id": "responsive-feeding", "type": "heading", "level": 2, "text": "跟早期訊號餵，唔用分鐘做目標" },
+      {
+        "id": "feeding-cues",
+        "type": "bullets",
+        "items": ["搵乳、郁嘴、食手、轉頭係早期訊號；喊通常已係較遲。", "頭幾星期好多母乳 BB 24 小時會食至少 8 至 12 次，亦可能一段時間密集食。", "每餐長短可以差好遠；重點係吞嚥、食後反應、尿片同體重趨勢。"],
+        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-enough"]
+      },
+      {
+        "id": "latch-check",
+        "type": "bullets",
+        "items": ["BB 嘴張大、下巴貼乳房、鼻孔暢通；面頰圓，吸啜後可聽／見吞嚥。", "餵奶初段拉扯感可以有，但持續痛、乳頭損傷或 BB 食極都唔滿足，要盡快搵 midwife／health visitor／breastfeeding support。"],
+        "sourceIds": ["nhs-breastfeeding-latch", "nhs-breastfeeding-enough"]
+      },
+      { "id": "latch-video", "type": "media", "mediaId": "video-nhs-latch", "sourceIds": ["nhs-breastfeeding-latch"] },
+      { "id": "positioning-video", "type": "media", "mediaId": "video-unicef-positioning", "sourceIds": ["unicef-positioning-video"] },
+      { "id": "breastfeeding-photo", "type": "media", "mediaId": "photo-breastfeeding", "sourceIds": ["nhs-breastfeeding-latch"] },
+      { "id": "bottle-heading", "type": "heading", "level": 2, "text": "Responsive bottle feeding" },
+      {
+        "id": "responsive-bottle",
+        "type": "steps",
+        "items": ["抱 BB 半直坐，頭頸有承托。", "奶樽近水平，等 BB 主動含奶嘴；見到要停嘅訊號就放低奶樽。", "唔好逼飲完、唔好用物件托住奶樽，亦唔好留 BB 自己飲。"],
+        "sourceIds": ["nhs-bottle-feed", "unicef-responsive-bottle"]
+      },
+      { "id": "bottle-feeding-photo", "type": "media", "mediaId": "photo-bottle-feeding", "sourceIds": ["nhs-bottle-feed", "unicef-responsive-bottle"] },
+      { "id": "formula-heading", "type": "heading", "level": 2, "text": "每次新鮮沖一餐配方奶" },
+      {
+        "id": "formula-steps",
+        "type": "steps",
+        "items": ["清潔雙手同枱面；奶樽、奶嘴先消毒。", "每次用至少 1 litre 新鮮凍水喉水煲滾（唔用之前煲過、人工軟化或樽裝水）；留喺水煲冷卻唔超過 30 分鐘，確保加粉時仍至少 70°C。", "先落包裝指定水量，再用原裝匙落準確平匙數；唔好自行加水或加粉。", "蓋好搖勻，用流動冷水冷卻；試手腕溫度。", "即沖即飲；飲剩嘅奶倒走。"],
+        "sourceIds": ["nhs-formula-preparation", "nhs-bottle-advice"]
+      },
+      {
+        "id": "enough-milk-warning",
+        "type": "warning",
+        "severity": "urgent",
+        "title": "食奶或尿片明顯少咗要及早問",
+        "body": "由第 5 日起通常每 24 小時最少 6 塊重濕／明顯濕尿片。食奶／尿片明顯少或有脫水跡象：即日聯絡 GP／NHS 111；BB 難叫醒／冇反應、呼吸困難，或 12 小時冇尿：call 999 或去 A&E。",
+        "sourceIds": ["nhs-breastfeeding-enough", "nhs-dehydration", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "vitamin-d",
+        "type": "callout",
+        "severity": "info",
+        "title": "維他命 D（英格蘭）",
+        "body": "全母乳或部分母乳 BB 由出生起通常每日需要 8.5 至 10 micrograms；每日飲 500mL 或以上配方奶通常唔需要另加，因配方奶已有添加。產品濃度各異，只跟標籤、藥劑師或醫護指示，App 唔計滴數。",
+        "sourceIds": ["nhs-vitamins-baby"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "sleep",
+    "title": "安全睡眠同瞓覺環境",
+    "shortTitle": "安全睡眠",
+    "summary": "仰睡、清空、平坦、堅實、獨立睡床；頭 6 個月同房。",
+    "priority": "urgent",
+    "keywords": ["瞓覺", "睡眠", "仰睡", "同床", "cot", "室溫", "包被", "SIDS"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "UK", "status": "reviewed" },
+    "sourceIds": ["lullaby-safer-sleep", "lullaby-room-temperature", "lullaby-co-sleeping"],
+    "mediaIds": ["link-lullaby-safer-sleep"],
+    "blocks": [
+      {
+        "id": "abc-sleep",
+        "type": "bullets",
+        "items": ["每次睡眠都仰睡；唔好側睡或趴睡。", "放在平坦、堅實、有防水套嘅獨立床褥；頭 6 個月日夜都同照顧者同房。", "睡床保持清空：冇枕頭、羽絨被、床圍、毛公仔、鬆散被鋪、睡眠巢、楔形墊或定位器。"],
+        "sourceIds": ["lullaby-safer-sleep"]
+      },
+      {
+        "id": "temperature",
+        "type": "callout",
+        "severity": "info",
+        "title": "房間約 16 至 20°C",
+        "body": "用胸口或後頸判斷冷熱，手腳偏涼可以正常。出汗或胸口摸落熱就減一層；室內唔戴帽。",
+        "sourceIds": ["lullaby-room-temperature"]
+      },
+      {
+        "id": "bed-sharing",
+        "type": "warning",
+        "severity": "caution",
+        "title": "最安全係 BB 自己睡床；梳化／扶手椅絕對唔適合一齊瞓",
+        "items": ["任何人吸煙、飲酒、食咗會嗜睡嘅藥／毒品，或者 BB 早產／低出生體重，都唔應同床。", "如果可能瞓着，預先將成人床枕頭、被同縫隙移離 BB；醒咗就放返 BB 入自己睡床。"],
+        "sourceIds": ["lullaby-co-sleeping", "lullaby-safer-sleep"]
+      },
+      {
+        "id": "sleep-emergency",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "BB 冇反應或唔正常呼吸：call 999",
+        "body": "立即 call 999，開 speaker，按接線員指示開始急救；唔好先喺 App 搵答案。",
+        "action": { "label": "Call 999", "href": "tel:999" },
+        "sourceIds": ["nhs-child-cpr", "nhs-call-999"]
+      },
+      { "id": "safe-sleep-official", "type": "media", "mediaId": "link-lullaby-safer-sleep", "sourceIds": ["lullaby-safer-sleep"] }
+    ]
+  }
+]

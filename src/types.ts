@@ -119,19 +119,3 @@ export interface AuthUser {
   email: string | null;
   isDemo?: boolean;
 }
-
-export interface GuidePage {
-  page: number;
-  text: string;
-}
-
-export interface GuideSection {
-  id: string;
-  title: string;
-  eyebrow: string;
-  summary: string;
-  pages: number[];
-  tone: 'sage' | 'peach' | 'blue' | 'rose' | 'gold';
-  keywords: string[];
-  urgent?: boolean;
-}

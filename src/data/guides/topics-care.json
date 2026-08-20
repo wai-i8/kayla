@@ -1,0 +1,223 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "nappies-care",
+    "title": "尿片、便便、沖涼同臍帶",
+    "shortTitle": "日常護理",
+    "summary": "用尿片睇趨勢；安全換片、護膚、沖涼同保持臍帶乾爽。",
+    "priority": "important",
+    "keywords": ["尿片", "便便", "大便", "顏色", "nappy rash", "尿疹", "沖涼", "臍帶", "皮膚"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["nhs-changing-nappy", "nhs-nappy-rash", "nhs-bathing", "nhs-washing-cord", "nhs-newborn-skin"],
+    "mediaIds": ["video-nhs-nappy", "video-nhs-bath", "photo-baby-bath"],
+    "blocks": [
+      {
+        "id": "change-safely",
+        "type": "steps",
+        "items": ["用品先放手邊；最好喺地墊／毛巾上換，避免跌落。", "污糟就盡快換；女嬰由前向後抹。", "抹乾皮膚褶位，換完即刻洗手。"],
+        "sourceIds": ["nhs-changing-nappy"]
+      },
+      { "id": "nappy-video", "type": "media", "mediaId": "video-nhs-nappy", "sourceIds": ["nhs-changing-nappy"] },
+      {
+        "id": "poo-pattern",
+        "type": "bullets",
+        "items": ["最初胎糞通常深綠黑、黏；之後轉啡綠，再逐步變黃。", "母乳便便常見黃、稀、帶粒；配方奶便便通常較實、啡黃。", "記錄顏色同備註時兩樣都保留，睇幾日趨勢比單次更有用。"],
+        "sourceIds": ["nhs-changing-nappy"]
+      },
+      {
+        "id": "poo-warning",
+        "type": "warning",
+        "severity": "urgent",
+        "title": "白灰色、帶血或突然明顯異常嘅便便",
+        "body": "盡快聯絡 midwife、health visitor 或 GP；相片可作輔助，但唔好靠 App 或顏色圖自行診斷。",
+        "sourceIds": ["nhs-changing-nappy", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "nappy-rash",
+        "type": "bullets",
+        "items": ["密啲換片，溫和清潔後輕拍乾，盡量俾皮膚透氣。", "可用薄層 barrier cream；唔好用爽身粉。", "皮疹擴散、起水泡、BB 好唔舒服，或者幾日都冇改善，就問 health visitor／GP。"],
+        "sourceIds": ["nhs-nappy-rash"]
+      },
+      {
+        "id": "bath-and-cord",
+        "type": "bullets",
+        "items": ["唔需要每日沖涼；揀 BB 清醒又唔太餓嘅時間，房間保暖。", "浴盆先落凍水、再加熱水，水深約 8 至 10 cm；撈勻至冇熱點，用手肘確認接近體溫。", "頭一個月可先用清水；一隻手承托 BB 上臂連頭肩，頭保持離水，任何時候都絕不獨留水中。", "臍帶保持清潔乾爽；污糟先用清水洗，再輕拍乾，等佢自然脫落。"],
+        "sourceIds": ["nhs-bathing", "nhs-washing-cord", "nhs-newborn-skin"]
+      },
+      {
+        "id": "bath-warning",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "沖涼期間絕不離手",
+        "body": "門鐘、電話或用品都唔重要；要離開就先抱 BB 出水，用毛巾包好一齊走。",
+        "sourceIds": ["nhs-bathing"]
+      },
+      { "id": "bath-video", "type": "media", "mediaId": "video-nhs-bath", "sourceIds": ["nhs-bathing"] },
+      { "id": "baby-bath-photo", "type": "media", "mediaId": "photo-baby-bath", "sourceIds": ["nhs-bathing"] }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "first-aid",
+    "title": "哽塞、冇反應同嬰兒急救",
+    "shortTitle": "急救",
+    "summary": "危急先 call 999；呢頁只係快速提示，唔代替實體急救課程。",
+    "priority": "urgent",
+    "keywords": ["哽塞", "choking", "CPR", "急救", "背拍", "心外壓", "冇反應"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "UK", "status": "reviewed" },
+    "sourceIds": ["rcuk-choking-2025", "rcuk-baby-cpr-2025", "rcuk-guidelines-2025", "nhs-child-accident"],
+    "blocks": [
+      {
+        "id": "choking-coughing",
+        "type": "callout",
+        "severity": "urgent",
+        "title": "仍然咳到、有聲、有反應",
+        "body": "鼓勵佢繼續咳，全程望住。只移走清楚見到、容易拎到嘅異物；唔好盲目伸手入喉嚨掃。",
+        "sourceIds": ["rcuk-choking-2025", "rcuk-guidelines-2025"]
+      },
+      {
+        "id": "infant-choking-steps",
+        "type": "steps",
+        "items": ["咳唔到、喊唔到或呼吸唔到：call 999、開 speaker。", "將未滿 1 歲嬰兒面向下，頭低過胸口並托實頭頸；在肩胛之間拍最多 5 下，每下後望有冇清除。", "仍未清除：翻轉 BB，頭繼續低過胸口；雙手環抱胸廓，兩隻拇指並排放在胸骨下半部，做最多 5 下較快速、有力嘅胸推，每下後檢查。", "背拍同胸推每次各最多 5 下交替進行；一恢復有效咳嗽、喊聲或呼吸就立即停止並繼續觀察。如仍然阻塞，就做到異物排出、BB 失去反應或救護接手；唔好盲目伸手入喉嚨。", "如果 BB 失去反應，跟 999 接線員指示先做 5 次人工呼吸，再開始嬰兒 CPR。"],
+        "sourceIds": ["rcuk-choking-2025", "rcuk-guidelines-2025"]
+      },
+      {
+        "id": "unresponsive-not-breathing",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "冇反應：立即 call 999、開 speaker",
+        "body": "按 999 接線員指示檢查呼吸；如唔正常就開始 CPR。RCUK 2025 官方頁有完整嬰兒 CPR 次序；最好預先上認可嬰兒急救課程。",
+        "action": { "label": "Call 999", "href": "tel:999" },
+        "sourceIds": ["rcuk-baby-cpr-2025", "rcuk-guidelines-2025"]
+      },
+      {
+        "id": "first-aid-limit",
+        "type": "warning",
+        "severity": "caution",
+        "title": "唔好靠記憶卡取代訓練",
+        "body": "急救次序會更新，情況亦可能唔同；危急時以 999 即時指示為先。異物即使已排出，仍應按 NHS 指示求醫檢查。",
+        "sourceIds": ["rcuk-choking-2025", "rcuk-baby-cpr-2025", "nhs-child-accident"]
+      },
+      {
+        "id": "official-cpr-link",
+        "type": "official-link",
+        "title": "RCUK 2025：嬰兒 CPR 最新步驟",
+        "description": "現行公開頁採用 two-thumb encircling；出事前先閱讀並參加急救課程。",
+        "href": "https://www.resus.org.uk/public-resource/how-do-cpr",
+        "label": "開啟 RCUK",
+        "sourceIds": ["rcuk-baby-cpr-2025"]
+      },
+      {
+        "id": "official-choking-link",
+        "type": "official-link",
+        "title": "RCUK 2025：嬰兒哽塞指引與 algorithm",
+        "description": "直接睇最新官方版本；唔使用過時截圖。",
+        "href": "https://www.resus.org.uk/additional-guidance/guidance-choking",
+        "label": "開啟 RCUK",
+        "sourceIds": ["rcuk-choking-2025"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "symptoms",
+    "title": "體溫、黃疸、脫水同不適警號",
+    "shortTitle": "症狀警號",
+    "summary": "量度方法、要留意嘅趨勢，同幾時要 NHS 即日判斷。",
+    "priority": "urgent",
+    "keywords": ["發燒", "體溫", "黃疸", "jaundice", "脫水", "尿少", "嘔吐", "皮疹"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["nhs-baby-temperature", "nhs-urgent-under-five-2026", "nhs-newborn-jaundice", "nice-newborn-jaundice", "nhs-dehydration"],
+    "blocks": [
+      {
+        "id": "take-temperature",
+        "type": "steps",
+        "items": ["用 digital thermometer；脫走厚衫，等幾分鐘先量。", "將探頭放腋下，手臂貼實身體，按說明等讀數。", "記低數值、時間、量度位置，同 BB 當時食奶／精神狀態。"],
+        "sourceIds": ["nhs-baby-temperature"]
+      },
+      {
+        "id": "fever-urgent",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "未滿 3 個月 38°C+／3 至 6 個月 39°C+：call 999 或去 A&E",
+        "body": "低過 36°C 亦要即時求醫。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張；如有其他紅旗、你擔心或超過 48 小時仍發燒就求助。3 至 6 個月如過去 2 日打過其他疫苗，亦按接種團隊指示。",
+        "action": { "label": "Call 999", "href": "tel:999" },
+        "sourceIds": ["nhs-urgent-under-five-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
+      },
+      {
+        "id": "jaundice",
+        "type": "bullets",
+        "items": ["黃疸可令皮膚或眼白變黃；深膚色可較易從眼白、口內、手掌或腳底睇。", "出生 24 小時內已黃：call 999 或去 A&E。24 小時後見黃或加深，盡快聯絡 midwife／GP／111。", "黃疸加上難叫醒、唔食、軟癱／僵硬／抽動、呼吸困難、體溫達 38°C 或以上／36°C 或以下，或者完全冇濕尿片：call 999 或去 A&E。唔好用陽光自行治療。"],
+        "sourceIds": ["nhs-newborn-jaundice", "nhs-urgent-under-five-2026", "nice-newborn-jaundice"]
+      },
+      {
+        "id": "menb-fever-exception",
+        "type": "callout",
+        "severity": "info",
+        "title": "特定例外：8／12 週 MenB 後 48 小時內",
+        "body": "如果 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張使用 infant paracetamol；呢個例外只限 MenB。有其他紅旗、你擔心，或超過 48 小時仍發燒就聯絡 GP／111；危急警號仍要 999／A&E。",
+        "sourceIds": ["gov-menb-paracetamol-2026", "nhs-menb-children", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "dehydration",
+        "type": "bullets",
+        "items": ["濕尿片少、眼淚少、口乾、眼或囟門凹、嗜睡或煩躁都可以係脫水警號。", "初生 BB 食奶差或尿量明顯減少，要即日問 midwife／GP／NHS 111；過去 12 小時完全冇尿／濕尿片要 call 999 或去 A&E。"],
+        "sourceIds": ["nhs-dehydration", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "no-diagnosis",
+        "type": "callout",
+        "severity": "info",
+        "title": "記錄幫醫護睇趨勢，唔係診斷",
+        "body": "帶埋體溫、食奶、尿片、相片同症狀時間線求醫；App 唔會判斷疾病或建議藥物劑量。",
+        "sourceIds": ["nhs-urgent-under-five-2026", "nhs-medicines-babies"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "safety",
+    "title": "屋企、汽車同日常安全",
+    "shortTitle": "日常安全",
+    "summary": "用簡單環境設定減少跌落、哽塞、浸溺同車程風險。",
+    "priority": "important",
+    "keywords": ["安全", "跌落", "浸溺", "車椅", "car seat", "安全帶", "鈕扣電池", "磁石"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "UK", "status": "reviewed" },
+    "sourceIds": ["nhs-child-accident", "nhs-poisoning", "gov-child-car-seats", "nhs-changing-nappy", "nhs-bathing"],
+    "blocks": [
+      {
+        "id": "floor-first",
+        "type": "bullets",
+        "items": ["換片用品先準備好；最好喺地上換，BB 一刻都唔留喺床、梳化或換片枱邊。", "沖涼時一隻手一直承托 BB；要離開就先抱佢出水。", "鈕扣電池、細磁石、藥物同細小物件鎖好並放高。"],
+        "sourceIds": ["nhs-changing-nappy", "nhs-bathing", "nhs-child-accident"]
+      },
+      {
+        "id": "button-battery",
+        "type": "warning",
+        "severity": "emergency",
+        "title": "吞咗鈕扣電池或磁石：call 999／立即去 A&E",
+        "body": "就算只係懷疑都唔好等症狀；亦唔好催吐。",
+        "action": { "label": "Call 999", "href": "tel:999" },
+        "sourceIds": ["nhs-child-accident", "nhs-poisoning"]
+      },
+      {
+        "id": "car-seat",
+        "type": "bullets",
+        "items": ["0 至 6 個月 BB 每程都應坐已正確安裝嘅後向式 child car seat；身高型／R129 座椅依法要保持後向至 BB 超過 15 個月，亦要跟座椅身高／體重限制。", "後向式座椅放前座時，必須關掉前座安全氣袋；做唔到就唔好放前座。", "依照座椅製造商說明調校安全帶；唔確定就搵合資格安裝支援。"],
+        "sourceIds": ["gov-child-car-seats"]
+      },
+      {
+        "id": "accident-routing",
+        "type": "warning",
+        "severity": "urgent",
+        "title": "嚴重受傷、昏迷、呼吸困難或大量出血：call 999",
+        "body": "唔肯定需唔需要急症協助，可 call NHS 111；懷疑頸、脊椎或盆骨受傷唔好隨便移動。",
+        "sourceIds": ["nhs-child-accident", "nhs-call-999"]
+      }
+    ]
+  }
+]

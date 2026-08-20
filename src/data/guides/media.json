@@ -1,0 +1,146 @@
+[
+  {
+    "id": "video-nhs-latch",
+    "title": "NHS：點樣知道 BB 正確含乳",
+    "kind": "video",
+    "usage": "official-link-only",
+    "sourceId": "nhs-breastfeeding-latch",
+    "url": "https://www.youtube.com/watch?v=hKVxVfCGHqw",
+    "alt": "助產士真人示範正確含乳",
+    "note": "開啟 NHS 官方影片；不下載或重新寄存影片。"
+  },
+  {
+    "id": "video-unicef-positioning",
+    "title": "UNICEF UK：餵母乳姿勢與含乳",
+    "kind": "video",
+    "usage": "official-link-only",
+    "sourceId": "unicef-positioning-video",
+    "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/breastfeeding-resources/positioning-and-attachment-video/",
+    "alt": "母乳輔導員協助媽媽調整姿勢與含乳",
+    "note": "只連結官方頁面；UNICEF 素材沒有授權在本網站重新發布。"
+  },
+  {
+    "id": "video-nhs-nappy",
+    "title": "NHS：換污糟尿片",
+    "kind": "video",
+    "usage": "official-link-only",
+    "sourceId": "nhs-changing-nappy",
+    "url": "https://www.youtube.com/watch?v=XEV-oQmGDto",
+    "alt": "助產士真人示範替初生 BB 換尿片",
+    "note": "開啟 NHS 官方影片；不下載或重新寄存影片。"
+  },
+  {
+    "id": "video-nhs-bath",
+    "title": "NHS：幫 BB 沖涼",
+    "kind": "video",
+    "usage": "official-link-only",
+    "sourceId": "nhs-washing-cord",
+    "url": "https://www.youtube.com/watch?v=_9rg-DEkBQQ",
+    "alt": "助產士真人示範安全替 BB 沖涼",
+    "note": "開啟 NHS 官方影片；不下載或重新寄存影片。"
+  },
+  {
+    "id": "video-unicef-skin-to-skin",
+    "title": "UNICEF UK：第一次抱 BB 與 skin-to-skin",
+    "kind": "video",
+    "usage": "official-link-only",
+    "sourceId": "unicef-meeting-baby-video",
+    "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/meeting-baby-for-the-first-time-video/",
+    "alt": "真人示範出生後 skin-to-skin 接觸",
+    "note": "只連結官方頁面；不下載或重新寄存影片。"
+  },
+  {
+    "id": "link-lullaby-safer-sleep",
+    "title": "Lullaby Trust：安全睡眠真人與示意內容",
+    "kind": "web-page",
+    "usage": "official-link-only",
+    "sourceId": "lullaby-safer-sleep",
+    "url": "https://www.lullabytrust.org.uk/baby-safety/safer-sleep-information/safer-sleep-overview/",
+    "alt": "安全睡床及仰睡官方示範",
+    "note": "在官方頁面查看；不複製其真人相片或 infographic。"
+  },
+  {
+    "id": "placeholder-poo-colours",
+    "title": "便便顏色與求助提示圖",
+    "kind": "image-placeholder",
+    "usage": "original-placeholder",
+    "alt": "由胎糞至常見便便顏色，以及白灰、紅色警號",
+    "note": "日後製作原創示意圖；不可用顏色圖作診斷。"
+  },
+  {
+    "id": "placeholder-clear-cot",
+    "title": "清空睡床示意圖",
+    "kind": "image-placeholder",
+    "usage": "original-placeholder",
+    "alt": "BB 仰睡在清空、平坦、堅實睡床",
+    "note": "日後按官方文字製作原創圖，不抄官方相片或設計。"
+  },
+  {
+    "id": "placeholder-formula-steps",
+    "title": "安全沖奶步驟圖",
+    "kind": "image-placeholder",
+    "usage": "original-placeholder",
+    "alt": "由洗手、煲水、先水後粉、降溫至棄掉餘奶",
+    "note": "日後製作原創圖；每次更新時重新核對 NHS 指引。"
+  },
+  {
+    "id": "photo-bottle-feeding",
+    "title": "親近地用奶樽餵食（較大嬰兒情境相）",
+    "kind": "image",
+    "usage": "local-licensed",
+    "assetRef": "guide-media/bottle-feeding.jpg",
+    "originUrl": "https://commons.wikimedia.org/wiki/File:Fathercare.jpg",
+    "alt": "成人抱住較大嬰兒用奶樽餵食",
+    "credit": "Turalibadli and my wife · CC BY-SA 4.0",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "width": 519,
+    "height": 924,
+    "note": "相中係較大嬰兒，唔係初生技術示範；姿勢以現行 NHS responsive bottle guidance 為準。"
+  },
+  {
+    "id": "photo-breastfeeding",
+    "title": "母乳餵食（情境相）",
+    "kind": "image",
+    "usage": "local-licensed",
+    "assetRef": "guide-media/breastfeeding.jpg",
+    "originUrl": "https://commons.wikimedia.org/wiki/File:Breast-feeding.jpg",
+    "alt": "母親餵嬰兒母乳嘅近鏡",
+    "credit": "Serge Quadrado · CC BY-SA 4.0",
+    "licence": "CC BY-SA 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "width": 960,
+    "height": 640,
+    "note": "近鏡唔足以證明姿勢或含乳正確；技術請睇 NHS／UNICEF 官方示範。"
+  },
+  {
+    "id": "photo-tummy-time",
+    "title": "清醒時 tummy time（情境相）",
+    "kind": "image",
+    "usage": "local-licensed",
+    "assetRef": "guide-media/tummy-time.jpg",
+    "originUrl": "https://commons.wikimedia.org/wiki/File:Tummy_time.jpg",
+    "alt": "嬰兒清醒時在地墊俯臥活動",
+    "credit": "george ruiz · CC BY 2.0",
+    "licence": "CC BY 2.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "width": 960,
+    "height": 639,
+    "note": "只限 BB 清醒並由成人全程看守；唔沿用原相來源嘅未證實時長說法。"
+  },
+  {
+    "id": "photo-baby-bath",
+    "title": "成人替 BB 沖涼（歷史情境相）",
+    "kind": "image",
+    "usage": "local-licensed",
+    "assetRef": "guide-media/baby-bath.jpg",
+    "originUrl": "https://commons.wikimedia.org/wiki/File:Baby_being_bathed_in_a_tub_%28AM_80878-1%29.jpg",
+    "alt": "成人在浴盆中承托嬰兒頭頸嘅歷史照片",
+    "credit": "Auckland Museum Tāmaki Paenga Hira / Tudor Washington Collins · CC BY 4.0",
+    "licence": "CC BY 4.0",
+    "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "width": 960,
+    "height": 717,
+    "note": "歷史情境相，唔係現代逐步示範；安全步驟以現行 NHS 指引為準。"
+  }
+]

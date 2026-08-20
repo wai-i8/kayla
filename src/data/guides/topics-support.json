@@ -1,0 +1,230 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "caregiver-wellbeing",
+    "title": "BB 喊同照顧者身心狀態",
+    "shortTitle": "你同 BB",
+    "summary": "先照顧安全，再慢慢安撫；照顧者需要支援唔代表做得唔好。",
+    "priority": "important",
+    "keywords": ["喊", "扭計", "安撫", "產後抑鬱", "情緒", "壓力", "postnatal depression", "psychosis"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["nhs-soothing-crying", "nhs-postnatal-depression", "nhs-postpartum-psychosis"],
+    "blocks": [
+      {
+        "id": "crying-check",
+        "type": "steps",
+        "items": ["先睇有冇餓、尿片濕、太熱／太凍、攰或想抱。", "抱近胸口、輕聲講嘢、規律搖動或行一陣；每個 BB 有唔同有效方法。", "如果喊聲完全唔似平時、BB 食唔到、呼吸唔妥、發燒或你覺得病得嚴重，就求醫。"],
+        "sourceIds": ["nhs-soothing-crying", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "safe-pause",
+        "type": "warning",
+        "severity": "caution",
+        "title": "頂唔順時，可以安全停一停",
+        "body": "將 BB 仰睡放入清空、安全睡床，離開幾分鐘冷靜，再返去查看。絕對唔好搖 BB；搵家人或朋友接手。",
+        "sourceIds": ["nhs-soothing-crying", "lullaby-safer-sleep"]
+      },
+      {
+        "id": "postnatal-depression",
+        "type": "bullets",
+        "items": ["持續低落、冇興趣、覺得冇希望、好難同 BB 建立感覺，或焦慮到影響生活，都值得盡快講。", "可以聯絡 GP、midwife 或 health visitor；產後抑鬱可治療，越早求助越好。"],
+        "sourceIds": ["nhs-postnatal-depression"]
+      },
+      {
+        "id": "postpartum-psychosis",
+        "type": "warning",
+        "severity": "urgent",
+        "title": "突然非常混亂、妄想、幻覺或情緒急劇轉變：同日緊急求助",
+        "body": "Postpartum psychosis 係醫療急症。立即聯絡 GP／NHS 111；如有人可能即時傷害自己或 BB，call 999 或去 A&E。",
+        "action": { "label": "Call NHS 111", "href": "tel:111" },
+        "sourceIds": ["nhs-postpartum-psychosis"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "vaccinations",
+    "title": "初生篩查、檢查同 2026 疫苗",
+    "shortTitle": "檢查與疫苗",
+    "summary": "英格蘭出生後安排，加上 2026 年 7 月起適用嘅頭 16 週疫苗時間表。",
+    "priority": "important",
+    "keywords": ["疫苗", "針", "8週", "12週", "16週", "MenB", "rotavirus", "6-in-1", "PCV", "血點", "聽力", "NIPE"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "gov-hearing-operational-2026", "ukhsa-immunisation-2026", "ukhsa-complete-schedule", "gov-menb-paracetamol-2026", "nhs-menb-children"],
+    "blocks": [
+      {
+        "id": "newborn-screening",
+        "type": "table",
+        "caption": "英格蘭常見初生安排",
+        "columns": ["時間", "安排", "重點"],
+        "rows": [
+          ["出生後 72 小時內", "NIPE 身體檢查", "眼、心、髖；男嬰亦檢查睪丸"],
+          ["通常約第 5 日", "Newborn blood spot", "跟 maternity team 預約；結果及覆檢由 NHS 跟進"],
+          ["出院前或頭幾星期", "Newborn hearing screen", "英格蘭所有 BB 都會獲提供，理想在 4 至 5 週內完成"],
+          ["6 至 8 週", "Infant physical examination", "GP／指定服務再檢查相關項目"]
+        ],
+        "sourceIds": ["gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "gov-hearing-operational-2026"]
+      },
+      {
+        "id": "vaccine-schedule-2026",
+        "type": "table",
+        "caption": "2026 年 7 月起英格蘭常規嬰兒疫苗（首 16 週）",
+        "columns": ["月齡", "常規疫苗"],
+        "rows": [
+          ["8 週", "6-in-1（第 1 劑）· MenB（第 1 劑）· Rotavirus（第 1 劑）"],
+          ["12 週", "6-in-1（第 2 劑）· MenB（第 2 劑）· Rotavirus（第 2 劑）"],
+          ["16 週", "6-in-1（第 3 劑）· Pneumococcal / PCV" ]
+        ],
+        "sourceIds": ["ukhsa-immunisation-2026", "ukhsa-complete-schedule"]
+      },
+      {
+        "id": "selective-vaccines",
+        "type": "callout",
+        "severity": "info",
+        "title": "部分 BB 會有額外／較早疫苗",
+        "body": "例如媽媽有 hepatitis B，或 BB 符合 BCG 風險條件。以 maternity、GP 同 Red Book 個別安排為準；唔係每個 BB 都會有相同額外安排。",
+        "sourceIds": ["ukhsa-complete-schedule"]
+      },
+      {
+        "id": "menb-paracetamol",
+        "type": "warning",
+        "severity": "caution",
+        "title": "MenB 後 paracetamol：只跟當次官方指示",
+        "body": "產品濃度、BB 情況同指引都要核對；直接用接種者提供嘅最新單張或醫護指示。網站只可按你輸入做數學換算，唔會判斷應唔應該食或建議份量。",
+        "sourceIds": ["gov-menb-paracetamol-2026", "nhs-menb-children", "nhs-medicines-babies"]
+      },
+      {
+        "id": "missed-appointment",
+        "type": "callout",
+        "severity": "info",
+        "title": "漏咗預約就聯絡 GP",
+        "body": "帶 Red Book，記低已完成日期；如時間表或 BB 醫療情況有變，以 GP／接種團隊最新安排為先。",
+        "sourceIds": ["ukhsa-complete-schedule", "nhs-menb-children"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "local-help",
+    "title": "Warwickshire 同 NHS 求助路線",
+    "shortTitle": "本地支援",
+    "summary": "按緊急程度揀 999、111、GP、maternity 或 health visiting。",
+    "priority": "important",
+    "keywords": ["Warwickshire", "Nuneaton", "George Eliot", "health visitor", "ChatHealth", "midwife", "GP", "111"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England · Warwickshire", "status": "reviewed" },
+    "sourceIds": ["nhs-call-999", "nhs-urgent-under-five-2026", "warwickshire-health-visiting", "warwickshire-chathealth", "geh-maternity"],
+    "blocks": [
+      {
+        "id": "help-routing",
+        "type": "table",
+        "caption": "由緊急到日常",
+        "columns": ["情況", "聯絡"],
+        "rows": [
+          ["生命危險、冇反應、嚴重呼吸困難", "999"],
+          ["急需判斷但未至於生命危險", "NHS 111（未滿 5 歲用電話）"],
+          ["懷孕／產後 maternity 緊急疑問", "George Eliot Hospital maternity 官方頁最新 triage 聯絡"],
+          ["BB 成長、餵奶、睡眠、尿片等非緊急問題", "Health visiting service／GP"],
+          ["Warwickshire 非緊急短訊查詢", "ChatHealth；服務時間及號碼以官方頁為準"]
+        ],
+        "sourceIds": ["nhs-call-999", "nhs-urgent-under-five-2026", "geh-maternity", "warwickshire-health-visiting", "warwickshire-chathealth"]
+      },
+      {
+        "id": "local-numbers",
+        "type": "callout",
+        "severity": "caution",
+        "title": "本地號碼可能更新",
+        "body": "網站只連去機構官方頁，唔硬抄可能過期嘅電話。需要聯絡前先開官方頁核對；緊急情況直接 999。",
+        "sourceIds": ["geh-maternity", "warwickshire-health-visiting", "warwickshire-chathealth"]
+      },
+      {
+        "id": "geh-link",
+        "type": "official-link",
+        "title": "George Eliot Hospital：Maternity",
+        "description": "查看最新 maternity triage、產後同餵奶支援聯絡。",
+        "href": "https://www.geh.nhs.uk/services/maternity",
+        "label": "開啟官方頁",
+        "sourceIds": ["geh-maternity"]
+      },
+      {
+        "id": "health-visiting-link",
+        "type": "official-link",
+        "title": "Warwickshire Health Visiting",
+        "description": "查看 0 至 5 歲健康及發展服務。",
+        "href": "https://www.warwickshire.gov.uk/children-families/baby-childs-health-development/2",
+        "label": "開啟官方頁",
+        "sourceIds": ["warwickshire-health-visiting"]
+      },
+      {
+        "id": "chathealth-link",
+        "type": "official-link",
+        "title": "Warwickshire ChatHealth",
+        "description": "只適合非緊急問題；先在官方頁核對服務時間同號碼。",
+        "href": "https://www.warwickshire.gov.uk/healthchat",
+        "label": "開啟官方頁",
+        "sourceIds": ["warwickshire-chathealth"]
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "using-and-recording",
+    "title": "點樣記錄先幫到照顧同求醫",
+    "shortTitle": "記錄方法",
+    "summary": "記清楚時間、單位同背景；用趨勢溝通，唔用 App 自行診斷或計藥。",
+    "priority": "reference",
+    "keywords": ["記錄", "餵奶", "尿片", "體溫", "藥物", "濃度", "份量", "相片", "私隱", "來源"],
+    "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
+    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "sourceIds": ["nhs-breastfeeding-enough", "nhs-baby-temperature", "nhs-medicines-babies", "nhs-urgent-under-five-2026"],
+    "blocks": [
+      {
+        "id": "record-basics",
+        "type": "bullets",
+        "items": ["每筆用實際發生日期／時間；補記就保留原本時間。", "餵奶記方式、時長或已知份量；尿片記濕／便、顏色同備註。", "體溫記數值、單位、量度位置同 BB 當時狀態。", "相片只作時間線或俾醫護參考，唔靠相片自行診斷。"],
+        "sourceIds": ["nhs-breastfeeding-enough", "nhs-baby-temperature", "nhs-urgent-under-five-2026"]
+      },
+      {
+        "id": "medicine-record",
+        "type": "table",
+        "caption": "藥物記錄建議欄位",
+        "columns": ["欄位", "例子／意思"],
+        "rows": [
+          ["藥名", "產品或處方標籤名稱"],
+          ["濃度", "例如 120 mg / 5 mL；照抄標籤"],
+          ["服用份量", "實際餵咗幾多，例如 2.5"],
+          ["單位", "mL、滴或其他標籤單位"],
+          ["指示來源", "醫生、藥劑師、接種團隊或產品單張"],
+          ["時間／反應", "實際服用時間，同之後觀察到嘅情況"]
+        ],
+        "sourceIds": ["nhs-medicines-babies"]
+      },
+      {
+        "id": "no-dose-calculation",
+        "type": "warning",
+        "severity": "caution",
+        "title": "數學換算唔係服藥建議",
+        "body": "網站可以按你輸入嘅濃度同服用份量顯示算術結果，但唔會判斷應唔應該食或建議份量。同一藥名可以有唔同濃度；只跟處方、產品標籤、藥劑師或醫護指示，唔好靠舊紀錄重複餵。",
+        "sourceIds": ["nhs-medicines-babies"]
+      },
+      {
+        "id": "share-with-clinician",
+        "type": "callout",
+        "severity": "info",
+        "title": "求醫時帶走重點",
+        "body": "講清楚 BB 年齡、症狀幾時開始、最近食奶／尿片／體溫、已用藥物同份量；但有危急警號要先 call 999，唔好花時間整理 App。",
+        "sourceIds": ["nhs-urgent-under-five-2026", "nhs-child-accident", "nhs-medicines-babies"]
+      },
+      {
+        "id": "sources-version",
+        "type": "callout",
+        "severity": "info",
+        "title": "資料範圍同版本",
+        "body": "內容按英格蘭／英國官方資料整理，最後查核 2026-08-20；本地服務標示 Warwickshire。每段可開官方來源，安排如有更新以 NHS、GOV.UK 或你嘅醫療團隊為先。",
+        "sourceIds": ["ukhsa-complete-schedule", "warwickshire-health-visiting"]
+      }
+    ]
+  }
+]

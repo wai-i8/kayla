@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kayla-shell-v2';
+const CACHE_NAME = 'kayla-shell-v4';
 const BASE = new URL('./', self.registration.scope).pathname;
 const SHELL = [
   BASE,
@@ -31,11 +31,27 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
 
   if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).catch(() => caches.match(`${BASE}index.html`)));
+    event.respondWith(
+      fetch(request)
+        .then(async (response) => {
+          if (response.ok) {
+            try {
+              const cache = await caches.open(CACHE_NAME);
+              await cache.put(`${BASE}index.html`, response.clone());
+            } catch {
+              // A cache write failure must not replace a successful live navigation.
+            }
+          }
+          return response;
+        })
+        .catch(() => caches.match(`${BASE}index.html`)),
+    );
     return;
   }
 
-  const isPublicAsset = url.pathname.startsWith(`${BASE}assets/`) || SHELL.includes(url.pathname);
+  const isPublicAsset = url.pathname.startsWith(`${BASE}assets/`)
+    || url.pathname.startsWith(`${BASE}guide-media/`)
+    || SHELL.includes(url.pathname);
   if (!isPublicAsset || url.search) return;
   event.respondWith(
     caches.match(request).then((cached) => cached || fetch(request).then((response) => {

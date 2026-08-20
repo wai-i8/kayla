@@ -14,3 +14,4 @@ vite.config.d.ts
 firebase-access.local.json
 database.rules.local.json
 storage.rules.local
+.private-guide-media/
