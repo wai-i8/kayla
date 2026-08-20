@@ -1,6 +1,7 @@
 import { useEffect, useId, useState, type FormEvent } from 'react';
 import { dateInputValue, inputsToTimestamp, timeInputValue } from '../lib/date';
 import type {
+  BabyRecord,
   MedicineActiveUnit,
   MedicineAdministrationUnit,
   MedicineQuickValue,
@@ -29,6 +30,8 @@ interface QuickAddSheetProps {
   open: boolean;
   onClose: () => void;
   onSave: (record: NewRecordInput) => Promise<void>;
+  editingRecord?: BabyRecord | null;
+  onUpdate: (recordId: string, record: NewRecordInput) => Promise<void>;
   quickOptions: QuickOptionsByField;
   onDeleteQuickOption: (field: QuickOptionField, id: string) => Promise<void>;
 }
@@ -64,24 +67,30 @@ const noteFieldByType: Record<RecordType, QuickOptionField> = {
   note: 'noteContent',
 };
 
+function numberInputValue(value: number | undefined) {
+  return typeof value === 'number' && Number.isFinite(value) ? String(value) : '';
+}
+
 export function QuickAddSheet({
   open,
   onClose,
   onSave,
+  editingRecord = null,
+  onUpdate,
   quickOptions,
   onDeleteQuickOption,
 }: QuickAddSheetProps) {
   const [type, setType] = useState<RecordType | null>(null);
   const [date, setDate] = useState(dateInputValue());
   const [time, setTime] = useState(timeInputValue());
-  const [method, setMethod] = useState<'breast' | 'formula' | 'expressed'>('breast');
-  const [side, setSide] = useState<'left' | 'right' | 'both'>('left');
+  const [method, setMethod] = useState<'breast' | 'formula' | 'expressed' | ''>('');
+  const [side, setSide] = useState<'left' | 'right' | 'both' | ''>('');
   const [amountMl, setAmountMl] = useState('');
   const [durationMinutes, setDurationMinutes] = useState('');
-  const [nappyType, setNappyType] = useState<'wet' | 'dirty' | 'both'>('wet');
+  const [nappyType, setNappyType] = useState<'wet' | 'dirty' | 'both' | ''>('');
   const [stoolColour, setStoolColour] = useState('');
   const [temperature, setTemperature] = useState('');
-  const [measurementSite, setMeasurementSite] = useState('腋下');
+  const [measurementSite, setMeasurementSite] = useState('');
   const [sleepMinutes, setSleepMinutes] = useState('');
   const [medicineName, setMedicineName] = useState('');
   const [medicineConcentrationAmount, setMedicineConcentrationAmount] = useState('');
@@ -96,13 +105,17 @@ export function QuickAddSheet({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const titleId = useId();
+  const isEditing = Boolean(editingRecord);
 
-  const resetAndClose = () => {
-    setType(null);
+  const resetDetails = () => {
+    setMethod('');
+    setSide('');
     setAmountMl('');
     setDurationMinutes('');
+    setNappyType('');
     setStoolColour('');
     setTemperature('');
+    setMeasurementSite('');
     setSleepMinutes('');
     setMedicineName('');
     setMedicineConcentrationAmount('');
@@ -114,24 +127,65 @@ export function QuickAddSheet({
     setLegacyMedicineNotice('');
     setWeightKg('');
     setNote('');
+  };
+
+  const resetForm = () => {
+    setType(null);
+    setDate(dateInputValue());
+    setTime(timeInputValue());
+    resetDetails();
     setError('');
     setSaving(false);
+  };
+
+  const resetAndClose = () => {
+    resetForm();
     onClose();
   };
   const dialogRef = useDialogFocus(open, resetAndClose, !saving);
 
   useEffect(() => {
     if (!open) return;
-    setDate(dateInputValue());
-    setTime(timeInputValue());
+    resetForm();
+    if (editingRecord) {
+      const details = editingRecord.details;
+      setType(editingRecord.type);
+      setDate(dateInputValue(editingRecord.occurredAt));
+      setTime(timeInputValue(editingRecord.occurredAt));
+      setMethod(details.method || '');
+      setSide(details.side || '');
+      setAmountMl(numberInputValue(details.amountMl));
+      setDurationMinutes(numberInputValue(details.durationMinutes));
+      setNappyType(details.nappyType || '');
+      setStoolColour(details.stoolColour || '');
+      setTemperature(numberInputValue(details.valueCelsius));
+      setMeasurementSite(details.measurementSite || '');
+      setSleepMinutes(numberInputValue(details.sleepMinutes));
+      setMedicineName(details.medicineName || '');
+      setMedicineAmount(numberInputValue(details.doseMl));
+      setWeightKg(numberInputValue(details.weightKg));
+      setNote(details.note || '');
+
+      const parsedConcentration = parseMedicineConcentration(details.concentration);
+      if (parsedConcentration) {
+        setMedicineConcentrationAmount(String(parsedConcentration.medicineConcentrationAmount));
+        setMedicineConcentrationUnit(parsedConcentration.medicineConcentrationUnit);
+        setMedicineConcentrationPerAmount(String(parsedConcentration.medicineConcentrationPerAmount));
+        setMedicineConcentrationPerUnit(parsedConcentration.medicineConcentrationPerUnit);
+        setMedicineAmountUnit(parsedConcentration.medicineConcentrationPerUnit);
+      } else if (details.concentration) {
+        setLegacyMedicineNotice(`舊濃度「${details.concentration}」未能自動拆分，請照藥物標籤重新填寫。`);
+      }
+    }
     setError('');
-  }, [open]);
+  }, [open, editingRecord?.id]);
 
   if (!open) return null;
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!type) return;
+    const recordType = editingRecord?.type || type;
+    if (!recordType) return;
 
     const occurredAt = inputsToTimestamp(date, time);
     if (!Number.isFinite(occurredAt) || occurredAt > Date.now() + 10 * 60_000) {
@@ -139,116 +193,146 @@ export function QuickAddSheet({
       return;
     }
 
-    const details: NewRecordInput['details'] = { note: note.trim() || undefined };
-    if (type === 'feed') {
-      details.method = method;
-      if (method === 'breast') {
-        details.side = side;
-        const duration = Number(durationMinutes);
-        if (durationMinutes && (duration <= 0 || duration > 300)) {
-          setError('母乳時間請輸入 1–300 分鐘。');
+    const details: NewRecordInput['details'] = {};
+    if (note.trim()) details.note = note.trim();
+
+    if (recordType === 'feed') {
+      if (method) details.method = method;
+      if (method === 'breast' && side) details.side = side;
+
+      const durationText = durationMinutes.trim();
+      if (durationText) {
+        const duration = Number(durationText);
+        if (!Number.isFinite(duration) || duration <= 0 || duration > 300) {
+          setError('餵奶時間請輸入 1–300 分鐘。');
           return;
         }
-        details.durationMinutes = duration || undefined;
-      } else {
-        const amount = Number(amountMl);
-        if (!amount || amount <= 0 || amount > 1000) {
-          setError('請輸入 1–1000 ml 奶量。');
+        details.durationMinutes = duration;
+      }
+
+      if (method === 'formula' || method === 'expressed') {
+        const amountText = amountMl.trim();
+        if (amountText) {
+          const amount = Number(amountText);
+          if (!Number.isFinite(amount) || amount <= 0 || amount > 1000) {
+            setError('奶量請輸入 1–1000 mL。');
+            return;
+          }
+          details.amountMl = amount;
+        }
+      }
+    }
+    if (recordType === 'nappy') {
+      if (nappyType) details.nappyType = nappyType;
+      if ((nappyType === 'dirty' || nappyType === 'both') && stoolColour.trim()) {
+        details.stoolColour = stoolColour.trim();
+      }
+    }
+    if (recordType === 'temperature') {
+      const temperatureText = temperature.trim();
+      if (temperatureText) {
+        const value = Number(temperatureText);
+        if (!Number.isFinite(value) || value < 30 || value > 45) {
+          setError('體溫請輸入 30–45°C。');
           return;
         }
-        details.amountMl = amount;
+        details.valueCelsius = value;
+      }
+      if (measurementSite) details.measurementSite = measurementSite;
+    }
+    if (recordType === 'sleep') {
+      const sleepText = sleepMinutes.trim();
+      if (sleepText) {
+        const duration = Number(sleepText);
+        if (!Number.isFinite(duration) || duration <= 0 || duration > 1440) {
+          setError('睡眠時間請輸入 1–1440 分鐘。');
+          return;
+        }
+        details.sleepMinutes = duration;
       }
     }
-    if (type === 'nappy') {
-      details.nappyType = nappyType;
-      details.stoolColour = stoolColour || undefined;
+    if (recordType === 'medicine') {
+      const hasAnyMedicineDetails = Boolean(
+        medicineName.trim()
+        || medicineConcentrationAmount.trim()
+        || medicineConcentrationPerAmount.trim()
+        || medicineAmount.trim(),
+      );
+      if (hasAnyMedicineDetails) {
+        if (!medicineName.trim()) {
+          setError('填寫藥物資料後，請同時輸入藥物名稱。');
+          return;
+        }
+        const concentrationAmount = Number(medicineConcentrationAmount);
+        const concentrationPerAmount = Number(medicineConcentrationPerAmount);
+        const administeredAmount = Number(medicineAmount);
+        if (!administeredAmount || administeredAmount <= 0 || administeredAmount > 100) {
+          setError('請輸入有效嘅服用份量。');
+          return;
+        }
+        if (!concentrationAmount || concentrationAmount <= 0 || concentrationAmount > 1_000_000) {
+          setError('請依藥物標籤輸入有效濃度含量。');
+          return;
+        }
+        if (!concentrationPerAmount || concentrationPerAmount <= 0 || concentrationPerAmount > 1_000) {
+          setError('請輸入濃度嘅「基準份量」。');
+          return;
+        }
+        if (medicineConcentrationPerUnit === '滴' && !Number.isInteger(concentrationPerAmount)) {
+          setError('濃度以滴為單位時，請輸入完整滴數。');
+          return;
+        }
+        if (medicineAmountUnit === '滴' && !Number.isInteger(administeredAmount)) {
+          setError('服用份量以滴為單位時，請輸入完整滴數。');
+          return;
+        }
+        if (medicineConcentrationPerUnit !== medicineAmountUnit) {
+          setError('濃度嘅份量單位同服用份量單位要一致。');
+          return;
+        }
+        details.medicineName = medicineName.trim();
+        details.concentration = canonicalMedicineConcentration({
+          medicineConcentrationAmount: concentrationAmount,
+          medicineConcentrationUnit,
+          medicineConcentrationPerAmount: concentrationPerAmount,
+          medicineConcentrationPerUnit,
+          medicineAmount: administeredAmount,
+          medicineAmountUnit,
+        });
+        // Keep the established key so current live Database Rules and old clients remain compatible.
+        details.doseMl = administeredAmount;
+      }
     }
-    if (type === 'temperature') {
-      const value = Number(temperature);
-      if (!value || value < 30 || value > 45) {
-        setError('請輸入合理嘅體溫數值。');
-        return;
+    if (recordType === 'weight') {
+      const weightText = weightKg.trim();
+      if (weightText) {
+        const weight = Number(weightText);
+        if (!Number.isFinite(weight) || weight < 0.3 || weight > 30) {
+          setError('體重請輸入 0.3–30 kg。');
+          return;
+        }
+        details.weightKg = weight;
       }
-      details.valueCelsius = value;
-      details.measurementSite = measurementSite;
-    }
-    if (type === 'sleep') {
-      const duration = Number(sleepMinutes);
-      if (!duration || duration <= 0 || duration > 1440) {
-        setError('請輸入 1–1440 分鐘睡眠時間。');
-        return;
-      }
-      details.sleepMinutes = duration;
-    }
-    if (type === 'medicine') {
-      if (!medicineName.trim()) {
-        setError('請輸入藥物名稱。');
-        return;
-      }
-      const concentrationAmount = Number(medicineConcentrationAmount);
-      const concentrationPerAmount = Number(medicineConcentrationPerAmount);
-      const administeredAmount = Number(medicineAmount);
-      if (!administeredAmount || administeredAmount <= 0 || administeredAmount > 100) {
-        setError('請輸入有效嘅服用份量。');
-        return;
-      }
-      if (!concentrationAmount || concentrationAmount <= 0 || concentrationAmount > 1_000_000) {
-        setError('請依藥物標籤輸入有效濃度含量。');
-        return;
-      }
-      if (!concentrationPerAmount || concentrationPerAmount <= 0 || concentrationPerAmount > 1_000) {
-        setError('請輸入濃度嘅「基準份量」。');
-        return;
-      }
-      if (medicineConcentrationPerUnit === '滴' && !Number.isInteger(concentrationPerAmount)) {
-        setError('濃度以滴為單位時，請輸入完整滴數。');
-        return;
-      }
-      if (medicineAmountUnit === '滴' && !Number.isInteger(administeredAmount)) {
-        setError('服用份量以滴為單位時，請輸入完整滴數。');
-        return;
-      }
-      if (medicineConcentrationPerUnit !== medicineAmountUnit) {
-        setError('濃度嘅份量單位同服用份量單位要一致。');
-        return;
-      }
-      details.medicineName = medicineName.trim();
-      details.concentration = canonicalMedicineConcentration({
-        medicineConcentrationAmount: concentrationAmount,
-        medicineConcentrationUnit,
-        medicineConcentrationPerAmount: concentrationPerAmount,
-        medicineConcentrationPerUnit,
-        medicineAmount: administeredAmount,
-        medicineAmountUnit,
-      });
-      // Keep the established key so current live Database Rules and old clients remain compatible.
-      details.doseMl = administeredAmount;
-    }
-    if (type === 'weight') {
-      const weight = Number(weightKg);
-      if (!weight || weight < 0.3 || weight > 30) {
-        setError('請輸入 0.3–30 kg 體重。');
-        return;
-      }
-      details.weightKg = weight;
-    }
-    if (type === 'note' && !note.trim()) {
-      setError('請輸入備註內容。');
-      return;
     }
 
     setSaving(true);
     setError('');
     try {
-      await onSave({ type, occurredAt, details });
+      const input = { type: recordType, occurredAt, details };
+      if (editingRecord) {
+        await onUpdate(editingRecord.id, input);
+      } else {
+        await onSave(input);
+      }
       resetAndClose();
     } catch {
-      setError('未能儲存紀錄，請檢查網絡後再試。');
+      setError(editingRecord ? '未能更新紀錄，請檢查網絡後再試。' : '未能儲存紀錄，請檢查網絡後再試。');
       setSaving(false);
     }
   };
 
-  const selected = options.find((option) => option.type === type);
+  const activeType = editingRecord?.type || type;
+  const selected = options.find((option) => option.type === activeType);
   const currentMedicineValue = {
     medicineConcentrationAmount: Number(medicineConcentrationAmount),
     medicineConcentrationUnit,
@@ -268,21 +352,23 @@ export function QuickAddSheet({
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !saving && resetAndClose()}>
-      <section ref={dialogRef} className="quick-sheet" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="quick-add-sheet" data-record-type={type || 'picker'}>
+      <section ref={dialogRef} className="quick-sheet" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="quick-add-sheet" data-record-type={activeType || 'picker'}>
         <div className="sheet-handle" />
         <header className="sheet-header">
           <div>
-            {type && <button className="text-button" type="button" onClick={() => setType(null)}>← 返回</button>}
-            <h2 id={titleId}>{type ? `新增${selected?.label}紀錄` : '想記低咩？'}</h2>
-            {!type && <p>揀一項，預設會使用而家時間。</p>}
+            {activeType && !isEditing && <button className="text-button" type="button" onClick={() => { resetDetails(); setType(null); setError(''); }}>← 返回</button>}
+            <h2 id={titleId}>{activeType ? `${isEditing ? '編輯' : '新增'}${selected?.label}紀錄` : '想記低咩？'}</h2>
+            {!activeType
+              ? <p>揀一項，預設會使用而家時間。</p>
+              : <p>詳細資料可以留空儲存，之後得閒再編輯補充。</p>}
           </div>
-          <button className="icon-button" onClick={resetAndClose} disabled={saving} aria-label="關閉新增紀錄"><Icon name="close" /></button>
+          <button className="icon-button" onClick={resetAndClose} disabled={saving} aria-label={isEditing ? '關閉編輯紀錄' : '關閉新增紀錄'}><Icon name="close" /></button>
         </header>
 
-        {!type ? (
+        {!activeType ? (
           <div className="quick-grid">
             {options.map((option) => (
-              <button key={option.type} onClick={() => setType(option.type)} data-testid={`add-${option.type}`}>
+              <button key={option.type} onClick={() => { resetDetails(); setType(option.type); setError(''); }} data-testid={`add-${option.type}`}>
                 <span className={`record-icon tone-${option.tone}`}><Icon name={option.icon} /></span>
                 <span><strong>{option.label}</strong><small>{option.hint}</small></span>
                 <Icon name="chevron" size={17} />
@@ -296,56 +382,55 @@ export function QuickAddSheet({
               <label className="field"><span>時間</span><input type="time" value={time} onChange={(event) => setTime(event.target.value)} required /></label>
             </div>
 
-            {type === 'feed' && (
+            {activeType === 'feed' && (
               <>
                 <fieldset className="choice-group"><legend>餵奶方式</legend><div className="segmented">
-                  {[['breast', '母乳'], ['formula', '配方奶'], ['expressed', '泵奶']].map(([value, label]) => (
-                    <button type="button" key={value} className={method === value ? 'selected' : ''} onClick={() => setMethod(value as typeof method)}>{label}</button>
+                  {([['', '未填'], ['breast', '母乳'], ['formula', '配方奶'], ['expressed', '泵奶']] as const).map(([value, label]) => (
+                    <button type="button" key={value || 'blank'} className={method === value ? 'selected' : ''} onClick={() => setMethod(value)}>{label}</button>
                   ))}
                 </div></fieldset>
-                {method === 'breast' ? (
-                  <>
-                    <fieldset className="choice-group"><legend>邊一邊</legend><div className="segmented">
-                      {[['left', '左邊'], ['right', '右邊'], ['both', '兩邊']].map(([value, label]) => (
-                        <button type="button" key={value} className={side === value ? 'selected' : ''} onClick={() => setSide(value as typeof side)}>{label}</button>
-                      ))}
-                    </div></fieldset>
-                    <RememberedField
-                      field="feedDurationMinutes"
-                      label="母乳時間"
-                      suffix="分鐘"
-                      options={quickOptions.feedDurationMinutes}
-                      selectedValue={durationMinutes ? Number(durationMinutes) : undefined}
-                      onSelect={(option) => setDurationMinutes(String(option.value))}
-                      onDelete={onDeleteQuickOption}
-                    >
-                      <label className="field"><span>大約幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="300" value={durationMinutes} onChange={(event) => setDurationMinutes(event.target.value)} placeholder="例如 20" /></label>
-                    </RememberedField>
-                  </>
-                ) : (
+                {method === 'breast' && (
+                  <fieldset className="choice-group"><legend>邊一邊</legend><div className="segmented">
+                    {([['', '未填'], ['left', '左邊'], ['right', '右邊'], ['both', '兩邊']] as const).map(([value, label]) => (
+                      <button type="button" key={value || 'blank'} className={side === value ? 'selected' : ''} onClick={() => setSide(value)}>{label}</button>
+                    ))}
+                  </div></fieldset>
+                )}
+                <RememberedField
+                  field="feedDurationMinutes"
+                  label="餵奶時間"
+                  suffix="分鐘"
+                  options={quickOptions.feedDurationMinutes}
+                  selectedValue={durationMinutes ? Number(durationMinutes) : undefined}
+                  onSelect={(option) => setDurationMinutes(String(option.value))}
+                  onDelete={onDeleteQuickOption}
+                >
+                  <label className="field"><span>大約幾多分鐘（可留空）</span><input type="number" inputMode="numeric" min="1" max="300" value={durationMinutes} onChange={(event) => setDurationMinutes(event.target.value)} placeholder="例如 20" /></label>
+                </RememberedField>
+                {(method === 'formula' || method === 'expressed') && (
                   <RememberedField
                     field="feedAmountMl"
                     label="奶量"
-                    suffix="ml"
+                    suffix="mL"
                     options={quickOptions.feedAmountMl}
                     selectedValue={amountMl ? Number(amountMl) : undefined}
                     onSelect={(option) => setAmountMl(String(option.value))}
                     onDelete={onDeleteQuickOption}
                   >
-                    <label className="field"><span>奶量（ml）</span><input type="number" inputMode="decimal" min="1" max="1000" step="0.1" value={amountMl} onChange={(event) => setAmountMl(event.target.value)} placeholder="例如 90" /></label>
+                    <label className="field"><span>奶量（mL，可留空）</span><input type="number" inputMode="decimal" min="1" max="1000" step="0.1" value={amountMl} onChange={(event) => setAmountMl(event.target.value)} placeholder="例如 90" /></label>
                   </RememberedField>
                 )}
               </>
             )}
 
-            {type === 'nappy' && (
+            {activeType === 'nappy' && (
               <>
                 <fieldset className="choice-group"><legend>尿片種類</legend><div className="segmented">
-                  {[['wet', '濕片'], ['dirty', '便便'], ['both', '兩樣']].map(([value, label]) => (
-                    <button type="button" key={value} className={nappyType === value ? 'selected' : ''} onClick={() => setNappyType(value as typeof nappyType)}>{label}</button>
+                  {([['', '未填'], ['wet', '濕片'], ['dirty', '便便'], ['both', '兩樣']] as const).map(([value, label]) => (
+                    <button type="button" key={value || 'blank'} className={nappyType === value ? 'selected' : ''} onClick={() => setNappyType(value)}>{label}</button>
                   ))}
                 </div></fieldset>
-                {nappyType !== 'wet' && (
+                {(nappyType === 'dirty' || nappyType === 'both') && (
                   <RememberedField
                     field="nappyStoolColour"
                     label="便便顏色"
@@ -360,7 +445,7 @@ export function QuickAddSheet({
               </>
             )}
 
-            {type === 'temperature' && (
+            {activeType === 'temperature' && (
               <div className="form-row two-columns">
                 <RememberedField
                   field="temperatureCelsius"
@@ -371,13 +456,13 @@ export function QuickAddSheet({
                   onSelect={(option) => setTemperature(String(option.value))}
                   onDelete={onDeleteQuickOption}
                 >
-                  <label className="field"><span>體溫（°C）</span><input type="number" inputMode="decimal" min="30" max="45" step="0.1" value={temperature} onChange={(event) => setTemperature(event.target.value)} placeholder="36.8" required /></label>
+                  <label className="field"><span>體溫（°C，可留空）</span><input type="number" inputMode="decimal" min="30" max="45" step="0.1" value={temperature} onChange={(event) => setTemperature(event.target.value)} placeholder="36.8" /></label>
                 </RememberedField>
-                <label className="field"><span>量度位置</span><select value={measurementSite} onChange={(event) => setMeasurementSite(event.target.value)}><option>腋下</option><option>耳探</option><option>其他</option></select></label>
+                <label className="field"><span>量度位置</span><select value={measurementSite} onChange={(event) => setMeasurementSite(event.target.value)}><option value="">未填</option><option>腋下</option><option>耳探</option><option>其他</option></select></label>
               </div>
             )}
 
-            {type === 'sleep' && (
+            {activeType === 'sleep' && (
               <RememberedField
                 field="sleepMinutes"
                 label="睡眠時間"
@@ -387,11 +472,11 @@ export function QuickAddSheet({
                 onSelect={(option) => setSleepMinutes(String(option.value))}
                 onDelete={onDeleteQuickOption}
               >
-                <label className="field"><span>瞓咗幾多分鐘</span><input type="number" inputMode="numeric" min="1" max="1440" value={sleepMinutes} onChange={(event) => setSleepMinutes(event.target.value)} placeholder="例如 45" /></label>
+                <label className="field"><span>瞓咗幾多分鐘（可留空）</span><input type="number" inputMode="numeric" min="1" max="1440" value={sleepMinutes} onChange={(event) => setSleepMinutes(event.target.value)} placeholder="例如 45" /></label>
               </RememberedField>
             )}
 
-            {type === 'medicine' && (
+            {activeType === 'medicine' && (
               <>
                 <RememberedField
                   field="medicinePreset"
@@ -424,20 +509,20 @@ export function QuickAddSheet({
                   }}
                   onDelete={onDeleteQuickOption}
                 >
-                  <label className="field"><span>藥物名稱</span><input value={medicineName} onChange={(event) => setMedicineName(event.target.value)} maxLength={120} placeholder="依藥物標籤填寫" required /></label>
+                  <label className="field"><span>藥物名稱（可整組留空）</span><input value={medicineName} onChange={(event) => setMedicineName(event.target.value)} maxLength={120} placeholder="依藥物標籤填寫" /></label>
                   <fieldset className="medicine-field-group">
                     <legend>濃度</legend>
                     <p>照藥物標籤填寫，例如：120 mg / 5 mL</p>
                     <div className="medicine-ratio-grid">
-                      <label className="field"><span>含量</span><input type="number" inputMode="decimal" min="0.0001" max="1000000" step="any" value={medicineConcentrationAmount} onChange={(event) => { setMedicineConcentrationAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="120" required /></label>
+                      <label className="field"><span>含量</span><input type="number" inputMode="decimal" min="0.0001" max="1000000" step="any" value={medicineConcentrationAmount} onChange={(event) => { setMedicineConcentrationAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="120" /></label>
                       <label className="field"><span>單位</span><select value={medicineConcentrationUnit} onChange={(event) => setMedicineConcentrationUnit(event.target.value as MedicineActiveUnit)}><option value="mg">mg</option><option value="µg">µg</option><option value="IU">IU</option></select></label>
-                      <label className="field"><span>基準份量</span><input type="number" inputMode={medicineConcentrationPerUnit === '滴' ? 'numeric' : 'decimal'} min={medicineConcentrationPerUnit === '滴' ? '1' : '0.0001'} max="1000" step={medicineConcentrationPerUnit === '滴' ? '1' : 'any'} value={medicineConcentrationPerAmount} onChange={(event) => { setMedicineConcentrationPerAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="5" required /></label>
+                      <label className="field"><span>基準份量</span><input type="number" inputMode={medicineConcentrationPerUnit === '滴' ? 'numeric' : 'decimal'} min={medicineConcentrationPerUnit === '滴' ? '1' : '0.0001'} max="1000" step={medicineConcentrationPerUnit === '滴' ? '1' : 'any'} value={medicineConcentrationPerAmount} onChange={(event) => { setMedicineConcentrationPerAmount(event.target.value); setLegacyMedicineNotice(''); }} placeholder="5" /></label>
                       <label className="field"><span>份量單位</span><select value={medicineConcentrationPerUnit} onChange={(event) => { const unit = event.target.value as MedicineAdministrationUnit; setMedicineConcentrationPerUnit(unit); setMedicineAmountUnit(unit); }}><option value="mL">mL</option><option value="滴">滴</option></select></label>
                     </div>
                   </fieldset>
 
                   <div className="form-row two-columns medicine-administration-row">
-                    <label className="field"><span>服用份量</span><input type="number" inputMode={medicineAmountUnit === '滴' ? 'numeric' : 'decimal'} min={medicineAmountUnit === '滴' ? '1' : '0.0001'} max="100" step={medicineAmountUnit === '滴' ? '1' : 'any'} value={medicineAmount} onChange={(event) => setMedicineAmount(event.target.value)} placeholder={medicineAmountUnit === '滴' ? '例如 1' : '例如 2.5'} required /></label>
+                    <label className="field"><span>服用份量</span><input type="number" inputMode={medicineAmountUnit === '滴' ? 'numeric' : 'decimal'} min={medicineAmountUnit === '滴' ? '1' : '0.0001'} max="100" step={medicineAmountUnit === '滴' ? '1' : 'any'} value={medicineAmount} onChange={(event) => setMedicineAmount(event.target.value)} placeholder={medicineAmountUnit === '滴' ? '例如 1' : '例如 2.5'} /></label>
                     <label className="field"><span>單位</span><select value={medicineAmountUnit} onChange={(event) => setMedicineAmountUnit(event.target.value as MedicineAdministrationUnit)}><option value="mL">mL</option><option value="滴">滴</option></select></label>
                   </div>
 
@@ -454,7 +539,7 @@ export function QuickAddSheet({
               </>
             )}
 
-            {type === 'weight' && (
+            {activeType === 'weight' && (
               <RememberedField
                 field="weightKg"
                 label="體重"
@@ -469,18 +554,18 @@ export function QuickAddSheet({
             )}
 
             <RememberedField
-              field={noteFieldByType[type]}
-              label={type === 'note' ? '內容' : '備註'}
-              options={quickOptions[noteFieldByType[type]]}
+              field={noteFieldByType[activeType]}
+              label={activeType === 'note' ? '內容' : '備註'}
+              options={quickOptions[noteFieldByType[activeType]]}
               selectedValue={note}
               onSelect={(option) => setNote(String(option.value))}
               onDelete={onDeleteQuickOption}
             >
-              <label className="field"><span>{type === 'note' ? '內容' : '備註（可留空）'}</span><textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={1000} placeholder="記低其他觀察…" required={type === 'note'} /></label>
+              <label className="field"><span>{activeType === 'note' ? '內容（可留空）' : '備註（可留空）'}</span><textarea value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={1000} placeholder="記低其他觀察…" /></label>
             </RememberedField>
 
             {error && <div className="form-error" role="alert">{error}</div>}
-            <button className="primary-button save-record" disabled={saving}>{saving ? '儲存中…' : '儲存紀錄'}</button>
+            <button className="primary-button save-record" disabled={saving}>{saving ? '儲存中…' : isEditing ? '儲存修改' : '儲存紀錄'}</button>
           </form>
         )}
       </section>

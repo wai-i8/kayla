@@ -91,7 +91,73 @@
       "records": {
         "$recordId": {
           ".write": "auth != null && (auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid' || auth.token.email === 'REPLACE_FAMILY_LOGIN_ID@example.invalid') && (!data.exists() || data.child('createdBy').val() === auth.uid || auth.token.email === 'REPLACE_OWNER_LOGIN_ID@example.invalid')",
-          ".validate": "!newData.exists() || (newData.hasChildren(['type', 'occurredAt', 'createdAt', 'createdBy', 'details']) && newData.child('type').isString() && (newData.child('type').val() === 'feed' || newData.child('type').val() === 'nappy' || newData.child('type').val() === 'temperature' || newData.child('type').val() === 'sleep' || newData.child('type').val() === 'medicine' || newData.child('type').val() === 'weight' || newData.child('type').val() === 'note') && newData.child('occurredAt').isNumber() && newData.child('occurredAt').val() >= 1577836800000 && newData.child('occurredAt').val() <= now + 600000 && newData.child('createdAt').isNumber() && newData.child('createdAt').val() <= now + 600000 && ((!data.exists() && newData.child('createdBy').val() === auth.uid) || (data.exists() && newData.child('createdBy').val() === data.child('createdBy').val())) && (!newData.child('details').child('note').exists() || (newData.child('details').child('note').isString() && newData.child('details').child('note').val().length <= 1000)) && (newData.child('type').val() !== 'feed' || ((newData.child('details').child('method').val() === 'breast' || newData.child('details').child('method').val() === 'formula' || newData.child('details').child('method').val() === 'expressed') && (newData.child('details').child('method').val() === 'breast' || (newData.child('details').child('amountMl').isNumber() && newData.child('details').child('amountMl').val() > 0 && newData.child('details').child('amountMl').val() <= 1000)))) && (newData.child('type').val() !== 'nappy' || (newData.child('details').child('nappyType').val() === 'wet' || newData.child('details').child('nappyType').val() === 'dirty' || newData.child('details').child('nappyType').val() === 'both')) && (newData.child('type').val() !== 'temperature' || (newData.child('details').child('valueCelsius').isNumber() && newData.child('details').child('valueCelsius').val() >= 30 && newData.child('details').child('valueCelsius').val() <= 45)) && (newData.child('type').val() !== 'sleep' || (newData.child('details').child('sleepMinutes').isNumber() && newData.child('details').child('sleepMinutes').val() > 0 && newData.child('details').child('sleepMinutes').val() <= 1440)) && (newData.child('type').val() !== 'medicine' || (newData.child('details').child('medicineName').isString() && newData.child('details').child('medicineName').val().length > 0 && newData.child('details').child('medicineName').val().length <= 120 && newData.child('details').child('doseMl').isNumber() && newData.child('details').child('doseMl').val() > 0 && newData.child('details').child('doseMl').val() <= 100)) && (newData.child('type').val() !== 'weight' || (newData.child('details').child('weightKg').isNumber() && newData.child('details').child('weightKg').val() >= 0.3 && newData.child('details').child('weightKg').val() <= 30)) && (newData.child('type').val() !== 'note' || (newData.child('details').child('note').isString() && newData.child('details').child('note').val().length > 0)))"
+          ".validate": "!newData.exists() || (newData.hasChildren(['type', 'occurredAt', 'createdAt', 'createdBy']) && newData.child('type').isString() && (newData.child('type').val() === 'feed' || newData.child('type').val() === 'nappy' || newData.child('type').val() === 'temperature' || newData.child('type').val() === 'sleep' || newData.child('type').val() === 'medicine' || newData.child('type').val() === 'weight' || newData.child('type').val() === 'note') && newData.child('occurredAt').isNumber() && newData.child('occurredAt').val() >= 1577836800000 && newData.child('occurredAt').val() <= now + 600000 && newData.child('createdAt').isNumber() && newData.child('createdAt').val() >= 1577836800000 && newData.child('createdAt').val() <= now + 600000 && newData.child('createdBy').isString() && ((!data.exists() && newData.child('createdBy').val() === auth.uid && !newData.child('updatedAt').exists() && !newData.child('updatedBy').exists()) || (data.exists() && newData.child('createdAt').val() === data.child('createdAt').val() && newData.child('createdBy').val() === data.child('createdBy').val() && newData.child('createdByLabel').val() === data.child('createdByLabel').val() && newData.hasChildren(['updatedAt', 'updatedBy']) && newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() >= newData.child('createdAt').val() && (!data.child('updatedAt').exists() || newData.child('updatedAt').val() >= data.child('updatedAt').val()) && newData.child('updatedAt').val() <= now + 600000 && newData.child('updatedBy').val() === auth.uid)) && (!newData.child('status').exists() || newData.child('status').val() === 'draft') && (newData.child('status').val() === 'draft' || (!newData.child('status').exists() && newData.child('details').exists() && ((newData.child('type').val() === 'feed' && ((newData.child('details').child('method').val() === 'breast' && (newData.child('details').child('side').val() === 'left' || newData.child('details').child('side').val() === 'right' || newData.child('details').child('side').val() === 'both')) || ((newData.child('details').child('method').val() === 'formula' || newData.child('details').child('method').val() === 'expressed') && (newData.child('details').child('amountMl').exists() || newData.child('details').child('durationMinutes').exists())))) || (newData.child('type').val() === 'nappy' && newData.child('details').child('nappyType').exists()) || (newData.child('type').val() === 'temperature' && newData.child('details').child('valueCelsius').exists()) || (newData.child('type').val() === 'sleep' && newData.child('details').child('sleepMinutes').exists()) || (newData.child('type').val() === 'medicine' && newData.child('details').hasChildren(['medicineName', 'concentration', 'doseMl'])) || (newData.child('type').val() === 'weight' && newData.child('details').child('weightKg').exists()) || (newData.child('type').val() === 'note' && newData.child('details').child('note').exists())))))",
+          "type": {},
+          "occurredAt": {},
+          "createdAt": {},
+          "createdBy": {},
+          "createdByLabel": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+          },
+          "status": {
+            ".validate": "newData.val() === 'draft'"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() >= 1577836800000 && newData.val() <= now + 600000"
+          },
+          "updatedBy": {
+            ".validate": "newData.isString() && newData.val() === auth.uid"
+          },
+          "details": {
+            "method": {
+              ".validate": "newData.val() === 'breast' || newData.val() === 'formula' || newData.val() === 'expressed'"
+            },
+            "side": {
+              ".validate": "newData.val() === 'left' || newData.val() === 'right' || newData.val() === 'both'"
+            },
+            "durationMinutes": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 300"
+            },
+            "amountMl": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 1000"
+            },
+            "nappyType": {
+              ".validate": "newData.val() === 'wet' || newData.val() === 'dirty' || newData.val() === 'both'"
+            },
+            "stoolColour": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+            },
+            "valueCelsius": {
+              ".validate": "newData.isNumber() && newData.val() >= 30 && newData.val() <= 45"
+            },
+            "measurementSite": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+            },
+            "sleepMinutes": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 1440"
+            },
+            "medicineName": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+            },
+            "concentration": {
+              ".validate": "newData.isString() && newData.val().length <= 120 && newData.val().matches(/^(0[.][0-9]*[1-9]|[1-9][0-9]{0,5}([.][0-9]*[1-9])?|1000000) (mg|µg|IU) [/] ((0[.][0-9]*[1-9]|[1-9][0-9]{0,2}([.][0-9]*[1-9])?|1000) mL|([1-9][0-9]{0,2}|1000) 滴)$/)"
+            },
+            "doseMl": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 100"
+            },
+            "weightKg": {
+              ".validate": "newData.isNumber() && newData.val() >= 0.3 && newData.val() <= 30"
+            },
+            "note": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 1000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          },
+          "$other": {
+            ".validate": false
+          }
         }
       },
 

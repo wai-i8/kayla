@@ -12,6 +12,7 @@ interface RecordsPageProps {
   currentUserId: string;
   canManageAll: boolean;
   onAdd: () => void;
+  onEdit: (record: BabyRecord) => void;
   onDelete: (id: string) => Promise<void>;
 }
 
@@ -26,7 +27,7 @@ const filters: Array<{ value: 'all' | RecordType; label: string }> = [
   { value: 'note', label: '備註' },
 ];
 
-export function RecordsPage({ records, filter, onFilterChange, currentUserId, canManageAll, onAdd, onDelete }: RecordsPageProps) {
+export function RecordsPage({ records, filter, onFilterChange, currentUserId, canManageAll, onAdd, onEdit, onDelete }: RecordsPageProps) {
   const [deleting, setDeleting] = useState<BabyRecord | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState('');
@@ -90,7 +91,17 @@ export function RecordsPage({ records, filter, onFilterChange, currentUserId, ca
       {grouped.length ? grouped.map(([date, items]) => (
         <section className="record-day" key={date} data-date={date}>
           <div className="day-heading"><h2>{date === dateInputValue() ? '今日' : date === yesterdayDate ? '昨日' : formatLongDate(inputsToTimestamp(date, '12:00'))}</h2><span>{items.length} 項</span></div>
-          <div className="record-list">{items.map((record) => <RecordCard key={record.id} record={record} onDelete={canManageAll || record.createdBy === currentUserId ? (item) => { setDeleteError(''); setDeleting(item); } : undefined} />)}</div>
+          <div className="record-list">{items.map((record) => {
+            const canManage = canManageAll || record.createdBy === currentUserId;
+            return (
+              <RecordCard
+                key={record.id}
+                record={record}
+                onEdit={canManage ? onEdit : undefined}
+                onDelete={canManage ? (item) => { setDeleteError(''); setDeleting(item); } : undefined}
+              />
+            );
+          })}</div>
         </section>
       )) : (
         <div className="large-empty"><span className="large-empty-icon"><Icon name="records" size={30} /></span><h2>未有相關紀錄</h2><p>{hasActiveFilter ? '呢個篩選暫時未有紀錄，可以清除篩選再睇全部。' : '新增紀錄後，所有家庭成員都可以喺呢度睇到。'}</p><button className="primary-button" onClick={hasActiveFilter ? () => onFilterChange({ type: 'all', date: null }) : onAdd}>{hasActiveFilter ? '清除篩選' : '記低第一項'}</button></div>
@@ -99,7 +110,7 @@ export function RecordsPage({ records, filter, onFilterChange, currentUserId, ca
       {deleting && (
         <div className="modal-backdrop delete-backdrop" role="presentation">
           <section ref={deleteDialogRef} className="confirm-dialog" role="alertdialog" aria-modal="true" aria-label="確認刪除紀錄">
-            <span className="confirm-icon"><Icon name="trash" /></span><h2>刪除呢項紀錄？</h2><p>刪除後無法復原。如果只係時間或數值錯誤，可以稍後重新新增。</p>
+            <span className="confirm-icon"><Icon name="trash" /></span><h2>刪除呢項紀錄？</h2><p>刪除後無法復原。如果只係時間或內容錯誤，可以取消後使用編輯。</p>
             {deleteError && <div className="form-error delete-error" role="alert">{deleteError}</div>}
             <div className="confirm-actions"><button className="secondary-button" onClick={closeDeleteDialog} disabled={deleteBusy}>取消</button><button className="danger-button" onClick={confirmDelete} disabled={deleteBusy}>{deleteBusy ? '刪除中…' : '確認刪除'}</button></div>
           </section>

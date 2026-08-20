@@ -66,6 +66,9 @@ export interface BabyRecord {
   createdAt: number;
   createdBy: string;
   createdByLabel?: string;
+  status?: 'draft';
+  updatedAt?: number;
+  updatedBy?: string;
   details: {
     method?: 'breast' | 'formula' | 'expressed';
     side?: 'left' | 'right' | 'both';

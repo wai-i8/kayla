@@ -3,7 +3,7 @@ import { useAuth } from './hooks/useAuth';
 import { useKaylaData } from './hooks/useKaylaData';
 import { useKaylaPhotos } from './hooks/useKaylaPhotos';
 import { useOwnerRole } from './hooks/useOwnerRole';
-import type { RecordFilter, ViewKey } from './types';
+import type { BabyRecord, RecordFilter, ViewKey } from './types';
 import { LoginScreen } from './components/LoginScreen';
 import { BottomNavigation, SideNavigation } from './components/Navigation';
 import { QuickAddSheet } from './components/QuickAddSheet';
@@ -28,6 +28,7 @@ export default function App() {
     import.meta.env.DEV && allowedViews.includes(previewView as ViewKey) ? (previewView as ViewKey) : 'today',
   );
   const [quickAddOpen, setQuickAddOpen] = useState(import.meta.env.DEV && previewParams.has('add'));
+  const [editingRecord, setEditingRecord] = useState<BabyRecord | null>(null);
   const [recordsFilter, setRecordsFilter] = useState<RecordFilter>({ type: 'all', date: null });
   const [guideFocus, setGuideFocus] = useState<string | null>(
     import.meta.env.DEV ? previewParams.get('section') : null,
@@ -70,8 +71,18 @@ export default function App() {
 
   const clearGuideFocus = useCallback(() => setGuideFocus(null), []);
 
-  const openQuickAdd = () => setQuickAddOpen(true);
-  const closeQuickAdd = () => setQuickAddOpen(false);
+  const openQuickAdd = () => {
+    setEditingRecord(null);
+    setQuickAddOpen(true);
+  };
+  const openEditRecord = (record: BabyRecord) => {
+    setEditingRecord(record);
+    setQuickAddOpen(true);
+  };
+  const closeQuickAdd = () => {
+    setQuickAddOpen(false);
+    setEditingRecord(null);
+  };
 
   if (authState.loading) {
     return <div className="app-loading"><span className="brand-mark">K</span><p>正在確認私人登入…</p></div>;
@@ -98,7 +109,7 @@ export default function App() {
           ) : (
             <Suspense fallback={<div className="content-loading page-loading"><span /><p>載入頁面…</p></div>}>
               {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={openQuickAdd} onOpenRecords={openFilteredRecords} onOpenGuide={openGuide} onOpenPhotos={() => changeView('photos')} onQuickCamera={openQuickCamera} onOpenSettings={() => changeView('settings')} />}
-              {view === 'records' && <RecordsPage records={data.records} filter={recordsFilter} onFilterChange={setRecordsFilter} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={openQuickAdd} onDelete={data.deleteRecord} />}
+              {view === 'records' && <RecordsPage records={data.records} filter={recordsFilter} onFilterChange={setRecordsFilter} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={openQuickAdd} onEdit={openEditRecord} onDelete={data.deleteRecord} />}
               {view === 'guide' && <GuidePageView initialSectionId={guideFocus} onSectionOpened={clearGuideFocus} />}
               {view === 'calendar' && <CalendarPage profile={data.profile} onOpenSettings={() => changeView('settings')} />}
               {view === 'photos' && <PhotosPage photos={album.photos} loading={album.loading} error={album.error} onAdd={album.addPhoto} onDelete={album.deletePhoto} initialFile={cameraFile} onInitialFileConsumed={consumeCameraFile} />}
@@ -111,9 +122,11 @@ export default function App() {
       <BottomNavigation active={view} onChange={changeView} onAdd={openQuickAdd} />
       <QuickAddSheet
         open={quickAddOpen}
+        editingRecord={editingRecord}
         quickOptions={data.quickOptions}
         onClose={closeQuickAdd}
         onSave={data.addRecord}
+        onUpdate={data.updateRecord}
         onDeleteQuickOption={data.deleteQuickOption}
       />
       <input ref={quickCameraInput} className="sr-only" type="file" accept="image/*" capture="environment" onChange={receiveCameraPhoto} tabIndex={-1} aria-hidden="true" />

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { onValue, push, ref, remove, set, update } from 'firebase/database';
 import { database } from '../lib/firebase';
 import { isQuickOptionField, isQuickOptionValue, quickOptionEntries, quickOptionId } from '../lib/quickOptions';
+import { isRecordComplete } from '../lib/records';
 import type {
   AuthUser,
   BabyProfile,
@@ -200,10 +201,15 @@ export function useKaylaData(user: AuthUser | null) {
     const stopRecords = onValue(
       ref(database, 'kayla/records'),
       (snapshot) => {
-        const value = snapshot.val() as Record<string, Omit<BabyRecord, 'id'>> | null;
+        // Realtime Database removes empty objects. Draft records can therefore
+        // arrive without a `details` child even though the app always exposes
+        // a normalized object to the UI.
+        const value = snapshot.val() as Record<string, Omit<Omit<BabyRecord, 'id'>, 'details'> & {
+          details?: BabyRecord['details'];
+        }> | null;
         const nextRecords = value
           ? Object.entries(value)
-              .map(([id, record]) => ({ ...record, id }))
+              .map(([id, record]) => ({ ...record, id, details: record.details || {} }))
               .sort((a, b) => b.occurredAt - a.occurredAt)
           : [];
         setRecords(nextRecords);
@@ -255,20 +261,26 @@ export function useKaylaData(user: AuthUser | null) {
   const addRecord = useCallback(
     async (input: NewRecordInput) => {
       if (!user) throw new Error('需要先登入');
-      const value: Omit<BabyRecord, 'id'> = {
+      const details = withoutUndefined(input.details);
+      const value = withoutUndefined<Omit<BabyRecord, 'id'>>({
         ...input,
-        details: withoutUndefined(input.details),
+        details,
+        status: isRecordComplete(input.type, details) ? undefined : 'draft',
         createdAt: Date.now(),
         createdBy: user.uid,
         createdByLabel: user.email?.split('@')[0] || '家庭成員',
-      };
+      });
       if (isDemo) {
         setRecords((current) => [
-          { ...value, id: `demo-${Date.now()}` },
+          { ...value, id: `demo-${Date.now()}`, details: value.details || {} },
           ...current,
-        ]);
-        const additions = await preparedQuickOptions(input, user.uid);
-        setQuickOptions((current) => mergeQuickOptions(current, additions));
+        ].sort((a, b) => b.occurredAt - a.occurredAt));
+        try {
+          const additions = await preparedQuickOptions(input, user.uid);
+          setQuickOptions((current) => mergeQuickOptions(current, additions));
+        } catch {
+          // Remembered values are optional; the demo record is already saved.
+        }
         return;
       }
       await push(ref(database, 'kayla/records'), value);
@@ -289,6 +301,58 @@ export function useKaylaData(user: AuthUser | null) {
       }
     },
     [isDemo, user],
+  );
+
+  const updateRecord = useCallback(
+    async (recordId: string, input: NewRecordInput) => {
+      if (!user) throw new Error('需要先登入');
+      const existing = records.find((record) => record.id === recordId);
+      if (!existing) throw new Error('搵唔到要修改嘅紀錄');
+
+      const details = withoutUndefined(input.details);
+      const value = withoutUndefined<Omit<BabyRecord, 'id'>>({
+        ...input,
+        details,
+        status: isRecordComplete(input.type, details) ? undefined : 'draft',
+        createdAt: existing.createdAt,
+        createdBy: existing.createdBy,
+        createdByLabel: existing.createdByLabel,
+        updatedAt: Date.now(),
+        updatedBy: user.uid,
+      });
+
+      if (isDemo) {
+        setRecords((current) => current
+          .map((record) => (record.id === recordId
+            ? { ...value, id: recordId, details: value.details || {} }
+            : record))
+          .sort((a, b) => b.occurredAt - a.occurredAt));
+        try {
+          const additions = await preparedQuickOptions(input, user.uid);
+          setQuickOptions((current) => mergeQuickOptions(current, additions));
+        } catch {
+          // Remembered values are optional; the demo record is already saved.
+        }
+        return;
+      }
+
+      // Replace the whole node so clearing an old optional field actually
+      // removes it instead of leaving stale values behind.
+      await set(ref(database, `kayla/records/${recordId}`), value);
+
+      try {
+        const additions = await preparedQuickOptions(input, user.uid);
+        const changes: Record<string, unknown> = {};
+        additions.forEach(({ field, option }) => {
+          const { id, ...storedOption } = option;
+          changes[`kayla/quickOptions/${field}/${id}`] = storedOption;
+        });
+        if (Object.keys(changes).length) await update(ref(database), changes);
+      } catch {
+        // The record update succeeded; leave quick values unchanged.
+      }
+    },
+    [isDemo, records, user],
   );
 
   const deleteRecord = useCallback(
@@ -328,7 +392,8 @@ export function useKaylaData(user: AuthUser | null) {
     error,
     saveProfile,
     addRecord,
+    updateRecord,
     deleteRecord,
     deleteQuickOption,
-  }), [dataBelongsToCurrentUser, profile, records, quickOptions, userId, isDemo, loading, error, saveProfile, addRecord, deleteRecord, deleteQuickOption]);
+  }), [dataBelongsToCurrentUser, profile, records, quickOptions, userId, isDemo, loading, error, saveProfile, addRecord, updateRecord, deleteRecord, deleteQuickOption]);
 }

@@ -3,6 +3,7 @@ import { ageTimelineSections } from '../data/guides/timeline';
 import type { BabyProfile, BabyRecord, RecordFilter } from '../types';
 import { Icon } from '../components/Icon';
 import { formatMedicineAdministration } from '../lib/medicine';
+import { isRecordDraft } from '../lib/records';
 
 interface TodayPageProps {
   profile: BabyProfile | null;
@@ -37,14 +38,23 @@ function summariseDay(records: BabyRecord[]) {
     records: ordered,
     feeds,
     nappies,
-    wetNappies: nappies.filter((record) => record.details.nappyType !== 'dirty'),
-    dirtyNappies: nappies.filter((record) => record.details.nappyType !== 'wet'),
+    wetNappies: nappies.filter((record) => record.details?.nappyType === 'wet' || record.details?.nappyType === 'both'),
+    dirtyNappies: nappies.filter((record) => record.details?.nappyType === 'dirty' || record.details?.nappyType === 'both'),
+    pendingNappies: nappies.filter((record) => !record.details?.nappyType),
     lastFeed: feeds[0],
-    lastTemperature: ordered.find((record) => record.type === 'temperature'),
-    lastSleep: ordered.find((record) => record.type === 'sleep'),
-    lastMedicine: ordered.find((record) => record.type === 'medicine'),
-    lastWeight: ordered.find((record) => record.type === 'weight'),
+    lastTemperature: ordered.find((record) => record.type === 'temperature' && !isRecordDraft(record) && typeof record.details?.valueCelsius === 'number'),
+    lastSleep: ordered.find((record) => record.type === 'sleep' && !isRecordDraft(record) && typeof record.details?.sleepMinutes === 'number'),
+    lastMedicine: ordered.find((record) => record.type === 'medicine' && !isRecordDraft(record) && Boolean(record.details?.medicineName)),
+    lastWeight: ordered.find((record) => record.type === 'weight' && !isRecordDraft(record) && typeof record.details?.weightKg === 'number'),
   };
+}
+
+function nappyBreakdown(summary: ReturnType<typeof summariseDay>) {
+  return [
+    `${summary.wetNappies.length} 濕`,
+    `${summary.dirtyNappies.length} 便`,
+    summary.pendingNappies.length ? `${summary.pendingNappies.length} 待補` : '',
+  ].filter(Boolean).join(' · ');
 }
 
 function formatRecentTime(record: BabyRecord | undefined, now: number) {
@@ -77,6 +87,8 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
   const latestMedicineAdministration = latest.lastMedicine
     ? formatMedicineAdministration(latest.lastMedicine.details)
     : '';
+  const todayNappyBreakdown = nappyBreakdown(today);
+  const yesterdayNappyBreakdown = nappyBreakdown(yesterday);
   const ageDays = ageInDays(profile?.dateOfBirth);
   const guide = ageTimelineSections[currentGuideIndex(ageDays)];
   const hour = ukHour(now);
@@ -122,10 +134,10 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
               <strong>{today.feeds.length}<small> 次</small></strong>
               <span className="stat-detail">{today.lastFeed ? `最近 ${formatTime(today.lastFeed.occurredAt)}` : '未有紀錄'}</span>
             </button>
-            <button type="button" className="stat-card" data-testid="open-records-nappy" aria-label={`查看尿片紀錄；今日已有 ${today.nappies.length} 塊；${today.wetNappies.length} 濕、${today.dirtyNappies.length} 便`} onClick={() => onOpenRecords({ type: 'nappy', date: null })}>
+            <button type="button" className="stat-card" data-testid="open-records-nappy" aria-label={`查看尿片紀錄；今日已有 ${today.nappies.length} 塊；${todayNappyBreakdown}`} onClick={() => onOpenRecords({ type: 'nappy', date: null })}>
               <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
               <strong>{today.nappies.length}<small> 塊</small></strong>
-              <span className="stat-detail">{today.wetNappies.length} 濕 · {today.dirtyNappies.length} 便</span>
+              <span className="stat-detail">{todayNappyBreakdown}</span>
             </button>
             <div className="recent-stat-grid" role="group" data-testid="recent-records" aria-label="最近體溫、睡眠、藥物及體重紀錄">
               <button type="button" className="recent-stat-card" data-testid="open-records-temperature" aria-label={`查看體溫紀錄；最近 ${latest.lastTemperature?.details.valueCelsius?.toFixed(1) || '未有紀錄'}${latest.lastTemperature ? ' 度' : ''}；${formatRecentTime(latest.lastTemperature, now)}`} onClick={() => onOpenRecords({ type: 'temperature', date: null })}>
@@ -170,10 +182,10 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
                 <strong>{yesterday.feeds.length}<small> 次</small></strong>
                 <span className="stat-detail">{yesterday.lastFeed ? `最後 ${formatTime(yesterday.lastFeed.occurredAt)}` : '未有紀錄'}</span>
               </button>
-              <button type="button" className="stat-card yesterday-card" data-testid="open-records-yesterday-nappy" aria-label={`查看昨日尿片紀錄；${formatLongDate(yesterdayStart)}；共 ${yesterday.nappies.length} 塊；${yesterday.wetNappies.length} 濕、${yesterday.dirtyNappies.length} 便`} onClick={() => onOpenRecords({ type: 'nappy', date: yesterdayDate })}>
+              <button type="button" className="stat-card yesterday-card" data-testid="open-records-yesterday-nappy" aria-label={`查看昨日尿片紀錄；${formatLongDate(yesterdayStart)}；共 ${yesterday.nappies.length} 塊；${yesterdayNappyBreakdown}`} onClick={() => onOpenRecords({ type: 'nappy', date: yesterdayDate })}>
                 <span className="stat-top"><span className="record-icon tone-sage"><Icon name="nappy" size={19} /></span><span>尿片</span><span className="stat-action" aria-hidden="true"><Icon name="chevron" size={15} /></span></span>
                 <strong>{yesterday.nappies.length}<small> 塊</small></strong>
-                <span className="stat-detail">{yesterday.wetNappies.length} 濕 · {yesterday.dirtyNappies.length} 便</span>
+                <span className="stat-detail">{yesterdayNappyBreakdown}</span>
               </button>
             </div>
           </section>

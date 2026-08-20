@@ -63,25 +63,38 @@ Owner 第一次登入時，網站會嘗試喺自己 UID 下建立 `role: "owner"
 
 記錄表格會將成功儲存過嘅輸入同步到 `/kayla/quickOptions`，下次可以一撳填入。快捷選項係兩個家庭帳戶共用，刪除快捷選項只會移除常用答案，唔會刪除或修改舊紀錄。數字會以標準格式去重，例如 `20`、`20.0` 同 `020` 只會保留一個；藥物會將藥名、濃度、服用份量同單位整組保存，避免將獨立份量配到另一種藥。一般輸入每欄最多顯示最近六項，進入「管理」仍可檢視及刪除其餘項目。
 
-每個新日常紀錄必須包含：
+每個新日常紀錄至少包含：
 
 ```json
 {
   "type": "feed",
   "occurredAt": 1787076000000,
   "createdAt": 1787076000000,
-  "createdBy": "目前登入者的 Firebase UID"
+  "createdBy": "目前登入者的 Firebase UID",
+  "details": {
+    "method": "breast",
+    "side": "left"
+  }
 }
 ```
 
 - `type` 必須係 `feed`、`nappy`、`temperature`、`sleep`、`medicine`、`weight` 或 `note`。
 - `occurredAt` 及 `createdAt` 必須係數字 timestamp（毫秒）。
 - `createdBy` 必須等於目前登入者 `auth.uid`，唔可以由瀏覽器冒認另一個人。
-- `details` 會按紀錄種類檢查必要欄位同合理範圍，例如體溫 30–45°C、奶量 1–1000 ml；藥物只會按你輸入嘅濃度同服用份量作數學換算，唔會建議服用份量。
+- 資料完整嘅紀錄唔會有 `status`；`details` 會按種類檢查必要欄位同合理範圍，例如體溫 30–45°C、奶量 1–1000 mL。藥物完整紀錄必須包括藥名、標準格式濃度（例如 `120 mg / 5 mL`）同服用份量；網站只作數學換算，唔會建議服用份量。
+- 如果當時未得閒填資料，網站會加入 `"status": "draft"`。草稿仍然需要種類、發生時間及建立者資料，但可以冇 `details`；Realtime Database 會自動移除空嘅 `{}`，網站讀取時會重新正規化成空 details object。
+- `status` 只接受 `draft`；完成編輯後網站會移除呢個欄位。所有已填嘅選填欄位仍然會驗證類型及合理範圍，草稿唔代表可以寫入無效數值或未知欄位。
+- 編輯會完整取代該 record node，確保清空舊欄位時唔會殘留資料；`createdAt`、`createdBy` 同 `createdByLabel` 保持不變，另加 `updatedAt` 及目前登入者嘅 `updatedBy`。
 - Owner 可以管理任何紀錄；Family 只可以管理自己建立嘅紀錄。
 - 刪除紀錄係容許嘅，因此刪除時唔會要求上述欄位仍然存在。
 
 React 程式建立紀錄時必須跟呢個格式，否則 Firebase 會回覆 `PERMISSION_DENIED`。
+
+### 草稿及編輯功能必須發布新版 Rules
+
+加入草稿及編輯功能後，必須將今版 `database.rules.json` 嘅完整 `records` block 合併到 Firebase Console 現有 `/kayla` Rules，再按下 **Publish**。舊版規則要求每種紀錄即時填齊資料，亦未接受 `status`、`updatedAt`、`updatedBy`，所以只更新網站但未發布規則，空白儲存及編輯都會出現 `PERMISSION_DENIED`。
+
+呢個步驟仍然係「合併」而唔係直接以公開範本覆蓋整份 Rules；必須保留現有 `/e` 等其他路徑，亦只可以喺 Firebase Console／被 Git 忽略嘅本機完整規則換入真實登入 ID。
 
 ## 4. 部署前一定要合併原有規則
 
@@ -208,6 +221,9 @@ KAYLA 唔會呼叫 `getDownloadURL()`，亦唔會將帶長期 download token 嘅
 - Owner 讀寫 `/kayla/baby`：成功。
 - Family 讀 `/kayla/baby`：成功；寫入：拒絕。
 - Owner 同 Family 新增合規 record：成功。
+- Owner 同 Family 新增只有種類、時間及 `status: "draft"`、完全冇 `details` 嘅 record：成功。
+- 同一份空白 record 冇 `status: "draft"`：拒絕；草稿包含超出範圍數值或未知欄位：拒絕。
+- 編輯自己建立嘅 record 並保留 `createdAt`、`createdBy`、`createdByLabel`，加入正確 `updatedAt`、`updatedBy`：成功；嘗試改動原建立者資料：拒絕。
 - Owner 同 Family 新增及刪除自己需要嘅 `/kayla/quickOptions`：成功；其他帳戶：拒絕。
 - 新增紀錄後，相應快捷選項出現；刪除快捷選項後，舊紀錄仍然存在。
 - Family 修改另一位使用者嘅 record：拒絕。

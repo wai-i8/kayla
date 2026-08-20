@@ -236,6 +236,11 @@ button.side-brand {
 .record-copy strong { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .record-copy p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .record-copy small { display: block; margin-top: 7px; color: var(--soft-muted); font-size: 10px; }
+.record-title-row { display: flex; min-width: 0; align-items: center; gap: 8px; }
+.record-title-row strong { min-width: 0; }
+.record-draft-badge { flex: 0 0 auto; padding: 3px 7px; border-radius: 999px; background: #fff0ce; color: #765616; font-size: 11px; font-weight: 800; line-height: 1.35; }
+.record-actions { display: flex; flex: 0 0 auto; flex-direction: column; gap: 2px; margin: -4px -4px -4px 0; }
+.record-edit { width: 44px; height: 44px; color: var(--sage-dark); }
 .record-delete { width: 44px; height: 44px; color: #965d5d; }
 
 /* Today */
