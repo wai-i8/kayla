@@ -68,9 +68,10 @@ export function RecordCard({ record, compact, onDelete }: RecordCardProps) {
         </div>
         <strong>{recordTitle(record)}</strong>
         {!compact && medicineDetail && <p>{medicineDetail}</p>}
-        {!compact && (record.details.note || record.details.stoolColour) && (
-          <p>{record.details.note || `便便顏色：${record.details.stoolColour}`}</p>
+        {!compact && record.type === 'nappy' && record.details.stoolColour && (
+          <p>便便顏色：{record.details.stoolColour}</p>
         )}
+        {!compact && record.details.note && <p>{record.details.note}</p>}
         {!compact && <small>由 {record.createdByLabel || '家庭成員'} 記錄</small>}
       </div>
       {onDelete && (
