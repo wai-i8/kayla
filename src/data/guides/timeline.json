@@ -4,6 +4,7 @@
     "ageLabel": "出生至 2 小時",
     "title": "先相處、保暖、留意食奶訊號",
     "summary": "Skin-to-skin、早期飢餓訊號同每次仰睡。",
+    "highlights": ["保持清醒做 skin-to-skin，確保 BB 面部可見、口鼻暢通；眼瞓就放回安全睡床。", "搵乳、郁嘴、食手已係早期肚餓訊號。", "每次瞓覺都仰睡，睡床平坦、堅實同清空。"],
     "topicId": "timeline",
     "anchor": "birth-2-hours",
     "topicIds": ["timeline", "feeding", "sleep"]
@@ -13,6 +14,7 @@
     "ageLabel": "第 1 日",
     "title": "密密食同胎糞",
     "summary": "跟訊號餵，開始記錄食奶同尿片。",
+    "highlights": ["頭幾星期好多母乳 BB 每 24 小時會食 8 至 12 次或更多。", "第一啲便便通常係深綠黑色胎糞。", "記低食奶同尿片，方便同 midwife 對照趨勢。"],
     "topicId": "timeline",
     "anchor": "day-1",
     "topicIds": ["timeline", "feeding", "nappies-care"]
@@ -22,6 +24,7 @@
     "ageLabel": "第 2 至 3 日",
     "title": "含乳、便便轉色同黃疸",
     "summary": "睇有效食奶線索，同時留意黃疸緊急警號。",
+    "highlights": ["留意嘴張大、下巴貼乳房同有節奏吞嚥。", "便便會由胎糞逐步轉啡綠，再變黃。", "出生 24 小時內已黃要即時求醫；之後見黃或加深亦要盡快聯絡醫護。"],
     "topicId": "timeline",
     "anchor": "days-2-3",
     "topicIds": ["timeline", "feeding", "symptoms"]
@@ -31,6 +34,7 @@
     "ageLabel": "第 3 至 7 日",
     "title": "尿片、臍帶同 blood spot",
     "summary": "由第 5 日起睇濕尿片趨勢，按安排完成血點測試。",
+    "highlights": ["由第 5 日起通常每 24 小時至少 6 塊重濕／明顯濕尿片。", "臍帶保持清潔乾爽，等佢自然脫落。", "血點測試通常約第 5 日，跟 maternity team 安排。"],
     "topicId": "timeline",
     "anchor": "days-3-7",
     "topicIds": ["timeline", "feeding", "nappies-care", "vaccinations"]
@@ -40,6 +44,7 @@
     "ageLabel": "第 1 至 2 週",
     "title": "初生檢查、聽力同支援",
     "summary": "核對 NIPE、聽力篩查同 health visitor 聯絡。",
+    "highlights": ["核對出生後 NIPE 身體檢查結果或跟進安排。", "聽力篩查通常喺出院前或頭幾星期完成。", "食奶、體重或黃疸有疑問可聯絡 midwife／health visitor。"],
     "topicId": "timeline",
     "anchor": "weeks-1-2",
     "topicIds": ["timeline", "vaccinations", "local-help"]
@@ -49,6 +54,7 @@
     "ageLabel": "第 3 至 4 週",
     "title": "短 tummy time 同面對面互動",
     "summary": "只在清醒、全程看守下逐少增加活動。",
+    "highlights": ["BB 清醒先做 tummy time，由短時間開始，全程看守。", "面對面講嘢、唱歌；BB 擰開頭或打呵欠就休息。", "頂唔順時將 BB 仰睡放入清空睡床，短暫冷靜。"],
     "topicId": "timeline",
     "anchor": "weeks-3-4",
     "topicIds": ["timeline", "caregiver-wellbeing"]
@@ -58,6 +64,7 @@
     "ageLabel": "第 5 至 8 週",
     "title": "準備 8 週疫苗",
     "summary": "帶 Red Book，藥物只跟接種團隊同最新官方單張。",
+    "highlights": ["8 週常規疫苗：6-in-1、MenB 同 rotavirus。", "帶 Red Book；漏咗預約就主動聯絡 GP。", "MenB 後退燒藥只跟接種團隊同最新官方單張。"],
     "topicId": "timeline",
     "anchor": "weeks-5-8",
     "topicIds": ["timeline", "vaccinations", "using-and-recording"]
@@ -67,6 +74,7 @@
     "ageLabel": "2 至 3 個月",
     "title": "12 週疫苗同聲音互動",
     "summary": "講、唱、等 BB 回應，繼續短 tummy time。",
+    "highlights": ["12 週常規疫苗：6-in-1、MenB 同 rotavirus。", "講、唱之後停一停，等 BB 用眼神、表情或聲音回應。", "繼續每日分幾次短 tummy time，只限清醒同全程看守。"],
     "topicId": "timeline",
     "anchor": "months-2-3",
     "topicIds": ["timeline", "vaccinations"]
@@ -76,6 +84,7 @@
     "ageLabel": "3 至 4 個月",
     "title": "16 週疫苗同地板活動",
     "summary": "安全活動空間加上持續安全睡眠。",
+    "highlights": ["16 週常規疫苗：6-in-1 同 pneumococcal（PCV）。", "用安全地墊俾 BB 踢腳、伸手同轉頭。", "所有睡眠仍然仰睡，頭 6 個月同房但不同床。"],
     "topicId": "timeline",
     "anchor": "months-3-4",
     "topicIds": ["timeline", "vaccinations", "sleep"]
@@ -85,6 +94,7 @@
     "ageLabel": "4 至 5 個月",
     "title": "遊戲跟 BB 節奏",
     "summary": "真人互動為主，唔因夜醒或食手而提早加固。",
+    "highlights": ["用歌、表情、布書同安全玩具互動，BB 煩躁就休息。", "固體食物通常約 6 個月先開始，除非醫護另有建議。", "奶仍然係主要營養；唔好將米糊或食物加落奶樽。"],
     "topicId": "timeline",
     "anchor": "months-4-5",
     "topicIds": ["timeline", "feeding"]
@@ -94,6 +104,7 @@
     "ageLabel": "5 至 6 個月",
     "title": "睇三個加固準備訊號",
     "summary": "約 6 個月，同時有頭頸控制、協調同吞嚥能力先開始。",
+    "highlights": ["坐穩並控制頭頸、手眼口協調、吞到食物要同時做到。", "咬手、夜醒或想食多啲奶，單獨都唔代表要加固。", "早產或有醫療需要，先問 health visitor／醫療團隊。"],
     "topicId": "timeline",
     "anchor": "months-5-6",
     "topicIds": ["timeline", "feeding"]

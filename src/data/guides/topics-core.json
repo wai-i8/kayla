@@ -8,7 +8,7 @@
     "priority": "urgent",
     "keywords": ["999", "111", "A&E", "呼吸", "抽筋", "發燒", "皮疹", "唔醒", "急症"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "review": { "reviewedAt": "2026-08-26", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-urgent-under-five-2026", "nhs-child-accident", "nhs-call-999"],
     "blocks": [
       {
@@ -20,9 +20,10 @@
           "停止呼吸；呼吸非常快／困難、呻吟，或者肚／胸吸入。",
           "反應唔到／點都叫唔醒、身體軟癱、正在抽筋／癲癇發作，或者突然嚴重受傷。",
           "嘴唇、舌頭或皮膚呈藍、灰、非常蒼白或斑駁；深膚色可留意手掌、腳底。",
+          "皮膚摸落冰冷或濕黏；或者哭聲微弱、異常高音或持續不停。",
           "嘴、唇、喉嚨或舌頭突然腫脹；或者大量出血、吞咗毒物／過量藥物。",
           "未滿 3 個月體溫 38°C 或以上；3 至 6 個月體溫 39°C 或以上。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA 單張；如擔心先 call 111。",
-          "體溫低過 36°C，或者過去 12 小時完全冇尿／濕尿片。",
+          "體溫低過 36°C、摸落凍或發抖；如安全可於 10 分鐘內再量 2 次確認，但 BB 唔舒服或有其他紅旗，唔好為重測延誤 call 999／A&E。過去 12 小時完全冇尿／濕尿片亦要立即求助。",
           "黃色帶綠或綠色嘔吐，或者有按壓後唔退色嘅紅、紫或啡色皮疹。"
         ],
         "action": { "label": "Call 999", "href": "tel:999" },
@@ -33,7 +34,7 @@
         "type": "warning",
         "severity": "emergency",
         "title": "體溫達 NHS 即時求醫門檻：call 999 或去 A&E",
-        "body": "未滿 3 個月 38°C 或以上；3 至 6 個月 39°C 或以上。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張；如有其他紅旗、你擔心或超過 48 小時仍發燒就求助。3 至 6 個月如過去 2 日打過其他疫苗，亦按接種團隊指示；低過 36°C 仍屬即時求醫門檻。",
+        "body": "未滿 3 個月 38°C 或以上；3 至 6 個月 39°C 或以上。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張；如有其他紅旗、你擔心或超過 48 小時仍發燒就求助。3 至 6 個月如過去 2 日打過其他疫苗，亦按接種團隊指示。低過 36°C 仍屬即時求醫門檻；如安全可於 10 分鐘內再量 2 次確認，但 BB 唔舒服時唔好延誤求助。",
         "action": { "label": "Call 999", "href": "tel:999" },
         "sourceIds": ["nhs-urgent-under-five-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
       },
@@ -77,23 +78,34 @@
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
     "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
     "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "nhs-changing-nappy", "gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-start-weaning", "ukhsa-immunisation-2026"],
-    "mediaIds": ["video-unicef-skin-to-skin", "photo-tummy-time"],
+    "mediaIds": ["video-unicef-skin-to-skin", "video-hk-holding", "photo-tummy-time", "illustration-tummy-time", "illustration-calm-waking", "link-hk-development"],
     "blocks": [
       {
         "id": "birth-2-hours",
         "type": "callout",
         "severity": "info",
         "title": "出生至 2 小時：先相處、保暖、留意食奶訊號",
-        "items": ["情況容許可 skin-to-skin；望住 BB、輕聲講嘢。", "BB 搵乳、郁嘴、食手已係早期飢餓訊號，唔使等到喊。", "瞓覺每次都要仰睡，放在清空、平坦、堅實嘅獨立睡床。"],
+        "items": ["情況容許可 skin-to-skin；照顧者保持清醒，BB 面部一直可見、頭頸正直、口鼻暢通。照顧者眼瞓或唔舒服，就交俾另一位清醒成人，或者將 BB 仰睡放回安全睡床。", "BB 搵乳、郁嘴、食手已係早期飢餓訊號，唔使等到喊。", "瞓覺每次都要仰睡，放在清空、平坦、堅實嘅獨立睡床。"],
         "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "lullaby-safer-sleep"]
       },
+      {
+        "id": "holding-newborn",
+        "type": "steps",
+        "items": [
+          "行近 BB 先落手，避免伸直雙臂遠距離抱起。",
+          "一隻手托實頭同頸，另一隻手托住臀部同大腿；慢慢抱近自己身體。",
+          "放低時繼續托住頭頸同臀部，等成個身體穩定落到床面先慢慢抽手。"
+        ],
+        "sourceIds": ["hk-fhs-holding", "hk-fhs-development-newborn"]
+      },
+      { "id": "holding-video-hk", "type": "media", "mediaId": "video-hk-holding", "sourceIds": ["hk-fhs-holding"] },
       { "id": "skin-to-skin-official", "type": "media", "mediaId": "video-unicef-skin-to-skin", "sourceIds": ["unicef-meeting-baby-video"] },
       {
         "id": "day-1",
         "type": "callout",
         "severity": "info",
         "title": "第 1 日：密密食係常見",
-        "items": ["頭幾星期好多 BB 24 小時會食至少 8 至 12 次；跟早期訊號餵。", "第一啲便便通常係深綠黑色胎糞。", "記低食奶同尿片可幫你同 midwife 對照趨勢。"],
+        "items": ["頭幾星期好多母乳 BB 每 24 小時會食 8 至 12 次或更多；跟早期訊號餵。", "第一啲便便通常係深綠黑色胎糞。", "記低食奶同尿片可幫你同 midwife 對照趨勢。"],
         "sourceIds": ["nhs-breastfeeding-first-days", "nhs-changing-nappy", "nhs-breastfeeding-enough"]
       },
       {
@@ -125,9 +137,10 @@
         "type": "callout",
         "severity": "info",
         "title": "第 3 至 4 週：短時間 tummy time 同互動",
-        "items": ["BB 清醒、有大人全程望住先做 tummy time；可先趴喺你胸口，逐少增加。", "講嘢、唱歌、模仿 BB 聲音；見到擰開頭、打呵欠或閉眼就俾佢休息。", "喊聲可能由約第 2 週開始增加；照顧者頂唔順可安全放 BB 入睡床，短暫行開冷靜。"],
+        "items": ["BB 清醒、有大人全程望住先做 tummy time；可先趴喺你胸口或大腿，每次短短地逐漸增加。", "講嘢、唱歌、模仿 BB 聲音；見到擰開頭、打呵欠或閉眼就俾佢休息。", "喊聲可能由約第 2 週開始增加；照顧者頂唔順可安全放 BB 入睡床，短暫行開冷靜。"],
         "sourceIds": ["nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-soothing-crying"]
       },
+      { "id": "calm-waking-illustration", "type": "media", "mediaId": "illustration-calm-waking", "sourceIds": ["nhs-understanding-baby"] },
       {
         "id": "weeks-5-8",
         "type": "callout",
@@ -137,6 +150,19 @@
         "sourceIds": ["ukhsa-immunisation-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
       },
       { "id": "tummy-time-photo", "type": "media", "mediaId": "photo-tummy-time", "sourceIds": ["nhs-baby-moves"] },
+      { "id": "tummy-time-illustration", "type": "media", "mediaId": "illustration-tummy-time", "sourceIds": ["nhs-baby-moves", "lullaby-safer-sleep"] },
+      {
+        "id": "tummy-time-how-to",
+        "type": "steps",
+        "items": [
+          "揀 BB 清醒、精神舒服嘅時間；照顧者保持清醒並全程望住。",
+          "可以由趴喺你胸口／大腿開始；適應後先試平坦地墊，照顧者伏低同 BB 面對面講嘢。",
+          "一次唔使長；BB 將面埋低、攰、喊或唔舒服就停，轉返仰臥休息。",
+          "Tummy time 只係清醒活動；所有睡眠仍然要仰睡。"
+        ],
+        "sourceIds": ["nhs-baby-moves", "hk-fhs-development-1-3", "lullaby-safer-sleep"]
+      },
+      { "id": "development-link-hk", "type": "media", "mediaId": "link-hk-development", "sourceIds": ["hk-fhs-development-1-3"] },
       {
         "id": "months-2-3",
         "type": "callout",
@@ -182,32 +208,49 @@
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
     "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-latch", "nhs-breastfeeding-enough", "nhs-bottle-feed", "nhs-formula-preparation", "nhs-bottle-advice", "unicef-responsive-bottle", "nhs-vitamins-baby"],
-    "mediaIds": ["video-nhs-latch", "video-unicef-positioning", "photo-breastfeeding", "photo-bottle-feeding"],
+    "mediaIds": ["video-nhs-latch", "video-unicef-positioning", "video-hk-responsive-feeding", "video-hk-latch", "video-tw-breastfeeding", "photo-breastfeeding", "photo-bottle-feeding", "video-hk-burping", "illustration-feeding-cues", "illustration-responsive-bottle"],
     "blocks": [
       { "id": "responsive-feeding", "type": "heading", "level": 2, "text": "跟早期訊號餵，唔用分鐘做目標" },
       {
         "id": "feeding-cues",
         "type": "bullets",
-        "items": ["搵乳、郁嘴、食手、轉頭係早期訊號；喊通常已係較遲。", "頭幾星期好多母乳 BB 24 小時會食至少 8 至 12 次，亦可能一段時間密集食。", "每餐長短可以差好遠；重點係吞嚥、食後反應、尿片同體重趨勢。"],
-        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-enough"]
+        "items": ["早期：瞓醒郁動、舔嘴、張嘴搵乳、眼睛四圍望；呢個時候通常最易開始。", "中期：食手／拳頭、伸展手腳、越郁越多；準備好就餵。", "較遲：煩躁、面紅、大喊；先抱近、輕聲或 skin-to-skin 安撫，平靜少少再餵。", "頭幾星期好多母乳 BB 每 24 小時會食 8 至 12 次或更多，亦可能一段時間密集食；唔需要硬跟時鐘。", "每餐長短可以差好遠；重點係吞嚥、食後反應、尿片同體重趨勢。"],
+        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-enough", "nhs-feeding-on-demand", "hk-fhs-responsive-feeding"]
       },
+      { "id": "feeding-cues-illustration", "type": "media", "mediaId": "illustration-feeding-cues", "sourceIds": ["nhs-breastfeeding-first-days", "nhs-feeding-on-demand"] },
+      { "id": "responsive-feeding-video-hk", "type": "media", "mediaId": "video-hk-responsive-feeding", "sourceIds": ["hk-fhs-responsive-feeding"] },
       {
         "id": "latch-check",
         "type": "bullets",
-        "items": ["BB 嘴張大、下巴貼乳房、鼻孔暢通；面頰圓，吸啜後可聽／見吞嚥。", "餵奶初段拉扯感可以有，但持續痛、乳頭損傷或 BB 食極都唔滿足，要盡快搵 midwife／health visitor／breastfeeding support。"],
-        "sourceIds": ["nhs-breastfeeding-latch", "nhs-breastfeeding-enough"]
+        "items": ["將 BB 成個身貼近你，耳、肩、髖大致成一直線；鼻尖先對乳頭，俾頭稍微向後。", "等嘴張到好大先將 BB 帶近乳房：下巴先貼，鼻孔暢通；見到上唇上面嘅乳暈通常多過下唇下面。", "吸啜開始較快，之後變深而有節奏；面頰圓，可聽／見吞嚥。", "餵奶初段拉扯感可以有，但持續痛、乳頭損傷或 BB 食極都唔滿足，要盡快搵 midwife／health visitor／breastfeeding support。"],
+        "sourceIds": ["nhs-breastfeeding-latch", "nhs-breastfeeding-enough", "hk-fhs-latch"]
       },
       { "id": "latch-video", "type": "media", "mediaId": "video-nhs-latch", "sourceIds": ["nhs-breastfeeding-latch"] },
+      { "id": "latch-video-hk", "type": "media", "mediaId": "video-hk-latch", "sourceIds": ["hk-fhs-latch"] },
       { "id": "positioning-video", "type": "media", "mediaId": "video-unicef-positioning", "sourceIds": ["unicef-positioning-video"] },
+      { "id": "breastfeeding-videos-tw", "type": "media", "mediaId": "video-tw-breastfeeding", "sourceIds": ["tw-hpa-breastfeeding-videos"] },
       { "id": "breastfeeding-photo", "type": "media", "mediaId": "photo-breastfeeding", "sourceIds": ["nhs-breastfeeding-latch"] },
       { "id": "bottle-heading", "type": "heading", "level": 2, "text": "Responsive bottle feeding" },
       {
         "id": "responsive-bottle",
         "type": "steps",
-        "items": ["抱 BB 半直坐，頭頸有承托。", "奶樽近水平，等 BB 主動含奶嘴；見到要停嘅訊號就放低奶樽。", "唔好逼飲完、唔好用物件托住奶樽，亦唔好留 BB 自己飲。"],
-        "sourceIds": ["nhs-bottle-feed", "unicef-responsive-bottle"]
+        "items": ["抱 BB 半直坐，頭頸有承托；抱近身體並望住佢。", "用奶嘴輕觸上唇，等 BB 自己張嘴含入；唔好硬塞。", "奶樽保持接近水平、只微微傾斜令奶嘴有奶，等 BB 可以自己控制流速。", "吞得慢、張開手指、轉頭、推開奶嘴、停止吸啜或漏奶，就放慢／停一停；未必每次都飲完。", "唔好逼飲完、唔好用物件托住奶樽，亦唔好留 BB 自己飲。"],
+        "sourceIds": ["nhs-bottle-feed", "nhs-feeding-on-demand", "unicef-responsive-bottle"]
       },
+      { "id": "responsive-bottle-illustration", "type": "media", "mediaId": "illustration-responsive-bottle", "sourceIds": ["nhs-bottle-feed", "nhs-feeding-on-demand", "unicef-responsive-bottle"] },
       { "id": "bottle-feeding-photo", "type": "media", "mediaId": "photo-bottle-feeding", "sourceIds": ["nhs-bottle-feed", "unicef-responsive-bottle"] },
+      {
+        "id": "burping",
+        "type": "steps",
+        "items": [
+          "BB 餵緊時顯得唔舒服可以先停一停掃風；如果舒服，可以等食完先試。",
+          "任何姿勢都要托實頭頸，令肚同背部較直、唔好縮成一團。",
+          "可以靠肩、坐大腿或橫趴大腿；用另一隻手溫柔掃背或輕拍。",
+          "通常試幾分鐘已經夠；掃唔到但 BB 舒服，唔需要一直拍。"
+        ],
+        "sourceIds": ["nhs-burping", "hk-fhs-burping"]
+      },
+      { "id": "burping-video-hk", "type": "media", "mediaId": "video-hk-burping", "sourceIds": ["hk-fhs-burping"] },
       { "id": "formula-heading", "type": "heading", "level": 2, "text": "每次新鮮沖一餐配方奶" },
       {
         "id": "formula-steps",
@@ -228,7 +271,7 @@
         "type": "callout",
         "severity": "info",
         "title": "維他命 D（英格蘭）",
-        "body": "全母乳或部分母乳 BB 由出生起通常每日需要 8.5 至 10 micrograms；每日飲 500mL 或以上配方奶通常唔需要另加，因配方奶已有添加。產品濃度各異，只跟標籤、藥劑師或醫護指示，App 唔計滴數。",
+        "body": "全母乳或混合餵哺 BB 由出生起通常每日需要 8.5 至 10 micrograms；純配方奶 BB 每日飲 500 mL 或以上通常唔需要另加，因配方奶已有添加。產品濃度各異，只跟標籤、藥劑師或醫護指示，App 唔計滴數。",
         "sourceIds": ["nhs-vitamins-baby"]
       }
     ]
@@ -242,16 +285,19 @@
     "priority": "urgent",
     "keywords": ["瞓覺", "睡眠", "仰睡", "同床", "cot", "室溫", "包被", "SIDS"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "UK", "status": "reviewed" },
-    "sourceIds": ["lullaby-safer-sleep", "lullaby-room-temperature", "lullaby-co-sleeping"],
-    "mediaIds": ["link-lullaby-safer-sleep"],
+    "review": { "reviewedAt": "2026-08-26", "region": "UK", "status": "reviewed" },
+    "sourceIds": ["nhs-safer-sleep", "lullaby-safer-sleep", "lullaby-room-temperature", "lullaby-co-sleeping"],
+    "mediaIds": ["link-lullaby-safer-sleep", "link-tw-safe-sleep", "illustration-safe-sleep"],
     "blocks": [
+      { "id": "safe-sleep-heading", "type": "heading", "level": 2, "text": "每次瞓覺都做同一個安全檢查" },
       {
         "id": "abc-sleep",
         "type": "bullets",
-        "items": ["每次睡眠都仰睡；唔好側睡或趴睡。", "放在平坦、堅實、有防水套嘅獨立床褥；頭 6 個月日夜都同照顧者同房。", "睡床保持清空：冇枕頭、羽絨被、床圍、毛公仔、鬆散被鋪、睡眠巢、楔形墊或定位器。"],
+        "items": ["每次睡眠都仰睡；唔好側睡或趴睡。", "放在平坦、堅實、有防水套嘅獨立床褥；頭 6 個月日夜都同照顧者同房。", "睡床保持清空：冇枕頭、羽絨被、床圍、毛公仔、鬆散被鋪、睡眠巢、楔形墊或定位器。", "BB 個頭同面要完全露出；室內唔戴帽，唔好用有重量嘅被或睡袋。", "每次放低前用 10 秒望一次：仰睡、面部冇遮住、床面平坦清空。"],
         "sourceIds": ["lullaby-safer-sleep"]
       },
+      { "id": "safe-sleep-illustration", "type": "media", "mediaId": "illustration-safe-sleep", "sourceIds": ["lullaby-safer-sleep"] },
+      { "id": "safe-sleep-card-tw", "type": "media", "mediaId": "link-tw-safe-sleep", "sourceIds": ["tw-hpa-safe-sleep", "lullaby-safer-sleep"] },
       {
         "id": "temperature",
         "type": "callout",
@@ -265,8 +311,8 @@
         "type": "warning",
         "severity": "caution",
         "title": "最安全係 BB 自己睡床；梳化／扶手椅絕對唔適合一齊瞓",
-        "items": ["任何人吸煙、飲酒、食咗會嗜睡嘅藥／毒品，或者 BB 早產／低出生體重，都唔應同床。", "如果可能瞓着，預先將成人床枕頭、被同縫隙移離 BB；醒咗就放返 BB 入自己睡床。"],
-        "sourceIds": ["lullaby-co-sleeping", "lullaby-safer-sleep"]
+        "items": ["照顧者極度疲倦，或者 BB 發燒／有任何病徵，絕對唔好同床。任何人吸煙、BB 懷孕期曾接觸煙、任何人飲酒／食咗會嗜睡嘅藥或毒品，或者 BB 早產／低出生體重，都唔應同床。", "如果可能瞓着，先移走成人床上枕頭同被、清除牆邊／床褥縫隙，BB 保持仰睡；其他小朋友同寵物唔可以同床，亦唔可以留 BB 單獨喺成人床。", "醒咗就將 BB 放返入同房嘅清空、平坦、堅實獨立睡床；梳化同扶手椅任何情況都唔適合一齊瞓。"],
+        "sourceIds": ["nhs-safer-sleep", "lullaby-co-sleeping", "lullaby-safer-sleep"]
       },
       {
         "id": "sleep-emergency",

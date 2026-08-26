@@ -11,17 +11,21 @@ function sourcePublisher(source: GuideSourceItem) {
   return source.organisation || source.organization || source.publisher || source.title;
 }
 
+function hasSafeSourceUrl(source: GuideSourceItem) {
+  return /^https:\/\//i.test(source.url);
+}
+
 export function GuideSourceChips({ sourceIds, sources, compact = true }: GuideSourceChipsProps) {
   const resolved = [...new Set(sourceIds || [])]
     .map((id) => sources.get(id))
-    .filter((source): source is GuideSourceItem => Boolean(source));
+    .filter((source): source is GuideSourceItem => source !== undefined && hasSafeSourceUrl(source));
 
   if (!resolved.length) return null;
 
   return (
     <div className={`guide-source-chips ${compact ? 'compact' : ''}`} aria-label="呢段內容嘅資料來源">
       {resolved.map((source) => (
-        <a key={source.id} href={source.url} target="_blank" rel="noreferrer" title={source.title} aria-label={`資料來源：${source.title}（開新視窗）`}>
+        <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer" title={source.title} aria-label={`資料來源：${source.title}（開新視窗）`}>
           {sourcePublisher(source)}
           <span aria-hidden="true">↗</span>
         </a>
@@ -38,7 +42,7 @@ interface GuideSourceListProps {
 export function GuideSourceList({ sourceIds, sources }: GuideSourceListProps) {
   const resolved = [...new Set(sourceIds || [])]
     .map((id) => sources.get(id))
-    .filter((source): source is GuideSourceItem => Boolean(source));
+    .filter((source): source is GuideSourceItem => source !== undefined && hasSafeSourceUrl(source));
 
   if (!resolved.length) return null;
 
@@ -54,7 +58,7 @@ export function GuideSourceList({ sourceIds, sources }: GuideSourceListProps) {
       <ul>
         {resolved.map((source) => (
           <li key={source.id}>
-            <a href={source.url} target="_blank" rel="noreferrer">
+            <a href={source.url} target="_blank" rel="noopener noreferrer">
               <strong>{source.title}</strong>
               <span>{sourcePublisher(source)}{source.updatedAt ? ` · 更新 ${source.updatedAt}` : ''}{source.checkedAt || source.accessedAt ? ` · 核對 ${source.checkedAt || source.accessedAt}` : ''}</span>
               <small>開啟官方網頁 <span aria-hidden="true">↗</span></small>

@@ -13,6 +13,12 @@ function blockAnchor(id: string) {
   return `guide-block-${id}`;
 }
 
+function safeGuideHref(href: string, allowTelephone = false) {
+  if (/^https:\/\//i.test(href)) return href;
+  if (allowTelephone && /^tel:(?:999|111)$/i.test(href)) return href;
+  return undefined;
+}
+
 function BlockSources({ block, sources }: Pick<GuideBlockRendererProps, 'block' | 'sources'>) {
   return <GuideSourceChips sourceIds={block.sourceIds} sources={sources} />;
 }
@@ -97,6 +103,8 @@ export function GuideBlockRenderer({ block, media, sources }: GuideBlockRenderer
   }
 
   if (block.type === 'warning' || block.type === 'callout') {
+    const actionHref = block.action ? safeGuideHref(block.action.href, true) : undefined;
+    const opensNewWindow = actionHref ? /^https?:\/\//i.test(actionHref) : false;
     return (
       <aside className={`guide-callout severity-${block.severity}`} id={anchor} tabIndex={-1} aria-labelledby={`${anchor}-title`}>
         <span className="guide-callout-icon"><Icon name={block.severity === 'info' ? 'shield' : 'alert'} /></span>
@@ -104,7 +112,16 @@ export function GuideBlockRenderer({ block, media, sources }: GuideBlockRenderer
           <h2 id={`${anchor}-title`}>{block.title}</h2>
           {block.body && <p>{block.body}</p>}
           {block.items?.length ? <ul>{block.items.map((item, index) => <li key={`${block.id}-${index}`}>{item}</li>)}</ul> : null}
-          {block.action && <a className="guide-callout-action" href={block.action.href}>{block.action.label}<span aria-hidden="true"> →</span></a>}
+          {block.action && actionHref && (
+            <a
+              className="guide-callout-action"
+              href={actionHref}
+              target={opensNewWindow ? '_blank' : undefined}
+              rel={opensNewWindow ? 'noopener noreferrer' : undefined}
+            >
+              {block.action.label}<span aria-hidden="true"> {opensNewWindow ? '↗' : '→'}</span>
+            </a>
+          )}
           <BlockSources block={block} sources={sources} />
         </div>
       </aside>
@@ -114,15 +131,24 @@ export function GuideBlockRenderer({ block, media, sources }: GuideBlockRenderer
   if (block.type === 'media') {
     const item = media.get(block.mediaId);
     if (!item) return null;
-    return <div className="guide-content-block" id={anchor} tabIndex={-1}><GuideMedia media={item} sources={sources} /><BlockSources block={block} sources={sources} /></div>;
+    return <div className="guide-content-block guide-media-block" id={anchor} tabIndex={-1}><GuideMedia media={item} sources={sources} /><BlockSources block={block} sources={sources} /></div>;
   }
 
   if (block.type === 'official-link') {
+    const href = safeGuideHref(block.href);
+    if (!href) return null;
     return (
-      <a className="guide-official-link" id={anchor} href={block.href} target="_blank" rel="noreferrer">
+      <a
+        className="guide-official-link"
+        id={anchor}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${block.title}（開啟官方網站，新視窗）`}
+      >
         <span><Icon name="book" /></span>
-        <span><small>OFFICIAL GUIDANCE</small><strong>{block.title}</strong>{block.description && <p>{block.description}</p>}</span>
-        <span className="official-link-label">{block.label || '開啟'} <span aria-hidden="true">↗</span></span>
+        <span><small>官方資料</small><strong>{block.title}</strong>{block.description && <p>{block.description}</p>}</span>
+        <span className="official-link-label">{block.label || '開啟網站'} <span aria-hidden="true">↗</span></span>
       </a>
     );
   }

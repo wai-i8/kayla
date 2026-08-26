@@ -8,14 +8,15 @@
     "priority": "important",
     "keywords": ["喊", "扭計", "安撫", "產後抑鬱", "情緒", "壓力", "postnatal depression", "psychosis"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "review": { "reviewedAt": "2026-08-26", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-soothing-crying", "nhs-postnatal-depression", "nhs-postpartum-psychosis"],
     "blocks": [
+      { "id": "soothing-heading", "type": "heading", "level": 2, "text": "先慢慢排查 BB 需要" },
       {
         "id": "crying-check",
         "type": "steps",
-        "items": ["先睇有冇餓、尿片濕、太熱／太凍、攰或想抱。", "抱近胸口、輕聲講嘢、規律搖動或行一陣；每個 BB 有唔同有效方法。", "如果喊聲完全唔似平時、BB 食唔到、呼吸唔妥、發燒或你覺得病得嚴重，就求醫。"],
-        "sourceIds": ["nhs-soothing-crying", "nhs-urgent-under-five-2026"]
+        "items": ["先停低望清楚：有冇餓、尿片濕、太熱／太凍、攰、環境太嘈，或者只係想你抱近。", "逐樣試，唔使全部一齊做：抱近胸口、輕聲重複一句、溫柔掃背、抱穩後慢慢行，或者用細幅、有節奏嘅動作安撫；絕對唔好猛烈搖晃。", "BB 擰開頭、閉眼、打呵欠、打嗝或越來越煩躁，可能係需要減少聲光同休息。", "方法試幾分鐘再觀察；每個 BB 有唔同喜好，今日有效亦未必次次一樣。", "如果喊聲完全唔似平時、BB 食唔到、呼吸唔妥、發燒或你覺得病得嚴重，就求醫。"],
+        "sourceIds": ["nhs-soothing-crying", "nhs-understanding-baby", "nhs-urgent-under-five-2026"]
       },
       {
         "id": "safe-pause",
@@ -51,7 +52,7 @@
     "priority": "important",
     "keywords": ["疫苗", "針", "8週", "12週", "16週", "MenB", "rotavirus", "6-in-1", "PCV", "血點", "聽力", "NIPE"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "review": { "reviewedAt": "2026-08-26", "region": "England", "status": "reviewed" },
     "sourceIds": ["gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "gov-hearing-operational-2026", "ukhsa-immunisation-2026", "ukhsa-complete-schedule", "gov-menb-paracetamol-2026", "nhs-menb-children"],
     "blocks": [
       {
@@ -222,7 +223,7 @@
         "type": "callout",
         "severity": "info",
         "title": "資料範圍同版本",
-        "body": "內容按英格蘭／英國官方資料整理，最後查核 2026-08-20；本地服務標示 Warwickshire。每段可開官方來源，安排如有更新以 NHS、GOV.UK 或你嘅醫療團隊為先。",
+        "body": "內容按英格蘭／英國官方資料整理，最後查核 2026-08-26；本地服務標示 Warwickshire。每段可開官方來源，安排如有更新以 NHS、GOV.UK 或你嘅醫療團隊為先。",
         "sourceIds": ["ukhsa-complete-schedule", "warwickshire-health-visiting"]
       }
     ]

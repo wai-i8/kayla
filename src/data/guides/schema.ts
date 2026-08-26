@@ -18,13 +18,13 @@ export type {
   GuideTopicSummary,
 } from '../../components/guide/types';
 
-export type GuideRegion = 'England' | 'UK' | 'England · Warwickshire';
+export type GuideRegion = 'England' | 'UK' | 'England · Warwickshire' | 'Hong Kong' | 'Taiwan';
 
 /** Source metadata kept by the data layer. It is a superset of the UI contract. */
 export interface GuideSource extends GuideSourceItem {
   publisher: string;
   region: GuideRegion;
-  checkedAt: '2026-08-20';
+  checkedAt: string;
   reviewedAt?: string;
   note?: string;
 }
@@ -34,7 +34,7 @@ export interface GuideMediaReference {
   id: string;
   title: string;
   kind: 'video' | 'web-page' | 'image-placeholder' | 'image';
-  usage: 'official-link-only' | 'original-placeholder' | 'local-licensed';
+  usage: 'official-link-only' | 'original-placeholder' | 'local-licensed' | 'original-generated';
   sourceId?: string;
   url?: string;
   originUrl?: string;
@@ -57,6 +57,7 @@ export interface RawGuideTopic extends Omit<GuideTopicContent, 'media'> {
 /** Timeline navigation target; extra text is useful to TodayPage adapters. */
 export interface GuideTimelineEntry extends GuideAgeTarget {
   summary: string;
+  highlights: string[];
   topicIds: string[];
 }
 

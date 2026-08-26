@@ -32,6 +32,7 @@ export interface GuideSourceItem {
 
 export interface GuideMediaItem {
   id: string;
+  title?: string;
   kind: 'image' | 'video' | 'external-video';
   assetRef?: string;
   src?: string;

@@ -196,7 +196,7 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
 
     return (
       <div className="page guide-detail-page">
-        <button className="back-button" onClick={closeTopic}>← 返回所有指南</button>
+        <button className="back-button guide-back-button" type="button" onClick={closeTopic}>← 返回所有指南</button>
 
         {loadingTopic && !topic ? (
           <div className="guide-loading" role="status" aria-live="polite">
@@ -208,11 +208,12 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
             <Icon name="alert" />
             <h2>載入唔到指南</h2>
             <p>{topicError}</p>
-            <button className="primary-button" onClick={() => setLoadRequest((request) => request + 1)}>再試一次</button>
+            <button className="primary-button" type="button" onClick={() => setLoadRequest((request) => request + 1)}>再試一次</button>
           </div>
         ) : visibleTopic ? (
           <>
             <header className="guide-detail-header">
+              <span className="guide-header-doodle" aria-hidden="true" />
               <span className={`priority-pill ${priority.className}`}><Icon name={priority.icon} size={15} />{priority.label}</span>
               <p className="eyebrow">BABY CARE · ENGLAND</p>
               <h1 ref={articleTitleRef} tabIndex={-1}>{visibleTopic.title}</h1>
@@ -255,6 +256,8 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
   return (
     <div className="page guide-page">
       <header className="page-header guide-main-header">
+        <span className="guide-main-doodle guide-main-doodle-one" aria-hidden="true" />
+        <span className="guide-main-doodle guide-main-doodle-two" aria-hidden="true" />
         <div>
           <p className="eyebrow">英國可信資料 · 英格蘭安排</p>
           <h1>照顧指南</h1>
@@ -266,7 +269,7 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
       <div className="guide-search">
         <Icon name="search" size={20} />
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋發燒、餵奶、安全睡眠…" aria-label="搜尋指南" />
-        {searching ? <span className="guide-search-spinner" aria-label="搜尋緊" /> : query && <button onClick={() => setQuery('')} aria-label="清除搜尋"><Icon name="close" size={17} /></button>}
+        {searching ? <span className="guide-search-spinner" aria-label="搜尋緊" /> : query && <button type="button" onClick={() => setQuery('')} aria-label="清除搜尋"><Icon name="close" size={17} /></button>}
       </div>
 
       {query.trim() ? (
@@ -275,12 +278,14 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
           {!searching && results.length ? results.map((result, index) => (
             <button
               className="search-result-card structured-search-result"
+              type="button"
               key={result.id || `${result.topicId}-${result.blockId || result.anchor || index}`}
               onClick={(event) => openTopic(result.topicId, result.blockId || result.anchor, event.currentTarget)}
+              aria-label={`打開指南：${result.title}`}
             >
               <span>{result.topicTitle || topicSummaries.find((item) => item.id === result.topicId)?.shortTitle || '指南'}</span>
               <span className="search-result-copy"><strong>{result.title}</strong><p>{result.snippet || result.text || ''}</p></span>
-              <Icon name="chevron" />
+              <span className="guide-card-arrow" aria-hidden="true"><Icon name="chevron" /></span>
             </button>
           )) : !searching ? (
             <div className="large-empty compact-empty"><Icon name="search" /><h2>搵唔到相關內容</h2><p>可以試下較短嘅字，或者中英文名稱，例如「黃疸」或「jaundice」。</p></div>
@@ -289,10 +294,15 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
       ) : (
         <>
           {emergencyTopic && (
-            <button className="emergency-guide-card" onClick={(event) => openTopic(emergencyTopic.id, null, event.currentTarget)}>
+            <button
+              className="emergency-guide-card"
+              type="button"
+              onClick={(event) => openTopic(emergencyTopic.id, null, event.currentTarget)}
+              aria-label={`打開指南：${emergencyTopic.title}`}
+            >
               <span className="emergency-guide-icon"><Icon name="alert" /></span>
               <span><small>緊急判斷</small><strong>{emergencyTopic.title}</strong></span>
-              <Icon name="chevron" />
+              <span className="guide-card-arrow emergency-arrow" aria-hidden="true"><Icon name="chevron" /></span>
             </button>
           )}
 
@@ -303,14 +313,21 @@ export function GuidePageView({ initialSectionId, onSectionOpened }: GuidePagePr
                 const priority = priorityMeta(item.priority);
                 const tones = ['sage', 'peach', 'blue', 'gold', 'rose'];
                 return (
-                  <button className="guide-topic-card" key={item.id} onClick={(event) => openTopic(item.id, null, event.currentTarget)}>
+                  <button
+                    className="guide-topic-card"
+                    type="button"
+                    key={item.id}
+                    onClick={(event) => openTopic(item.id, null, event.currentTarget)}
+                    aria-label={`打開指南：${item.title}`}
+                  >
                     <span className={`topic-art tone-${tones[index % tones.length]}`}><Icon name={priority.icon} /></span>
                     <span className="topic-copy">
                       <small>{item.shortTitle}</small>
                       <strong>{item.title}</strong>
                       <p>{item.summary}</p>
+                      <span className="topic-card-action" aria-hidden="true">打開睇睇</span>
                     </span>
-                    <Icon name="chevron" size={18} />
+                    <span className="guide-card-arrow" aria-hidden="true"><Icon name="chevron" size={18} /></span>
                   </button>
                 );
               })}

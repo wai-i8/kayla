@@ -8,17 +8,20 @@
     "priority": "important",
     "keywords": ["尿片", "便便", "大便", "顏色", "nappy rash", "尿疹", "沖涼", "臍帶", "皮膚"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "review": { "reviewedAt": "2026-08-26", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-changing-nappy", "nhs-nappy-rash", "nhs-bathing", "nhs-washing-cord", "nhs-newborn-skin"],
-    "mediaIds": ["video-nhs-nappy", "video-nhs-bath", "photo-baby-bath"],
+    "mediaIds": ["video-nhs-nappy", "video-hk-nappy", "video-nhs-bath", "video-hk-bath", "video-hk-cord", "photo-baby-bath"],
     "blocks": [
+      { "id": "changing-heading", "type": "heading", "level": 2, "text": "換片一步一步" },
       {
         "id": "change-safely",
         "type": "steps",
-        "items": ["用品先放手邊；最好喺地墊／毛巾上換，避免跌落。", "污糟就盡快換；女嬰由前向後抹。", "抹乾皮膚褶位，換完即刻洗手。"],
+        "items": ["先洗手，將新尿片、棉花／無香料濕紙巾、袋、乾淨衫同需要嘅 barrier cream 放晒手邊。", "最好喺地墊或毛巾上換；如果用換片枱，手一直留喺 BB 身上，絕不轉身行開。", "除走污糟尿片，由前向後清潔；女嬰由前向後輕抹外陰同皮膚摺位，唔好抹入陰道；男嬰清潔陰囊下面同大腿褶位，唔好拉開包皮。", "每抹一下用乾淨一面，抹淨後等皮膚同褶位乾爽。", "新尿片貼身但唔勒；初生階段將前面摺低，避免磨到臍帶。", "安頓 BB 到安全地方，包好舊尿片，最後再洗手。"],
         "sourceIds": ["nhs-changing-nappy"]
       },
       { "id": "nappy-video", "type": "media", "mediaId": "video-nhs-nappy", "sourceIds": ["nhs-changing-nappy"] },
+      { "id": "nappy-video-hk", "type": "media", "mediaId": "video-hk-nappy", "sourceIds": ["hk-fhs-nappy"] },
+      { "id": "poo-heading", "type": "heading", "level": 2, "text": "便便趨勢同尿布疹" },
       {
         "id": "poo-pattern",
         "type": "bullets",
@@ -39,11 +42,18 @@
         "items": ["密啲換片，溫和清潔後輕拍乾，盡量俾皮膚透氣。", "可用薄層 barrier cream；唔好用爽身粉。", "皮疹擴散、起水泡、BB 好唔舒服，或者幾日都冇改善，就問 health visitor／GP。"],
         "sourceIds": ["nhs-nappy-rash"]
       },
+      { "id": "bath-heading", "type": "heading", "level": 2, "text": "沖涼：用品先到手、BB 唔離手" },
       {
-        "id": "bath-and-cord",
-        "type": "bullets",
-        "items": ["唔需要每日沖涼；揀 BB 清醒又唔太餓嘅時間，房間保暖。", "浴盆先落凍水、再加熱水，水深約 8 至 10 cm；撈勻至冇熱點，用手肘確認接近體溫。", "頭一個月可先用清水；一隻手承托 BB 上臂連頭肩，頭保持離水，任何時候都絕不獨留水中。", "臍帶保持清潔乾爽；污糟先用清水洗，再輕拍乾，等佢自然脫落。"],
-        "sourceIds": ["nhs-bathing", "nhs-washing-cord", "nhs-newborn-skin"]
+        "id": "bath-steps",
+        "type": "steps",
+        "items": [
+          "唔需要每日沖涼；揀 BB 清醒、唔太餓、亦唔係啱啱食完奶嘅時間，房間保持暖。",
+          "毛巾、尿片、衫同清潔用品一次過放手邊；開始後唔可以離開拎嘢。",
+          "浴盆先落凍水、再加熱水，水深約 8 至 10 cm；撈勻至冇熱點，用手肘／手腕確認溫暖但唔熱。",
+          "一隻手由背後托住 BB 遠側上臂，前臂承托頭頸；另一隻手托臀部慢慢落水，頭保持離水。",
+          "用清水由上而下輕洗，特別留意頸、大腿同腋下褶位；抱起後立即用毛巾包好並輕拍乾。"
+        ],
+        "sourceIds": ["nhs-bathing", "nhs-washing-cord", "hk-fhs-bath"]
       },
       {
         "id": "bath-warning",
@@ -54,7 +64,20 @@
         "sourceIds": ["nhs-bathing"]
       },
       { "id": "bath-video", "type": "media", "mediaId": "video-nhs-bath", "sourceIds": ["nhs-bathing"] },
-      { "id": "baby-bath-photo", "type": "media", "mediaId": "photo-baby-bath", "sourceIds": ["nhs-bathing"] }
+      { "id": "bath-video-hk", "type": "media", "mediaId": "video-hk-bath", "sourceIds": ["hk-fhs-bath", "nhs-bathing"] },
+      { "id": "baby-bath-photo", "type": "media", "mediaId": "photo-baby-bath", "sourceIds": ["nhs-bathing"] },
+      { "id": "cord-heading", "type": "heading", "level": 2, "text": "臍帶保持清潔乾爽" },
+      {
+        "id": "cord-care",
+        "type": "bullets",
+        "items": [
+          "臍帶保持清潔同乾爽，等佢自然脫落；唔好拉、扯或用繃帶包住。",
+          "如果污糟，跟 maternity team 指示用清水清潔，再輕拍乾；尿片前面摺低，避免遮住或磨擦。",
+          "脫落時少量血點可以出現；持續流血、周圍皮膚紅腫、臭味、膿或異常分泌物就盡快聯絡 midwife／GP／111。"
+        ],
+        "sourceIds": ["nhs-washing-cord", "hk-fhs-cord", "nhs-urgent-under-five-2026"]
+      },
+      { "id": "cord-video-hk", "type": "media", "mediaId": "video-hk-cord", "sourceIds": ["hk-fhs-cord", "nhs-washing-cord"] }
     ]
   },
   {
@@ -129,24 +152,36 @@
     "priority": "urgent",
     "keywords": ["發燒", "體溫", "黃疸", "jaundice", "脫水", "尿少", "嘔吐", "皮疹"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
+    "review": { "reviewedAt": "2026-08-26", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-baby-temperature", "nhs-urgent-under-five-2026", "nhs-newborn-jaundice", "nice-newborn-jaundice", "nhs-dehydration"],
+    "mediaIds": ["illustration-underarm-temperature"],
     "blocks": [
+      { "id": "temperature-heading", "type": "heading", "level": 2, "text": "點樣準確量腋下體溫" },
       {
         "id": "take-temperature",
         "type": "steps",
-        "items": ["用 digital thermometer；脫走厚衫，等幾分鐘先量。", "將探頭放腋下，手臂貼實身體，按說明等讀數。", "記低數值、時間、量度位置，同 BB 當時食奶／精神狀態。"],
+        "items": ["用 digital thermometer 量腋下；唔用額頭膠條。", "如果 BB 啱啱沖涼、包得好實、喺好暖房間或活動得多，先移除多餘衣物並等幾分鐘。", "探頭直接貼住腋下皮膚，唔好隔住衫；將 BB 手臂輕輕貼實身體固定溫度計。", "全程扶住 BB，按產品說明等提示聲；完成後先安頓 BB，再記錄讀數。", "記低數值、時間、量度位置，同 BB 當時食奶、呼吸同精神狀態；唔好自行加減度數。"],
         "sourceIds": ["nhs-baby-temperature"]
       },
+      {
+        "id": "temperature-method",
+        "type": "callout",
+        "severity": "info",
+        "title": "方法要一致，先容易比較趨勢",
+        "body": "0 至 5 歲 NHS 建議用電子溫度計量腋下。每次盡量用同一支溫度計、同一位置；但 BB 精神、呼吸同食奶狀態比單一數字同樣重要。",
+        "sourceIds": ["nhs-baby-temperature", "nhs-urgent-under-five-2026"]
+      },
+      { "id": "underarm-temperature-illustration", "type": "media", "mediaId": "illustration-underarm-temperature", "sourceIds": ["nhs-baby-temperature"] },
       {
         "id": "fever-urgent",
         "type": "warning",
         "severity": "emergency",
         "title": "未滿 3 個月 38°C+／3 至 6 個月 39°C+：call 999 或去 A&E",
-        "body": "低過 36°C 亦要即時求醫。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張；如有其他紅旗、你擔心或超過 48 小時仍發燒就求助。3 至 6 個月如過去 2 日打過其他疫苗，亦按接種團隊指示。",
+        "body": "低過 36°C 亦要即時求醫；如安全可於 10 分鐘內再量 2 次確認，但 BB 唔舒服或有其他紅旗時唔好延誤求助。特定例外：8／12 週 MenB 後 48 小時內而 BB 其他方面正常，跟接種團隊／UKHSA MenB 單張；如有其他紅旗、你擔心或超過 48 小時仍發燒就求助。3 至 6 個月如過去 2 日打過其他疫苗，亦按接種團隊指示。",
         "action": { "label": "Call 999", "href": "tel:999" },
         "sourceIds": ["nhs-urgent-under-five-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
       },
+      { "id": "jaundice-dehydration-heading", "type": "heading", "level": 2, "text": "黃疸同脫水警號" },
       {
         "id": "jaundice",
         "type": "bullets",

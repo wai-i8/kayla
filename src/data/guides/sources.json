@@ -195,6 +195,15 @@
     "updatedAt": "2026-08-03"
   },
   {
+    "id": "nhs-safer-sleep",
+    "title": "Baby safer sleep advice",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/baby-basics/newborn-and-baby-sleeping-advice-for-parents/safe-sleep-advice-for-babies/",
+    "region": "England",
+    "checkedAt": "2026-08-26",
+    "note": "Current NHS safer-sleep and co-sleeping risk guidance."
+  },
+  {
     "id": "nhs-vitamins-baby",
     "title": "Vitamins for babies",
     "publisher": "NHS Best Start in Life",
@@ -244,13 +253,13 @@
   },
   {
     "id": "ukhsa-immunisation-2026",
-    "title": "Routine childhood immunisations from 1 January 2026",
+    "title": "Routine childhood immunisations from 1 July 2026",
     "publisher": "UK Health Security Agency",
-    "url": "https://www.gov.uk/government/publications/routine-childhood-immunisation-schedule/routine-childhood-immunisations-from-1-july-2025-babies-born-from-1-july-2024",
+    "url": "https://www.gov.uk/government/publications/routine-childhood-immunisation-schedule/routine-childhood-immunisations-from-1-july-2026",
     "region": "England",
-    "checkedAt": "2026-08-20",
-    "updatedAt": "2025-12-01",
-    "note": "Schedule applying in England from 1 January 2026."
+    "checkedAt": "2026-08-26",
+    "updatedAt": "2026-08-24",
+    "note": "Current schedule applying in England from 1 July 2026."
   },
   {
     "id": "ukhsa-complete-schedule",
@@ -430,7 +439,7 @@
     "publisher": "NHS",
     "url": "https://www.nhs.uk/baby/health/when-to-get-urgent-medical-help-for-babies-and-children-under-5/",
     "region": "England",
-    "checkedAt": "2026-08-20",
+    "checkedAt": "2026-08-26",
     "reviewedAt": "2026-08-06",
     "note": "Current canonical NHS emergency routing for temperature, breathing, responsiveness and no-urine thresholds."
   },
@@ -460,5 +469,126 @@
     "region": "England",
     "checkedAt": "2026-08-20",
     "note": "Emergency response and the instruction not to induce vomiting."
+  },
+  {
+    "id": "nhs-feeding-on-demand",
+    "title": "Feeding on demand",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/feeding-your-baby/bottle-feeding/bottle-feeding-your-baby/feeding-on-demand/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "note": "Current NHS responsive-feeding cues, paced bottle feeding and stop signals."
+  },
+  {
+    "id": "nhs-burping",
+    "title": "Burping your baby",
+    "publisher": "NHS Best Start in Life",
+    "url": "https://www.nhs.uk/best-start-in-life/baby/feeding-your-baby/bottle-feeding/bottle-feeding-your-baby/how-to-burp-your-baby/",
+    "region": "England",
+    "checkedAt": "2026-08-20",
+    "note": "Current NHS head-and-neck support, positioning and gentle winding guidance."
+  },
+  {
+    "id": "hk-fhs-newborn-care",
+    "title": "新生嬰兒護理影片合集",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/child_care.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20",
+    "note": "Cantonese visual demonstrations used only for universal care skills; UK guidance governs medical thresholds and safety decisions."
+  },
+  {
+    "id": "hk-fhs-holding",
+    "title": "抱 BB 示範",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/000001.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "hk-fhs-responsive-feeding",
+    "title": "BB 教餵奶－回應式餵哺",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/000067.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20",
+    "note": "Cantonese visual examples of early, middle and late hunger cues."
+  },
+  {
+    "id": "hk-fhs-latch",
+    "title": "餵哺技巧：正確地含乳",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/breastfeeding/bf_vid_c6p4_4.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "hk-fhs-burping",
+    "title": "怎樣替嬰兒掃風",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/000005.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "hk-fhs-nappy",
+    "title": "替寶寶換尿片",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/000004.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "hk-fhs-cord",
+    "title": "替初生寶寶清潔臍帶",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/000003.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20",
+    "note": "Visual care demonstration only; follow the baby's NHS maternity team's cord-care advice if it differs."
+  },
+  {
+    "id": "hk-fhs-bath",
+    "title": "洗白白：嬰兒沖涼示範",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/mulit_med/000006.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20",
+    "note": "Cantonese holding and preparation demonstration; current NHS bathing guidance governs water depth and safety."
+  },
+  {
+    "id": "hk-fhs-development-newborn",
+    "title": "兒童發展 2－新生至一個月大嬰兒的發展",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/health_info/child/15648.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20"
+  },
+  {
+    "id": "hk-fhs-development-1-3",
+    "title": "兒童發展 3－一至三個月大嬰兒的發展",
+    "publisher": "香港衞生署家庭健康服務",
+    "url": "https://www.fhs.gov.hk/tc_chi/health_info/child/15650.html",
+    "region": "Hong Kong",
+    "checkedAt": "2026-08-20",
+    "note": "Universal play and supervised tummy-time examples; milestones are a guide rather than a diagnosis."
+  },
+  {
+    "id": "tw-hpa-breastfeeding-videos",
+    "title": "母乳哺育技巧系列影片",
+    "publisher": "台灣衛生福利部國民健康署",
+    "url": "https://www.hpa.gov.tw/Video/RecommendVideo.aspx?idx=1&nodeid=857&vid=856",
+    "region": "Taiwan",
+    "checkedAt": "2026-08-20",
+    "note": "Link-only visual series covering safe holding, hunger cues, positioning and signs of milk transfer."
+  },
+  {
+    "id": "tw-hpa-safe-sleep",
+    "title": "寶寶安全睡眠環境秘笈",
+    "publisher": "台灣衛生福利部國民健康署",
+    "url": "https://www.hpa.gov.tw/Pages/List.aspx?nodeid=4183",
+    "region": "Taiwan",
+    "checkedAt": "2026-08-20",
+    "note": "Link-only illustrated safe-sleep card. Current UK Lullaby Trust guidance governs the app's recommendations."
   }
 ]

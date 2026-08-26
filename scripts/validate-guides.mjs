@@ -29,6 +29,7 @@ function unique(items, label) {
 const sources = readJson('src/data/guides/sources.json');
 const media = readJson('src/data/guides/media.json');
 const timeline = readJson('src/data/guides/timeline.json');
+const dailyTipsText = readFileSync(resolve(root, 'src/data/guides/dailyTips.ts'), 'utf8');
 const topics = [
   ...readJson('src/data/guides/topics-core.json'),
   ...readJson('src/data/guides/topics-care.json'),
@@ -66,10 +67,12 @@ if (JSON.stringify(actualTimelineIds) !== JSON.stringify(requiredTimelineIds)) {
   errors.push(`timeline: required order/ids changed (${actualTimelineIds.join(', ')})`);
 }
 
-const allowedRegions = new Set(['England', 'UK', 'England · Warwickshire']);
+const allowedRegions = new Set(['England', 'UK', 'England · Warwickshire', 'Hong Kong', 'Taiwan']);
 for (const source of sources) {
   if (!/^https:\/\//.test(source.url || '')) errors.push(`source ${source.id}: URL must be HTTPS`);
-  if (source.checkedAt !== checkedAt) errors.push(`source ${source.id}: checkedAt must be ${checkedAt}`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(source.checkedAt || '') || source.checkedAt < checkedAt) {
+    errors.push(`source ${source.id}: checkedAt must be an ISO date on or after ${checkedAt}`);
+  }
   if (!allowedRegions.has(source.region)) errors.push(`source ${source.id}: invalid region ${source.region}`);
 }
 
@@ -78,6 +81,7 @@ for (const item of media) {
   if (item.usage === 'official-link-only') {
     if (!/^https:\/\//.test(item.url || '')) errors.push(`media ${item.id}: official link must be HTTPS`);
     if (item.assetRef) errors.push(`media ${item.id}: link-only media must not have a local asset`);
+    if (item.posterRef) errors.push(`media ${item.id}: link-only media must not use an unlicensed local poster`);
   } else if (item.usage === 'local-licensed') {
     if (!/^guide-media\/[A-Za-z0-9._-]+$/.test(item.assetRef || '')) {
       errors.push(`media ${item.id}: local assetRef must stay inside public/guide-media`);
@@ -91,6 +95,24 @@ for (const item of media) {
     if (!item.licence || !/^https:\/\//.test(item.licenceUrl || '')) {
       errors.push(`media ${item.id}: local image needs a named licence and HTTPS licenceUrl`);
     }
+  } else if (item.usage === 'original-generated') {
+    if (item.kind !== 'image') errors.push(`media ${item.id}: generated asset must use kind image`);
+    if (!/^guide-media\/[A-Za-z0-9._-]+$/.test(item.assetRef || '')) {
+      errors.push(`media ${item.id}: generated assetRef must stay inside public/guide-media`);
+    }
+    if (!item.assetRef || !existsSync(resolve(root, 'public', item.assetRef))) {
+      errors.push(`media ${item.id}: missing public/${item.assetRef || '(assetRef)'}`);
+    }
+    if (!item.credit) errors.push(`media ${item.id}: generated image needs a credit`);
+    for (const field of ['title', 'alt', 'note']) {
+      if (typeof item[field] !== 'string' || !item[field].trim()) errors.push(`media ${item.id}: generated image needs ${field}`);
+    }
+    if (!Number.isFinite(item.width) || item.width <= 0 || !Number.isFinite(item.height) || item.height <= 0) {
+      errors.push(`media ${item.id}: generated image needs positive width and height`);
+    }
+    if (item.url || item.originUrl || item.licenceUrl) {
+      errors.push(`media ${item.id}: generated image must not claim an external URL or licence`);
+    }
   } else if (item.usage === 'original-placeholder') {
     if (item.assetRef || item.url) errors.push(`media ${item.id}: placeholder unexpectedly has an asset/URL`);
   } else {
@@ -99,7 +121,9 @@ for (const item of media) {
 }
 
 for (const topic of topics) {
-  if (topic.review?.reviewedAt !== checkedAt) errors.push(`topic ${topic.id}: review date must be ${checkedAt}`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(topic.review?.reviewedAt || '') || topic.review.reviewedAt < checkedAt) {
+    errors.push(`topic ${topic.id}: review date must be an ISO date on or after ${checkedAt}`);
+  }
   if (!allowedRegions.has(topic.review?.region)) errors.push(`topic ${topic.id}: invalid/missing review region`);
   if (!Array.isArray(topic.blocks) || !topic.blocks.length) errors.push(`topic ${topic.id}: no blocks`);
 
@@ -165,6 +189,18 @@ for (const entry of timeline) {
   for (const topicId of entry.topicIds || []) {
     if (!topicIds.has(resolveTopic(topicId))) errors.push(`timeline ${entry.id}: unknown topic ${topicId}`);
   }
+  if (!Array.isArray(entry.highlights) || entry.highlights.length < 2 || entry.highlights.some((item) => typeof item !== 'string' || !item.trim())) {
+    errors.push(`timeline ${entry.id}: needs at least 2 non-empty homepage highlights`);
+  }
+}
+
+const dailyTipIds = [...dailyTipsText.matchAll(/^\s+id:\s*'([^']+)'/gm)].map((match) => ({ id: match[1] }));
+const dailyTipTargets = [...dailyTipsText.matchAll(/^\s+guideTargetId:\s*'([^']+)'/gm)].map((match) => match[1]);
+const allowedDailyTipTargets = new Set([...topicIds, ...actualTimelineIds]);
+unique(dailyTipIds, 'daily tips');
+if (!dailyTipIds.length || dailyTipIds.length !== dailyTipTargets.length) errors.push('daily tips: malformed id/target entries');
+for (const target of dailyTipTargets) {
+  if (!allowedDailyTipTargets.has(resolveTopic(target))) errors.push(`daily tips: unknown guide target ${target}`);
 }
 
 const allText = JSON.stringify(topics);

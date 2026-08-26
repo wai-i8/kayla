@@ -1,5 +1,6 @@
 import { ageInDays, dateInputValue, describeAge, formatLongDate, formatTime, startOfUkDay, ukHour } from '../lib/date';
 import { ageTimelineSections } from '../data/guides/timeline';
+import { getDailyGuideTip } from '../data/guides/dailyTips';
 import type { BabyProfile, BabyRecord, RecordFilter } from '../types';
 import { Icon } from '../components/Icon';
 import { formatMedicineAdministration } from '../lib/medicine';
@@ -91,6 +92,7 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
   const yesterdayNappyBreakdown = nappyBreakdown(yesterday);
   const ageDays = ageInDays(profile?.dateOfBirth);
   const guide = ageTimelineSections[currentGuideIndex(ageDays)];
+  const dailyTip = getDailyGuideTip(ageDays, now);
   const hour = ukHour(now);
   const greeting = hour < 12 ? '早晨' : hour < 18 ? '午安' : '晚上好';
 
@@ -163,12 +165,37 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
             </div>
           </section>
 
-          <section className="guide-feature">
-            <div className="guide-feature-badge"><Icon name="book" size={18} /> 本週指南</div>
-            <p className="eyebrow">{guide.ageLabel}</p>
-            <h2>{guide.title}</h2>
-            <p>按 BB 日齡整理 NHS、UKHSA 同英國可信資料最新重點。</p>
-            <button onClick={() => onOpenGuide(guide.id)}>睇本週重點 <Icon name="chevron" size={17} /></button>
+          <section className="home-guide-stack" aria-label="BB 每日小知識及本週重點" data-testid="home-guide-stack">
+            <button
+              type="button"
+              className="guide-feature daily-tip-card"
+              onClick={() => onOpenGuide(dailyTip.guideTargetId)}
+              data-testid="daily-tip-card"
+              aria-label={'每日小知識：' + dailyTip.title + '。' + dailyTip.text + '。開啟相關指南'}
+            >
+              <span className="guide-feature-badge"><Icon name={dailyTip.icon} size={18} /> 每日小知識</span>
+              <span className="eyebrow">TODAY'S LITTLE TIP</span>
+              <span className="guide-card-title">{dailyTip.title}</span>
+              <span className="guide-card-summary">{dailyTip.text}</span>
+              <span className="guide-card-cta" aria-hidden="true">了解多啲 <Icon name="chevron" size={17} /></span>
+            </button>
+
+            <button
+              type="button"
+              className="guide-feature weekly-focus-card"
+              onClick={() => onOpenGuide(guide.id)}
+              data-testid="weekly-focus-card"
+              aria-label={'本週重點：' + guide.ageLabel + '，' + guide.title + '。' + guide.highlights.join('；') + '。開啟完整指南'}
+            >
+              <span className="guide-feature-badge"><Icon name="book" size={18} /> 本週重點</span>
+              <span className="eyebrow">{guide.ageLabel}</span>
+              <span className="guide-card-title">{guide.title}</span>
+              <span className="guide-card-summary">{guide.summary}</span>
+              <span className="guide-card-highlights" aria-hidden="true">
+                {guide.highlights.map((highlight) => <span key={highlight}>{highlight}</span>)}
+              </span>
+              <span className="guide-card-cta" aria-hidden="true">開啟完整指南 <Icon name="chevron" size={17} /></span>
+            </button>
           </section>
 
           <section className="section-block yesterday-block" aria-labelledby="yesterday-heading" data-testid="yesterday-summary">

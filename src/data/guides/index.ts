@@ -19,7 +19,7 @@ import type {
   RawGuideTopic,
 } from './schema';
 
-export const GUIDE_CHECKED_AT = '2026-08-20' as const;
+export const GUIDE_CHECKED_AT = '2026-08-26' as const;
 
 export const guideSources = sourcesData as GuideSource[];
 export const guideMediaCatalogue = mediaData as GuideMediaReference[];
@@ -31,6 +31,7 @@ function adaptMedia(media: GuideMediaReference): GuideMediaItem {
   const isLocalImage = media.kind === 'image' && Boolean(media.assetRef);
   return {
     id: media.id,
+    title: media.title,
     kind: isLocalImage ? 'image' : 'external-video',
     assetRef: isLocalImage ? media.assetRef : undefined,
     posterRef: media.posterRef,
