@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kayla-shell-v4';
+const CACHE_NAME = 'kayla-shell-v5';
 const BASE = new URL('./', self.registration.scope).pathname;
 const SHELL = [
   BASE,

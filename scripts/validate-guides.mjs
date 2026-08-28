@@ -82,19 +82,6 @@ for (const item of media) {
     if (!/^https:\/\//.test(item.url || '')) errors.push(`media ${item.id}: official link must be HTTPS`);
     if (item.assetRef) errors.push(`media ${item.id}: link-only media must not have a local asset`);
     if (item.posterRef) errors.push(`media ${item.id}: link-only media must not use an unlicensed local poster`);
-  } else if (item.usage === 'local-licensed') {
-    if (!/^guide-media\/[A-Za-z0-9._-]+$/.test(item.assetRef || '')) {
-      errors.push(`media ${item.id}: local assetRef must stay inside public/guide-media`);
-    }
-    if (!item.assetRef || !existsSync(resolve(root, 'public', item.assetRef))) {
-      errors.push(`media ${item.id}: missing public/${item.assetRef || '(assetRef)'}`);
-    }
-    if (!item.credit || !/^https:\/\//.test(item.originUrl || '')) {
-      errors.push(`media ${item.id}: local image needs credit and HTTPS originUrl`);
-    }
-    if (!item.licence || !/^https:\/\//.test(item.licenceUrl || '')) {
-      errors.push(`media ${item.id}: local image needs a named licence and HTTPS licenceUrl`);
-    }
   } else if (item.usage === 'original-generated') {
     if (item.kind !== 'image') errors.push(`media ${item.id}: generated asset must use kind image`);
     if (!/^guide-media\/[A-Za-z0-9._-]+$/.test(item.assetRef || '')) {

@@ -34,7 +34,7 @@ export interface GuideMediaReference {
   id: string;
   title: string;
   kind: 'video' | 'web-page' | 'image-placeholder' | 'image';
-  usage: 'official-link-only' | 'original-placeholder' | 'local-licensed' | 'original-generated';
+  usage: 'official-link-only' | 'original-placeholder' | 'original-generated';
   sourceId?: string;
   url?: string;
   originUrl?: string;

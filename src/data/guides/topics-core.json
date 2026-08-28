@@ -78,7 +78,7 @@
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
     "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
     "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "nhs-changing-nappy", "gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-start-weaning", "ukhsa-immunisation-2026"],
-    "mediaIds": ["video-unicef-skin-to-skin", "video-hk-holding", "photo-tummy-time", "illustration-tummy-time", "illustration-calm-waking", "link-hk-development"],
+    "mediaIds": ["video-unicef-skin-to-skin", "video-hk-holding", "illustration-tummy-time", "illustration-calm-waking", "link-hk-development"],
     "blocks": [
       {
         "id": "birth-2-hours",
@@ -149,7 +149,6 @@
         "items": ["英格蘭 2026 常規時間表：8 週有 6-in-1、MenB 同 rotavirus。", "帶 Red Book；如果漏咗預約，主動聯絡 GP。", "MenB 後退燒藥只跟當次接種者／官方單張指示；App 只可按輸入做算術，唔會建議服用。"],
         "sourceIds": ["ukhsa-immunisation-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
       },
-      { "id": "tummy-time-photo", "type": "media", "mediaId": "photo-tummy-time", "sourceIds": ["nhs-baby-moves"] },
       { "id": "tummy-time-illustration", "type": "media", "mediaId": "illustration-tummy-time", "sourceIds": ["nhs-baby-moves", "lullaby-safer-sleep"] },
       {
         "id": "tummy-time-how-to",
@@ -208,7 +207,7 @@
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
     "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-latch", "nhs-breastfeeding-enough", "nhs-bottle-feed", "nhs-formula-preparation", "nhs-bottle-advice", "unicef-responsive-bottle", "nhs-vitamins-baby"],
-    "mediaIds": ["video-nhs-latch", "video-unicef-positioning", "video-hk-responsive-feeding", "video-hk-latch", "video-tw-breastfeeding", "photo-breastfeeding", "photo-bottle-feeding", "video-hk-burping", "illustration-feeding-cues", "illustration-responsive-bottle"],
+    "mediaIds": ["video-nhs-latch", "video-unicef-positioning", "video-hk-responsive-feeding", "video-hk-latch", "video-tw-breastfeeding", "video-hk-burping", "illustration-feeding-cues", "illustration-responsive-bottle"],
     "blocks": [
       { "id": "responsive-feeding", "type": "heading", "level": 2, "text": "跟早期訊號餵，唔用分鐘做目標" },
       {
@@ -229,7 +228,6 @@
       { "id": "latch-video-hk", "type": "media", "mediaId": "video-hk-latch", "sourceIds": ["hk-fhs-latch"] },
       { "id": "positioning-video", "type": "media", "mediaId": "video-unicef-positioning", "sourceIds": ["unicef-positioning-video"] },
       { "id": "breastfeeding-videos-tw", "type": "media", "mediaId": "video-tw-breastfeeding", "sourceIds": ["tw-hpa-breastfeeding-videos"] },
-      { "id": "breastfeeding-photo", "type": "media", "mediaId": "photo-breastfeeding", "sourceIds": ["nhs-breastfeeding-latch"] },
       { "id": "bottle-heading", "type": "heading", "level": 2, "text": "Responsive bottle feeding" },
       {
         "id": "responsive-bottle",
@@ -238,7 +236,6 @@
         "sourceIds": ["nhs-bottle-feed", "nhs-feeding-on-demand", "unicef-responsive-bottle"]
       },
       { "id": "responsive-bottle-illustration", "type": "media", "mediaId": "illustration-responsive-bottle", "sourceIds": ["nhs-bottle-feed", "nhs-feeding-on-demand", "unicef-responsive-bottle"] },
-      { "id": "bottle-feeding-photo", "type": "media", "mediaId": "photo-bottle-feeding", "sourceIds": ["nhs-bottle-feed", "unicef-responsive-bottle"] },
       {
         "id": "burping",
         "type": "steps",

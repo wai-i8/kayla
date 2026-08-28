@@ -10,7 +10,7 @@
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
     "review": { "reviewedAt": "2026-08-26", "region": "England", "status": "reviewed" },
     "sourceIds": ["nhs-changing-nappy", "nhs-nappy-rash", "nhs-bathing", "nhs-washing-cord", "nhs-newborn-skin"],
-    "mediaIds": ["video-nhs-nappy", "video-hk-nappy", "video-nhs-bath", "video-hk-bath", "video-hk-cord", "photo-baby-bath"],
+    "mediaIds": ["video-nhs-nappy", "video-hk-nappy", "video-nhs-bath", "video-hk-bath", "video-hk-cord"],
     "blocks": [
       { "id": "changing-heading", "type": "heading", "level": 2, "text": "換片一步一步" },
       {
@@ -65,7 +65,6 @@
       },
       { "id": "bath-video", "type": "media", "mediaId": "video-nhs-bath", "sourceIds": ["nhs-bathing"] },
       { "id": "bath-video-hk", "type": "media", "mediaId": "video-hk-bath", "sourceIds": ["hk-fhs-bath", "nhs-bathing"] },
-      { "id": "baby-bath-photo", "type": "media", "mediaId": "photo-baby-bath", "sourceIds": ["nhs-bathing"] },
       { "id": "cord-heading", "type": "heading", "level": 2, "text": "臍帶保持清潔乾爽" },
       {
         "id": "cord-care",
