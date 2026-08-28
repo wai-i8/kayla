@@ -262,8 +262,8 @@
     "alt": "BB 仰睡喺平坦堅實而清空嘅獨立睡床，照顧者喺旁邊查看",
     "note": "原創手繪重點圖：每次都要仰睡、面部露出、床內清空；實際安排以 Lullaby Trust 指引為準。",
     "credit": "KAYLA 原創手繪插圖（AI 生成）",
-    "width": 1280,
-    "height": 960
+    "width": 1448,
+    "height": 1086
   },
   {
     "id": "illustration-feeding-cues",
@@ -274,8 +274,8 @@
     "alt": "三格手繪圖顯示 BB 轉頭尋乳、食手同張嘴等早期肚餓訊號",
     "note": "原創手繪提示；BB 喊通常已係較遲訊號，實際餵哺仍要按個別反應。",
     "credit": "KAYLA 原創手繪插圖（AI 生成）",
-    "width": 1280,
-    "height": 960
+    "width": 1448,
+    "height": 1086
   },
   {
     "id": "illustration-responsive-bottle",
@@ -286,8 +286,8 @@
     "alt": "照顧者承托 BB 頭頸，以半直坐姿勢及接近水平嘅奶樽餵奶",
     "note": "原創手繪重點圖；唔好托住奶樽或逼 BB 飲完，完整技巧以 NHS／UNICEF 指引為準。",
     "credit": "KAYLA 原創手繪插圖（AI 生成）",
-    "width": 1280,
-    "height": 960
+    "width": 1448,
+    "height": 1086
   },
   {
     "id": "illustration-underarm-temperature",
@@ -298,8 +298,8 @@
     "alt": "照顧者抱穩着衫 BB，將電子溫度計貼住腋下皮膚並把手臂貼實身體",
     "note": "原創手繪位置提示；讀數、發燒門檻同求助方法一律以 NHS 指引為準。",
     "credit": "KAYLA 原創手繪插圖（AI 生成）",
-    "width": 1280,
-    "height": 960
+    "width": 1448,
+    "height": 1086
   },
   {
     "id": "illustration-tummy-time",
@@ -310,8 +310,8 @@
     "alt": "BB 清醒時趴喺平坦地墊，照顧者伏低喺旁邊全程看守",
     "note": "原創手繪提示；由短時間開始，BB 攰或唔舒服就停，所有睡眠仍然要仰睡。",
     "credit": "KAYLA 原創手繪插圖（AI 生成）",
-    "width": 1280,
-    "height": 960
+    "width": 1448,
+    "height": 1086
   },
   {
     "id": "illustration-calm-waking",
@@ -322,7 +322,7 @@
     "alt": "BB 醒住仰臥喺清空睡床，照顧者安靜留意佢嘅表情同動作",
     "note": "原創手繪提示；BB 安靜醒住可以先望住並輕聲回應，有飢餓、不適或喊聲就按需要照顧。",
     "credit": "KAYLA 原創手繪插圖（AI 生成）",
-    "width": 1280,
-    "height": 960
+    "width": 1448,
+    "height": 1086
   }
 ]
