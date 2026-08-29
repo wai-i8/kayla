@@ -233,7 +233,25 @@
     "publisher": "NHS Best Start in Life",
     "url": "https://www.nhs.uk/best-start-in-life/baby/baby-basics/bonding-with-your-baby/understanding-your-baby/",
     "region": "England",
-    "checkedAt": "2026-08-20"
+    "checkedAt": "2026-08-28"
+  },
+  {
+    "id": "nhs-baby-reviews",
+    "title": "Your baby's health and development reviews",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/babys-development/height-weight-and-reviews/baby-reviews/",
+    "region": "England",
+    "checkedAt": "2026-08-28",
+    "note": "Covers the 10 to 14 day health visitor review and the 6 to 8 week physical examination."
+  },
+  {
+    "id": "nhs-baby-toddler-safety",
+    "title": "Baby and toddler safety",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/first-aid-and-safety/safety/baby-and-toddler-safety/",
+    "region": "England",
+    "checkedAt": "2026-08-28",
+    "note": "Current NHS advice on falls, small parts, button batteries, magnetic toys and safe changing."
   },
   {
     "id": "nhs-soothing-crying",
@@ -257,7 +275,7 @@
     "publisher": "UK Health Security Agency",
     "url": "https://www.gov.uk/government/publications/routine-childhood-immunisation-schedule/routine-childhood-immunisations-from-1-july-2026",
     "region": "England",
-    "checkedAt": "2026-08-26",
+    "checkedAt": "2026-08-28",
     "updatedAt": "2026-08-24",
     "note": "Current schedule applying in England from 1 July 2026."
   },
@@ -332,7 +350,7 @@
     "publisher": "NHS",
     "url": "https://www.nhs.uk/conditions/jaundice-newborn/",
     "region": "England",
-    "checkedAt": "2026-08-20",
+    "checkedAt": "2026-08-29",
     "reviewedAt": "2026-03-24"
   },
   {
@@ -368,6 +386,15 @@
     "region": "England",
     "checkedAt": "2026-08-20",
     "updatedAt": "2025-10-10"
+  },
+  {
+    "id": "nhs-newborn-physical-examination",
+    "title": "Newborn physical examination",
+    "publisher": "NHS",
+    "url": "https://www.nhs.uk/baby/newborn-screening/physical-examination/",
+    "region": "England",
+    "checkedAt": "2026-08-28",
+    "note": "Explains the examination within 72 hours and the repeat GP examination at 6 to 8 weeks."
   },
   {
     "id": "gov-screening-tests-baby",
@@ -439,7 +466,7 @@
     "publisher": "NHS",
     "url": "https://www.nhs.uk/baby/health/when-to-get-urgent-medical-help-for-babies-and-children-under-5/",
     "region": "England",
-    "checkedAt": "2026-08-26",
+    "checkedAt": "2026-08-28",
     "reviewedAt": "2026-08-06",
     "note": "Current canonical NHS emergency routing for temperature, breathing, responsiveness and no-urine thresholds."
   },

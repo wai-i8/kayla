@@ -33,6 +33,7 @@ export default function App() {
   const [guideFocus, setGuideFocus] = useState<string | null>(
     import.meta.env.DEV ? previewParams.get('section') : null,
   );
+  const [guidePageKey, setGuidePageKey] = useState(0);
   const [cameraFile, setCameraFile] = useState<File | null>(null);
   const quickCameraInput = useRef<HTMLInputElement>(null);
 
@@ -54,6 +55,10 @@ export default function App() {
 
   const changeView = (nextView: ViewKey) => {
     if (nextView === 'records') setRecordsFilter({ type: 'all', date: null });
+    if (nextView === 'guide' && view === 'guide') {
+      setGuideFocus(null);
+      setGuidePageKey((key) => key + 1);
+    }
     setView(nextView);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -110,7 +115,7 @@ export default function App() {
             <Suspense fallback={<div className="content-loading page-loading"><span /><p>載入頁面…</p></div>}>
               {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={openQuickAdd} onOpenRecords={openFilteredRecords} onOpenGuide={openGuide} onOpenPhotos={() => changeView('photos')} onQuickCamera={openQuickCamera} onOpenSettings={() => changeView('settings')} />}
               {view === 'records' && <RecordsPage records={data.records} filter={recordsFilter} onFilterChange={setRecordsFilter} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={openQuickAdd} onEdit={openEditRecord} onDelete={data.deleteRecord} />}
-              {view === 'guide' && <GuidePageView initialSectionId={guideFocus} onSectionOpened={clearGuideFocus} />}
+              {view === 'guide' && <GuidePageView key={guidePageKey} initialSectionId={guideFocus} onSectionOpened={clearGuideFocus} />}
               {view === 'calendar' && <CalendarPage profile={data.profile} onOpenSettings={() => changeView('settings')} />}
               {view === 'photos' && <PhotosPage photos={album.photos} loading={album.loading} error={album.error} onAdd={album.addPhoto} onDelete={album.deletePhoto} initialFile={cameraFile} onInitialFileConsumed={consumeCameraFile} />}
               {view === 'settings' && <SettingsPage user={authState.user} profile={data.profile} isDemo={authState.isDemo} canEditProfile={isOwner} onSaveProfile={data.saveProfile} onLogout={authState.logout} />}

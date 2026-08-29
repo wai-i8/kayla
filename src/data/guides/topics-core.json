@@ -76,16 +76,16 @@
     "priority": "important",
     "keywords": ["時間線", "日齡", "週數", "月齡", "成長", "tummy time", "screening", "檢查"],
     "ageRanges": [{ "label": "出生至 6 個月", "fromDays": 0, "toDays": 183 }],
-    "review": { "reviewedAt": "2026-08-20", "region": "England", "status": "reviewed" },
-    "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "nhs-changing-nappy", "gov-nipe-handbook", "gov-screening-tests-baby", "gov-hearing-overview", "nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-start-weaning", "ukhsa-immunisation-2026"],
+    "review": { "reviewedAt": "2026-08-28", "region": "England", "status": "reviewed" },
+    "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "nhs-breastfeeding-latch", "nhs-breastfeeding-enough", "nhs-changing-nappy", "nhs-washing-cord", "hk-fhs-cord", "gov-nipe-handbook", "nhs-newborn-physical-examination", "gov-screening-tests-baby", "gov-hearing-overview", "nhs-baby-reviews", "warwickshire-health-visiting", "nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-baby-toddler-safety", "nhs-start-weaning", "ukhsa-immunisation-2026", "lullaby-safer-sleep"],
     "mediaIds": ["video-unicef-skin-to-skin", "video-hk-holding", "illustration-tummy-time", "illustration-calm-waking", "link-hk-development"],
     "blocks": [
       {
         "id": "birth-2-hours",
         "type": "callout",
         "severity": "info",
-        "title": "出生至 2 小時：先相處、保暖、留意食奶訊號",
-        "items": ["情況容許可 skin-to-skin；照顧者保持清醒，BB 面部一直可見、頭頸正直、口鼻暢通。照顧者眼瞓或唔舒服，就交俾另一位清醒成人，或者將 BB 仰睡放回安全睡床。", "BB 搵乳、郁嘴、食手已係早期飢餓訊號，唔使等到喊。", "瞓覺每次都要仰睡，放在清空、平坦、堅實嘅獨立睡床。"],
+        "title": "出生當日：先相處、保暖、留意食奶訊號",
+        "items": ["Skin-to-skin 即係將只着尿片嘅 BB 直放喺照顧者裸露胸口；有助保暖、安定同建立親密感。", "照顧者要保持清醒，BB 面部一直可見、頭頸正直、口鼻暢通；一有睡意就將 BB 仰睡放回安全睡床。", "搵乳、郁嘴、伸脷、食手已係早期肚餓訊號，唔使等到喊先餵。", "最初嘅初乳份量細但濃縮，BB 頻密想食係常見；餵哺痛、含唔實或 BB 唔肯食要即場問 midwife。", "每次瞓覺都要仰睡，放在清空、平坦、堅實嘅獨立睡床。"],
         "sourceIds": ["unicef-meeting-baby-video", "nhs-breastfeeding-first-days", "lullaby-safer-sleep"]
       },
       {
@@ -104,94 +104,95 @@
         "id": "day-1",
         "type": "callout",
         "severity": "info",
-        "title": "第 1 日：密密食係常見",
-        "items": ["頭幾星期好多母乳 BB 每 24 小時會食 8 至 12 次或更多；跟早期訊號餵。", "第一啲便便通常係深綠黑色胎糞。", "記低食奶同尿片可幫你同 midwife 對照趨勢。"],
-        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-changing-nappy", "nhs-breastfeeding-enough"]
+        "title": "出生後第 1 日：密密食、睇有效餵哺同胎糞",
+        "items": ["初生母乳 BB 每 24 小時通常食 8 至 12 次或更多，亦可能一段時間密密食；跟訊號餵比死跟時間表實際。", "有效食奶常見節奏係吸幾啖後有吞嚥、面頰圓而唔凹、食完自己鬆口並較放鬆。", "第一啲便便通常係黏身嘅深綠黑色胎糞，之後幾日會逐步轉色。", "記低餵奶時間、尿片同便便，重點係 24 小時趨勢，方便同 midwife 對照。", "BB 難叫醒、持續唔食、含乳一直痛或你覺得唔對路，唔好等下一次紀錄先求助。"],
+        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-changing-nappy", "nhs-breastfeeding-enough", "nhs-urgent-under-five-2026"]
       },
       {
         "id": "days-2-3",
         "type": "callout",
         "severity": "info",
-        "title": "第 2 至 3 日：觀察含乳、便便同黃疸",
-        "items": ["有效含乳通常見到嘴張大、下巴貼乳房、吞嚥有節奏；持續痛就求助。", "便便會由胎糞逐步變啡綠，再變黃。", "出生 24 小時內已黃：call 999 或去 A&E。24 小時後見黃或加深，盡快聯絡 midwife／GP／111；如同時難叫醒、唔食、軟癱／僵硬／抽動、呼吸困難、體溫達 38°C 或以上／36°C 或以下，或者完全冇濕尿片，call 999 或去 A&E。"],
-        "sourceIds": ["nhs-breastfeeding-latch", "nhs-changing-nappy", "nhs-newborn-jaundice", "nhs-urgent-under-five-2026"]
+        "title": "第 2 至 3 日：上奶、便便轉色同黃疸",
+        "items": ["乳房通常約第 2 至 4 日開始較飽滿，BB 仍可一餐接一餐密密食；唔等於一定食唔飽。", "含乳時嘴要張大、下巴貼乳房、吞嚥有節奏；持續痛、乳頭損傷或聽唔到吞嚥要盡快搵人睇一餐。", "便便通常由黑綠胎糞轉啡綠，再逐步變黃；同時留意濕尿片有冇逐日增加。", "BB 少於 24 小時已黃，或任何時間黃疸兼難叫醒、唔食、軟癱／僵硬／抽動、呼吸困難、38°C 或以上／36°C 或以下、完全冇濕尿片，要 call 999／去 A&E；24 小時後只見黃或加深亦要 urgent 聯絡 midwife／GP／111。", "頭幾日體重下降可以出現，但要由 maternity team 按百分比、食奶同尿片一齊評估，唔好自行判斷正常。"],
+        "sourceIds": ["nhs-breastfeeding-first-days", "nhs-breastfeeding-latch", "nhs-breastfeeding-enough", "nhs-changing-nappy", "nhs-newborn-jaundice", "nhs-urgent-under-five-2026"]
       },
       {
         "id": "days-3-7",
         "type": "callout",
         "severity": "info",
-        "title": "第 3 至 7 日：尿片係重要線索",
-        "items": ["由第 5 日起，通常每 24 小時最少 6 塊重濕／明顯濕尿片；如果明顯少咗要盡快問 midwife／health visitor。", "臍帶保持清潔乾爽；污糟先用清水洗，再輕拍乾。", "血點測試通常約第 5 日安排；按 maternity team 指示出席。"],
-        "sourceIds": ["nhs-breastfeeding-enough", "nhs-washing-cord", "gov-screening-tests-baby"]
+        "title": "第 4 至 7 日：用尿片、便便同精神睇飲奶情況",
+        "items": ["由第 5 日起，母乳 BB 通常每 24 小時至少有 6 塊重濕／明顯濕尿片；突然少好多要盡快問 midwife／health visitor。", "由第 4 日起，母乳 BB 通常每日最少有 2 次軟身黃色便便；配方奶便便次數同外觀可以唔同。", "臍帶保持清潔乾爽，唔好搽粉或藥；紅腫向外擴、流膿、有異味或 BB 唔舒服要搵醫護。", "血點測試通常約第 5 日做，係篩查一啲罕見但及早處理好重要嘅疾病；跟 maternity team 預約。", "尿片只係其中一條線索；亦要睇 BB 精神、食奶、吞嚥同體重趨勢。"],
+        "sourceIds": ["nhs-breastfeeding-enough", "nhs-washing-cord", "hk-fhs-cord", "gov-screening-tests-baby"]
       },
       {
         "id": "weeks-1-2",
         "type": "callout",
         "severity": "info",
-        "title": "第 1 至 2 週：完成初生檢查與支援",
-        "items": ["NIPE 身體檢查主要睇眼、心、髖同男嬰睪丸，初生檢查目標係出生後 72 小時內完成。", "聽力篩查通常在出院前或出生後頭幾星期安排。", "任何食奶、體重、黃疸或照顧疑問，可聯絡 midwife／health visitor。"],
-        "sourceIds": ["gov-nipe-handbook", "gov-hearing-overview", "warwickshire-health-visiting", "nhs-newborn-jaundice"]
+        "title": "第 2 週（第 8 至 14 日）：初生檢查、聽力、探訪同體重支援",
+        "items": ["NIPE 初生身體檢查主要睇眼、心、髖關節，同男嬰睪丸；有轉介或覆檢安排要記低。", "第一個聽力篩查通常只需幾分鐘，部分 BB 要再做另一個測試；目標係及早發現可能影響語言發展嘅聽力問題。", "Health visitor 通常約 10 至 14 日接觸家庭，可傾餵哺、體重、黃疸、安全睡眠同照顧者情緒。", "睇食奶係睇一組線索：吞嚥、食後狀態、濕尿片、便便同體重，唔係單靠一次餵幾耐。", "每次放低 BB 瞓覺都先仰睡；最安全係頭 6 個月同房、但瞓自己清空、平坦、堅實嘅睡床。"],
+        "sourceIds": ["gov-nipe-handbook", "gov-hearing-overview", "nhs-baby-reviews", "warwickshire-health-visiting", "nhs-breastfeeding-enough", "nhs-newborn-jaundice", "lullaby-safer-sleep"]
       },
       {
         "id": "weeks-3-4",
         "type": "callout",
         "severity": "info",
-        "title": "第 3 至 4 週：短時間 tummy time 同互動",
-        "items": ["BB 清醒、有大人全程望住先做 tummy time；可先趴喺你胸口或大腿，每次短短地逐漸增加。", "講嘢、唱歌、模仿 BB 聲音；見到擰開頭、打呵欠或閉眼就俾佢休息。", "喊聲可能由約第 2 週開始增加；照顧者頂唔順可安全放 BB 入睡床，短暫行開冷靜。"],
-        "sourceIds": ["nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-soothing-crying"]
-      },
-      { "id": "calm-waking-illustration", "type": "media", "mediaId": "illustration-calm-waking", "sourceIds": ["nhs-understanding-baby"] },
-      {
-        "id": "weeks-5-8",
-        "type": "callout",
-        "severity": "info",
-        "title": "第 5 至 8 週：準備 8 週疫苗",
-        "items": ["英格蘭 2026 常規時間表：8 週有 6-in-1、MenB 同 rotavirus。", "帶 Red Book；如果漏咗預約，主動聯絡 GP。", "MenB 後退燒藥只跟當次接種者／官方單張指示；App 只可按輸入做算術，唔會建議服用。"],
-        "sourceIds": ["ukhsa-immunisation-2026", "gov-menb-paracetamol-2026", "nhs-menb-children"]
+        "title": "第 3 至 4 週：認識 tummy time 同跟 BB 節奏互動",
+        "items": ["Tummy time 即係 BB 清醒時趴住活動；其實由出生、照顧者完全清醒時趴胸口已可開始，適應後先到大腿或平坦地墊。", "作用係鍛鍊頸、肩同背部肌肉，幫 BB 練抬頭、轉頭，亦提供唔同角度觀察環境。", "每次短短地、每日分幾次慢慢增加；你可以伏低面對面講嘢，或放安全玩具吸引佢望。", "BB 將面埋低、喊、打呵欠、擰開頭或明顯攰就停；唔需要逼佢完成某個分鐘數。", "只限 BB 清醒、照顧者保持清醒並全程看守；所有睡眠仍然要仰睡。", "講嘢、唱歌後停一停等 BB 回應；佢望開、閉眼或煩躁，就降低聲光刺激俾佢休息。"],
+        "sourceIds": ["nhs-baby-moves", "nhs-first-sounds", "nhs-understanding-baby", "nhs-soothing-crying", "lullaby-safer-sleep"]
       },
       { "id": "tummy-time-illustration", "type": "media", "mediaId": "illustration-tummy-time", "sourceIds": ["nhs-baby-moves", "lullaby-safer-sleep"] },
       {
         "id": "tummy-time-how-to",
         "type": "steps",
         "items": [
-          "揀 BB 清醒、精神舒服嘅時間；照顧者保持清醒並全程望住。",
-          "可以由趴喺你胸口／大腿開始；適應後先試平坦地墊，照顧者伏低同 BB 面對面講嘢。",
-          "一次唔使長；BB 將面埋低、攰、喊或唔舒服就停，轉返仰臥休息。",
-          "Tummy time 只係清醒活動；所有睡眠仍然要仰睡。"
+          { "title": "揀啱時機", "body": "BB 清醒、精神舒服先開始；剛食飽、眼瞓或唔舒服就遲啲再試。照顧者亦要保持清醒並全程望住。" },
+          { "title": "由容易姿勢開始", "body": "可以先趴喺你胸口或大腿；適應後先試平坦地墊，照顧者伏低同 BB 面對面講嘢。" },
+          { "title": "短而密比一次耐更實際", "body": "一次唔使長，每日分幾次慢慢增加。可將安全玩具放在前方，鼓勵 BB 望同轉頭。" },
+          { "title": "識得停", "body": "BB 將面埋低、攰、喊、擰開頭或唔舒服就停，抱起安撫或轉返仰臥休息。" },
+          { "title": "清醒活動唔等於睡姿", "body": "Tummy time 只係有人全程看守嘅清醒活動；所有睡眠仍然要仰睡。" }
         ],
         "sourceIds": ["nhs-baby-moves", "hk-fhs-development-1-3", "lullaby-safer-sleep"]
+      },
+      { "id": "calm-waking-illustration", "type": "media", "mediaId": "illustration-calm-waking", "sourceIds": ["nhs-understanding-baby"] },
+      {
+        "id": "weeks-5-8",
+        "type": "callout",
+        "severity": "info",
+        "title": "第 5 至 8 週：6 至 8 週檢查同第一輪疫苗",
+        "items": ["6 至 8 週會再做身體檢查，重點睇眼、心、髖關節，同男嬰睪丸；亦可另外提出食奶、睡眠或發展疑問。", "英格蘭由 2026 年 7 月 1 日起嘅常規時間表：8 週有 6-in-1、MenB 同口服 rotavirus 疫苗。", "帶 Red Book 同已知藥物／過敏資料；漏咗預約唔代表要由頭開始，聯絡 GP 重約。", "接種後可能短暫發燒、煩躁或針口痛；留意精神、呼吸、食奶同尿片，擔心就按 111／GP 指示求助。", "MenB 後 paracetamol 只跟接種團隊同最新官方單張；App 只按你輸入嘅資料做紀錄，唔會建議服用或自行加減劑量。"],
+        "sourceIds": ["nhs-newborn-physical-examination", "nhs-baby-reviews", "ukhsa-immunisation-2026", "gov-menb-paracetamol-2026", "nhs-menb-children", "nhs-urgent-under-five-2026"]
       },
       { "id": "development-link-hk", "type": "media", "mediaId": "link-hk-development", "sourceIds": ["hk-fhs-development-1-3"] },
       {
         "id": "months-2-3",
         "type": "callout",
         "severity": "info",
-        "title": "2 至 3 個月：12 週疫苗、回應聲音",
-        "items": ["12 週常規疫苗係 6-in-1、MenB 同 rotavirus。", "面對面講嘢、唱歌、停一停等 BB 回應；每個 BB 發展速度唔同。", "繼續每日分幾次短 tummy time，只限清醒同全程看守。"],
-        "sourceIds": ["ukhsa-immunisation-2026", "nhs-first-sounds", "nhs-baby-moves"]
+        "title": "2 至 3 個月：12 週疫苗、抬頭練習同聲音互動",
+        "items": ["英格蘭由 2026 年 7 月 1 日起嘅時間表：12 週有 6-in-1、MenB 同口服 rotavirus；按 GP 邀請同當日指示。", "繼續每日幾次 tummy time；可以喺胸口、大腿或地墊做，等 BB 自己練抬頭同轉頭。", "Tummy time 鍛鍊頸、肩、背部力量，但唔需要追分鐘；短而舒服比一次做得耐更實際。", "面對面講日常動作、唱歌，再停一停，等 BB 用眼神、表情或聲音『接話』。", "望開、打呵欠、閉眼、打嗝或郁動變急可能係要休息；放慢、減少刺激，唔好勉強玩。"],
+        "sourceIds": ["ukhsa-immunisation-2026", "nhs-first-sounds", "nhs-baby-moves", "nhs-understanding-baby"]
       },
       {
         "id": "months-3-4",
         "type": "callout",
         "severity": "info",
-        "title": "3 至 4 個月：16 週疫苗、更多地板活動",
-        "items": ["16 週常規疫苗係 6-in-1 同 pneumococcal（PCV）。", "用安全地墊俾 BB 踢腳、伸手同轉頭；唔好用屏幕代替真人互動。", "睡眠仍然每次仰睡、同房但不同床至至少 6 個月。"],
-        "sourceIds": ["ukhsa-immunisation-2026", "nhs-baby-moves", "lullaby-safer-sleep"]
+        "title": "3 至 4 個月：16 週疫苗、伸手探索同安全地板活動",
+        "items": ["英格蘭由 2026 年 7 月 1 日起嘅時間表：16 週有 6-in-1 同 pneumococcal（PCV）；以 GP 當日通知為準。", "平坦地墊活動俾 BB 自由郁手腳、抬頭同轉頭，較適合練身體控制；唔需要用學行器或座椅代替。", "將安全玩具放在望到、伸手可及位置；講出佢望緊同摸緊嘅嘢，等佢回應。", "BB 可能未預告就開始翻側；換片枱、床或梳化上永遠要有手看守，最好改喺地墊換。", "每次放低 BB 瞓覺都先仰睡；清醒地板活動同睡眠安排要分開，唔好用睡姿定位器。"],
+        "sourceIds": ["ukhsa-immunisation-2026", "nhs-baby-moves", "nhs-first-sounds", "nhs-baby-toddler-safety", "lullaby-safer-sleep"]
       },
       {
         "id": "months-4-5",
         "type": "callout",
         "severity": "info",
-        "title": "4 至 5 個月：遊戲跟 BB 節奏",
-        "items": ["用歌、表情、布書同安全玩具互動；BB 望開或煩躁就休息。", "除非醫護人員另有建議，固體食物通常約 6 個月先開始。", "奶仍然係主要營養；唔用米糊或其他食物加落奶樽。"],
-        "sourceIds": ["nhs-understanding-baby", "nhs-first-sounds", "nhs-start-weaning", "nhs-bottle-advice"]
+        "title": "4 至 5 個月：真人遊戲、轉身安全同唔好急住加固",
+        "items": ["面對面講嘢、唱歌、照鏡、睇布書同輪流發聲，都比被動睇屏幕更適合呢個階段。", "俾 BB 有安全地板時間伸手、踢腳、趴臥同嘗試翻側；一煩躁就停低休息。", "固體食物通常約 6 個月先開始；只係食手、夜醒或想飲多啲奶，唔係準備好嘅可靠訊號。", "開始加固前，奶仍然提供主要營養；唔好將米糊或其他食物加入奶樽。", "揀合適月齡玩具並跟產品年齡警告；避開鬆脫細件、破損、可接觸鈕扣電池／細磁石或鬆散長繩，全程看守。"],
+        "sourceIds": ["nhs-understanding-baby", "nhs-first-sounds", "nhs-baby-moves", "nhs-baby-toddler-safety", "nhs-start-weaning", "nhs-bottle-advice"]
       },
       {
         "id": "months-5-6",
         "type": "callout",
         "severity": "info",
-        "title": "5 至 6 個月：睇三個加固準備訊號",
-        "items": ["約 6 個月，同時做到：坐穩並控制頭頸、眼手口協調拎食物入口、吞到而唔係推出。", "咬手、夜晚醒多咗或想食多啲奶，單獨都唔代表要提早加固。", "早產 BB 或有醫療需要，先問 health visitor／醫療團隊。"],
+        "title": "5 至 6 個月：認清三個加固準備訊號",
+        "items": ["訊號一：可以保持坐姿並穩定控制頭頸。", "訊號二：眼、手、口協調到，可以望到食物、伸手拎起再準確放入口。", "訊號三：可以吞下食物，而唔係持續用舌頭將食物推出口外；三個訊號要一齊出現。", "咬拳頭、夜醒多咗或想飲多啲奶，單獨都唔代表要提早加固；通常等到約 6 個月。", "開始時仍以母乳／first infant formula 為主要營養；坐直、全程看守、跟 BB 節奏，唔好逼食。", "早產 BB、吞嚥問題或有醫療需要，開始前先問 health visitor／醫療團隊。"],
         "sourceIds": ["nhs-start-weaning"]
       }
     ]

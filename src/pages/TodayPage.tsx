@@ -17,18 +17,9 @@ interface TodayPageProps {
   onOpenSettings: () => void;
 }
 
-function currentGuideIndex(days: number) {
-  if (days <= 0) return 0;
-  if (days === 1) return 1;
-  if (days <= 3) return 2;
-  if (days <= 7) return 3;
-  if (days <= 14) return 4;
-  if (days <= 28) return 5;
-  if (days <= 56) return 6;
-  if (days <= 90) return 7;
-  if (days <= 120) return 8;
-  if (days <= 150) return 9;
-  return 10;
+function currentGuideFor(days: number) {
+  const safeDays = Math.max(0, days);
+  return ageTimelineSections.find((entry) => safeDays >= entry.fromDays && safeDays <= entry.toDays);
 }
 
 function summariseDay(records: BabyRecord[]) {
@@ -91,7 +82,7 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
   const todayNappyBreakdown = nappyBreakdown(today);
   const yesterdayNappyBreakdown = nappyBreakdown(yesterday);
   const ageDays = ageInDays(profile?.dateOfBirth);
-  const guide = ageTimelineSections[currentGuideIndex(ageDays)];
+  const guide = currentGuideFor(ageDays);
   const dailyTip = getDailyGuideTip(ageDays, now);
   const hour = ukHour(now);
   const greeting = hour < 12 ? '早晨' : hour < 18 ? '午安' : '晚上好';
@@ -180,22 +171,38 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
               <span className="guide-card-cta" aria-hidden="true">了解多啲 <Icon name="chevron" size={17} /></span>
             </button>
 
-            <button
-              type="button"
-              className="guide-feature weekly-focus-card"
-              onClick={() => onOpenGuide(guide.id)}
-              data-testid="weekly-focus-card"
-              aria-label={'本週重點：' + guide.ageLabel + '，' + guide.title + '。' + guide.highlights.join('；') + '。開啟完整指南'}
-            >
-              <span className="guide-feature-badge"><Icon name="book" size={18} /> 本週重點</span>
-              <span className="eyebrow">{guide.ageLabel}</span>
-              <span className="guide-card-title">{guide.title}</span>
-              <span className="guide-card-summary">{guide.summary}</span>
-              <span className="guide-card-highlights" aria-hidden="true">
-                {guide.highlights.map((highlight) => <span key={highlight}>{highlight}</span>)}
-              </span>
-              <span className="guide-card-cta" aria-hidden="true">開啟完整指南 <Icon name="chevron" size={17} /></span>
-            </button>
+            {guide ? (
+              <button
+                type="button"
+                className="guide-feature weekly-focus-card"
+                onClick={() => onOpenGuide(guide.id)}
+                data-testid="weekly-focus-card"
+                aria-label={'本週重點：' + guide.ageLabel + '，' + guide.title + '。' + guide.highlights.join('；') + '。開啟完整指南'}
+              >
+                <span className="guide-feature-badge"><Icon name="book" size={18} /> 本週重點</span>
+                <span className="eyebrow">{guide.ageLabel}</span>
+                <span className="guide-card-title">{guide.title}</span>
+                <span className="guide-card-summary">{guide.summary}</span>
+                <span className="guide-card-highlights" aria-hidden="true">
+                  {guide.highlights.map((highlight) => <span key={highlight}>{highlight}</span>)}
+                </span>
+                <span className="guide-card-cta" aria-hidden="true">開啟完整指南 <Icon name="chevron" size={17} /></span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="guide-feature weekly-focus-card"
+                onClick={() => onOpenGuide()}
+                data-testid="weekly-focus-card"
+                aria-label="Kayla 已超過出生至 6 個月時間線；開啟指南首頁"
+              >
+                <span className="guide-feature-badge"><Icon name="book" size={18} /> 指南</span>
+                <span className="eyebrow">6 個月以上</span>
+                <span className="guide-card-title">出生至 6 個月時間線已完成</span>
+                <span className="guide-card-summary">可到指南首頁查看餵食、安全、急症判斷同本地支援等完整資料。</span>
+                <span className="guide-card-cta" aria-hidden="true">開啟指南首頁 <Icon name="chevron" size={17} /></span>
+              </button>
+            )}
           </section>
 
           <section className="section-block yesterday-block" aria-labelledby="yesterday-heading" data-testid="yesterday-summary">

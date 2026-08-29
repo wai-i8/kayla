@@ -56,6 +56,8 @@ export interface RawGuideTopic extends Omit<GuideTopicContent, 'media'> {
 
 /** Timeline navigation target; extra text is useful to TodayPage adapters. */
 export interface GuideTimelineEntry extends GuideAgeTarget {
+  fromDays: number;
+  toDays: number;
   summary: string;
   highlights: string[];
   topicIds: string[];

@@ -165,6 +165,10 @@ for (const topic of topics) {
   if (topic.id === 'timeline') {
     for (const id of requiredTimelineIds) {
       if (!blockIds.has(id)) errors.push(`timeline topic: missing anchor block ${id}`);
+      const block = (topic.blocks || []).find((item) => item.id === id);
+      if (block && (block.type !== 'callout' || !Array.isArray(block.items) || block.items.length < 5)) {
+        errors.push(`timeline topic/${id}: needs a callout with at least 5 detailed items`);
+      }
     }
   }
 }
@@ -176,9 +180,21 @@ for (const entry of timeline) {
   for (const topicId of entry.topicIds || []) {
     if (!topicIds.has(resolveTopic(topicId))) errors.push(`timeline ${entry.id}: unknown topic ${topicId}`);
   }
-  if (!Array.isArray(entry.highlights) || entry.highlights.length < 2 || entry.highlights.some((item) => typeof item !== 'string' || !item.trim())) {
-    errors.push(`timeline ${entry.id}: needs at least 2 non-empty homepage highlights`);
+  if (!Number.isInteger(entry.fromDays) || !Number.isInteger(entry.toDays) || entry.fromDays < 0 || entry.toDays < entry.fromDays) {
+    errors.push(`timeline ${entry.id}: invalid fromDays/toDays range`);
   }
+  if (!Array.isArray(entry.highlights) || entry.highlights.length < 5 || entry.highlights.some((item) => typeof item !== 'string' || !item.trim())) {
+    errors.push(`timeline ${entry.id}: needs at least 5 non-empty homepage highlights`);
+  }
+}
+
+for (let index = 1; index < timeline.length; index += 1) {
+  if (timeline[index].fromDays !== timeline[index - 1].toDays + 1) {
+    errors.push(`timeline ${timeline[index].id}: age range is not contiguous with ${timeline[index - 1].id}`);
+  }
+}
+if (timeline[0]?.fromDays !== 0 || timeline[timeline.length - 1]?.toDays !== 183) {
+  errors.push('timeline: age ranges must cover birth through 6 months (days 0 to 183)');
 }
 
 const dailyTipIds = [...dailyTipsText.matchAll(/^\s+id:\s*'([^']+)'/gm)].map((match) => ({ id: match[1] }));
