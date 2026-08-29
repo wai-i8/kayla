@@ -116,7 +116,20 @@ export default function App() {
               {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={openQuickAdd} onOpenRecords={openFilteredRecords} onOpenGuide={openGuide} onOpenPhotos={() => changeView('photos')} onQuickCamera={openQuickCamera} onOpenSettings={() => changeView('settings')} />}
               {view === 'records' && <RecordsPage records={data.records} filter={recordsFilter} onFilterChange={setRecordsFilter} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={openQuickAdd} onEdit={openEditRecord} onDelete={data.deleteRecord} />}
               {view === 'guide' && <GuidePageView key={guidePageKey} initialSectionId={guideFocus} onSectionOpened={clearGuideFocus} />}
-              {view === 'calendar' && <CalendarPage profile={data.profile} onOpenSettings={() => changeView('settings')} />}
+              {view === 'calendar' && (
+                <CalendarPage
+                  profile={data.profile}
+                  scheduleItemStates={data.scheduleItemStates}
+                  familyTasks={data.familyTasks}
+                  currentUser={authState.user}
+                  onOpenSettings={() => changeView('settings')}
+                  onSaveScheduleItemState={data.saveScheduleItemState}
+                  onAddFamilyTask={data.addFamilyTask}
+                  onUpdateFamilyTask={data.updateFamilyTask}
+                  onToggleFamilyTask={data.toggleFamilyTask}
+                  onDeleteFamilyTask={data.deleteFamilyTask}
+                />
+              )}
               {view === 'photos' && <PhotosPage photos={album.photos} loading={album.loading} error={album.error} onAdd={album.addPhoto} onDelete={album.deletePhoto} initialFile={cameraFile} onInitialFileConsumed={consumeCameraFile} />}
               {view === 'settings' && <SettingsPage user={authState.user} profile={data.profile} isDemo={authState.isDemo} canEditProfile={isOwner} onSaveProfile={data.saveProfile} onLogout={authState.logout} />}
             </Suspense>

@@ -1,16 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { onValue, push, ref, remove, set, update } from 'firebase/database';
+import { onValue, push, ref, remove, runTransaction, set, update } from 'firebase/database';
 import { database } from '../lib/firebase';
+import {
+  cleanFamilyTaskInput,
+  cleanScheduleItemStateInput,
+  isFamilyTaskId,
+  isScheduleItemId,
+  parseFamilyTasks,
+  parseScheduleItemStates,
+} from '../lib/planner';
 import { isQuickOptionField, isQuickOptionValue, quickOptionEntries, quickOptionId } from '../lib/quickOptions';
 import { isRecordComplete } from '../lib/records';
 import type {
   AuthUser,
   BabyProfile,
   BabyRecord,
+  FamilyTask,
+  FamilyTaskInput,
   NewRecordInput,
   QuickOption,
   QuickOptionField,
   QuickOptionsByField,
+  ScheduleItemState,
+  ScheduleItemStateInput,
+  ScheduleItemStates,
 } from '../types';
 
 const now = Date.now();
@@ -80,6 +93,58 @@ const demoRecords: BabyRecord[] = [
   },
 ];
 
+const demoScheduleItemStates: ScheduleItemStates = {
+  'newborn-physical-exam': {
+    id: 'newborn-physical-exam',
+    status: 'completed',
+    completedAt: now - 17 * 86_400_000,
+    updatedAt: now - 17 * 86_400_000,
+    updatedBy: 'demo-owner',
+    updatedByLabel: '你',
+  },
+  'newborn-blood-spot': {
+    id: 'newborn-blood-spot',
+    status: 'completed',
+    completedAt: now - 13 * 86_400_000,
+    updatedAt: now - 13 * 86_400_000,
+    updatedBy: 'demo-family',
+    updatedByLabel: '屋企人',
+  },
+  'health-visitor-new-baby-review': {
+    id: 'health-visitor-new-baby-review',
+    status: 'completed',
+    completedAt: now - 6 * 86_400_000,
+    updatedAt: now - 6 * 86_400_000,
+    updatedBy: 'demo-owner',
+    updatedByLabel: '你',
+  },
+};
+
+const demoFamilyTasks: FamilyTask[] = [
+  {
+    id: 'demo-task-red-book',
+    title: '下次覆診帶埋 Red Book',
+    dueDate: new Date(now + 3 * 86_400_000).toISOString().slice(0, 10),
+    completed: false,
+    createdAt: now - 2 * 86_400_000,
+    createdBy: 'demo-owner',
+    createdByLabel: '你',
+  },
+  {
+    id: 'demo-task-gp',
+    title: '幫 BB 登記 GP',
+    completed: true,
+    completedAt: now - 10 * 86_400_000,
+    createdAt: now - 16 * 86_400_000,
+    createdBy: 'demo-family',
+    createdByLabel: '屋企人',
+  },
+];
+
+function sortedFamilyTasks(tasks: FamilyTask[]) {
+  return parseFamilyTasks(Object.fromEntries(tasks.map(({ id, ...task }) => [id, task])));
+}
+
 function withoutUndefined<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
@@ -144,6 +209,8 @@ export function useKaylaData(user: AuthUser | null) {
   const [profile, setProfile] = useState<BabyProfile | null>(isDemo ? demoProfile : null);
   const [records, setRecords] = useState<BabyRecord[]>(isDemo ? demoRecords : []);
   const [quickOptions, setQuickOptions] = useState<QuickOptionsByField>({});
+  const [scheduleItemStates, setScheduleItemStates] = useState<ScheduleItemStates>(isDemo ? demoScheduleItemStates : {});
+  const [familyTasks, setFamilyTasks] = useState<FamilyTask[]>(isDemo ? demoFamilyTasks : []);
   const [loading, setLoading] = useState(Boolean(user && !isDemo));
   const [error, setError] = useState<string | null>(null);
   const [dataUserId, setDataUserId] = useState<string | undefined>(isDemo ? userId : undefined);
@@ -156,6 +223,8 @@ export function useKaylaData(user: AuthUser | null) {
       setProfile(null);
       setRecords([]);
       setQuickOptions({});
+      setScheduleItemStates({});
+      setFamilyTasks([]);
       setLoading(false);
       return undefined;
     }
@@ -165,6 +234,8 @@ export function useKaylaData(user: AuthUser | null) {
       setProfile(demoProfile);
       setRecords(demoRecords);
       setQuickOptions({});
+      setScheduleItemStates(demoScheduleItemStates);
+      setFamilyTasks(demoFamilyTasks);
       setLoading(false);
       return undefined;
     }
@@ -176,11 +247,15 @@ export function useKaylaData(user: AuthUser | null) {
     setProfile(null);
     setRecords([]);
     setQuickOptions({});
+    setScheduleItemStates({});
+    setFamilyTasks([]);
     setLoading(true);
     let profileReady = false;
     let recordsReady = false;
+    let scheduleReady = false;
+    let tasksReady = false;
     const finish = () => {
-      if (profileReady && recordsReady) setLoading(false);
+      if (profileReady && recordsReady && scheduleReady && tasksReady) setLoading(false);
     };
 
     const stopProfile = onValue(
@@ -230,10 +305,42 @@ export function useKaylaData(user: AuthUser | null) {
       () => setQuickOptions({}),
     );
 
+    const stopSchedule = onValue(
+      ref(database, 'kayla/planner/schedule'),
+      (snapshot) => {
+        setScheduleItemStates(parseScheduleItemStates(snapshot.val()));
+        scheduleReady = true;
+        finish();
+      },
+      () => {
+        setScheduleItemStates({});
+        setError('未能讀取健康日程，請檢查帳戶權限。');
+        scheduleReady = true;
+        finish();
+      },
+    );
+
+    const stopFamilyTasks = onValue(
+      ref(database, 'kayla/planner/tasks'),
+      (snapshot) => {
+        setFamilyTasks(parseFamilyTasks(snapshot.val()));
+        tasksReady = true;
+        finish();
+      },
+      () => {
+        setFamilyTasks([]);
+        setError('未能讀取家庭待辦，請檢查帳戶權限。');
+        tasksReady = true;
+        finish();
+      },
+    );
+
     return () => {
       stopProfile();
       stopRecords();
       stopQuickOptions();
+      stopSchedule();
+      stopFamilyTasks();
     };
   }, [userId, isDemo]);
 
@@ -383,11 +490,184 @@ export function useKaylaData(user: AuthUser | null) {
     [isDemo, user],
   );
 
+  const saveScheduleItemState = useCallback(
+    async (scheduleItemId: string, input: ScheduleItemStateInput) => {
+      if (!user) throw new Error('需要先登入');
+      if (!isScheduleItemId(scheduleItemId)) throw new Error('無效健康日程項目');
+      const cleaned = cleanScheduleItemStateInput(input);
+      const existing = scheduleItemStates[scheduleItemId];
+      const updatedAt = Date.now();
+      const clearsAppointment = cleaned.status === 'not-applicable' || cleaned.status === 'pending';
+      const clearsLocation = cleaned.status === 'not-applicable';
+      const value = withoutUndefined<Omit<ScheduleItemState, 'id'>>({
+        ...cleaned,
+        appointmentDate: clearsAppointment ? undefined : cleaned.appointmentDate,
+        appointmentTime: clearsAppointment ? undefined : cleaned.appointmentTime,
+        location: clearsLocation ? undefined : cleaned.location,
+        completedAt: cleaned.status === 'completed'
+          ? existing?.completedAt || updatedAt
+          : undefined,
+        updatedAt,
+        updatedBy: user.uid,
+        updatedByLabel: user.email?.split('@')[0] || '家庭成員',
+      });
+
+      if (isDemo) {
+        setScheduleItemStates((current) => ({
+          ...current,
+          [scheduleItemId]: { ...value, id: scheduleItemId },
+        }));
+        return;
+      }
+
+      // Replace the whole state node so clearing an appointment field does
+      // not leave a stale value in Realtime Database.
+      await set(ref(database, `kayla/planner/schedule/${scheduleItemId}`), value);
+    },
+    [isDemo, scheduleItemStates, user],
+  );
+
+  const addFamilyTask = useCallback(
+    async (input: FamilyTaskInput) => {
+      if (!user) throw new Error('需要先登入');
+      const cleaned = cleanFamilyTaskInput(input);
+      const createdAt = Date.now();
+      const value = withoutUndefined<Omit<FamilyTask, 'id'>>({
+        ...cleaned,
+        completed: false,
+        createdAt,
+        createdBy: user.uid,
+        createdByLabel: user.email?.split('@')[0] || '家庭成員',
+      });
+
+      if (isDemo) {
+        const id = `demo-task-${createdAt}`;
+        setFamilyTasks((current) => sortedFamilyTasks([...current, { ...value, id }]));
+        return id;
+      }
+
+      const taskRef = push(ref(database, 'kayla/planner/tasks'));
+      if (!taskRef.key) throw new Error('未能建立家庭待辦');
+      await set(taskRef, value);
+      return taskRef.key;
+    },
+    [isDemo, user],
+  );
+
+  const updateFamilyTask = useCallback(
+    async (taskId: string, input: FamilyTaskInput) => {
+      if (!user) throw new Error('需要先登入');
+      if (!isFamilyTaskId(taskId)) throw new Error('無效家庭待辦');
+      const existing = familyTasks.find((task) => task.id === taskId);
+      if (!existing) throw new Error('搵唔到要修改嘅家庭待辦');
+      const cleaned = cleanFamilyTaskInput(input);
+      const updatedAt = Date.now();
+      const updatedByLabel = user.email?.split('@')[0] || '家庭成員';
+      const value = withoutUndefined<Omit<FamilyTask, 'id'>>({
+        ...cleaned,
+        completed: existing.completed,
+        completedAt: existing.completedAt,
+        createdAt: existing.createdAt,
+        createdBy: existing.createdBy,
+        createdByLabel: existing.createdByLabel,
+        updatedAt,
+        updatedBy: user.uid,
+        updatedByLabel,
+      });
+
+      if (isDemo) {
+        setFamilyTasks((current) => sortedFamilyTasks(current.map((task) => (
+          task.id === taskId ? { ...value, id: taskId } : task
+        ))));
+        return;
+      }
+
+      const taskRef = ref(database, `kayla/planner/tasks/${taskId}`);
+      const result = await runTransaction(taskRef, (current) => {
+        if (!current || typeof current !== 'object' || Array.isArray(current)) return undefined;
+        return {
+          ...current,
+          title: cleaned.title,
+          dueDate: cleaned.dueDate ?? null,
+          dueTime: cleaned.dueTime ?? null,
+          location: cleaned.location ?? null,
+          notes: cleaned.notes ?? null,
+          updatedAt,
+          updatedBy: user.uid,
+          updatedByLabel,
+        };
+      });
+      if (!result.committed) throw new Error('待辦已被刪除，請重新整理。');
+    },
+    [familyTasks, isDemo, user],
+  );
+
+  const toggleFamilyTask = useCallback(
+    async (taskId: string, completed?: boolean) => {
+      if (!user) throw new Error('需要先登入');
+      if (!isFamilyTaskId(taskId)) throw new Error('無效家庭待辦');
+      const existing = familyTasks.find((task) => task.id === taskId);
+      if (!existing) throw new Error('搵唔到要修改嘅家庭待辦');
+      const updatedAt = Date.now();
+      const nextCompleted = completed ?? !existing.completed;
+      const updatedByLabel = user.email?.split('@')[0] || '家庭成員';
+      const { id: _id, ...stored } = existing;
+      const value = withoutUndefined<Omit<FamilyTask, 'id'>>({
+        ...stored,
+        completed: nextCompleted,
+        completedAt: nextCompleted ? existing.completedAt || updatedAt : undefined,
+        updatedAt,
+        updatedBy: user.uid,
+        updatedByLabel,
+      });
+
+      if (isDemo) {
+        setFamilyTasks((current) => sortedFamilyTasks(current.map((task) => (
+          task.id === taskId ? { ...value, id: taskId } : task
+        ))));
+        return;
+      }
+
+      const taskRef = ref(database, `kayla/planner/tasks/${taskId}`);
+      const result = await runTransaction(taskRef, (current) => {
+        if (!current || typeof current !== 'object' || Array.isArray(current)) return undefined;
+        const currentCompletedAt = typeof current.completedAt === 'number' && Number.isFinite(current.completedAt)
+          ? current.completedAt
+          : undefined;
+        return {
+          ...current,
+          completed: nextCompleted,
+          completedAt: nextCompleted ? currentCompletedAt || updatedAt : null,
+          updatedAt,
+          updatedBy: user.uid,
+          updatedByLabel,
+        };
+      });
+      if (!result.committed) throw new Error('待辦已被刪除，請重新整理。');
+    },
+    [familyTasks, isDemo, user],
+  );
+
+  const deleteFamilyTask = useCallback(
+    async (taskId: string) => {
+      if (!isFamilyTaskId(taskId)) throw new Error('無效家庭待辦');
+      if (isDemo) {
+        setFamilyTasks((current) => current.filter((task) => task.id !== taskId));
+        return;
+      }
+      if (!user) throw new Error('需要先登入');
+      await remove(ref(database, `kayla/planner/tasks/${taskId}`));
+    },
+    [isDemo, user],
+  );
+
   const dataBelongsToCurrentUser = Boolean(userId && dataUserId === userId);
   return useMemo(() => ({
     profile: dataBelongsToCurrentUser ? profile : null,
     records: dataBelongsToCurrentUser ? records : [],
     quickOptions: dataBelongsToCurrentUser ? quickOptions : {},
+    scheduleItemStates: dataBelongsToCurrentUser ? scheduleItemStates : {},
+    familyTasks: dataBelongsToCurrentUser ? familyTasks : [],
     loading: Boolean(userId && !isDemo && !dataBelongsToCurrentUser) || loading,
     error,
     saveProfile,
@@ -395,5 +675,10 @@ export function useKaylaData(user: AuthUser | null) {
     updateRecord,
     deleteRecord,
     deleteQuickOption,
-  }), [dataBelongsToCurrentUser, profile, records, quickOptions, userId, isDemo, loading, error, saveProfile, addRecord, updateRecord, deleteRecord, deleteQuickOption]);
+    saveScheduleItemState,
+    addFamilyTask,
+    updateFamilyTask,
+    toggleFamilyTask,
+    deleteFamilyTask,
+  }), [dataBelongsToCurrentUser, profile, records, quickOptions, scheduleItemStates, familyTasks, userId, isDemo, loading, error, saveProfile, addRecord, updateRecord, deleteRecord, deleteQuickOption, saveScheduleItemState, addFamilyTask, updateFamilyTask, toggleFamilyTask, deleteFamilyTask]);
 }

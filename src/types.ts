@@ -117,6 +117,61 @@ export interface NewPhotoInput {
   signal?: AbortSignal;
 }
 
+export type ScheduleItemStatus = 'pending' | 'booked' | 'completed' | 'not-applicable';
+
+/**
+ * Per-family state for a built-in health schedule definition. The medical
+ * definition itself stays in the app; Firebase only stores the family's
+ * appointment details and progress.
+ */
+export interface ScheduleItemState {
+  id: string;
+  status: ScheduleItemStatus;
+  appointmentDate?: string;
+  appointmentTime?: string;
+  location?: string;
+  notes?: string;
+  completedAt?: number;
+  updatedAt: number;
+  updatedBy: string;
+  updatedByLabel?: string;
+}
+
+export type ScheduleItemStates = Record<string, ScheduleItemState>;
+
+export interface ScheduleItemStateInput {
+  status: ScheduleItemStatus;
+  appointmentDate?: string;
+  appointmentTime?: string;
+  location?: string;
+  notes?: string;
+}
+
+export interface FamilyTask {
+  id: string;
+  title: string;
+  dueDate?: string;
+  dueTime?: string;
+  location?: string;
+  notes?: string;
+  completed: boolean;
+  completedAt?: number;
+  createdAt: number;
+  createdBy: string;
+  createdByLabel?: string;
+  updatedAt?: number;
+  updatedBy?: string;
+  updatedByLabel?: string;
+}
+
+export interface FamilyTaskInput {
+  title: string;
+  dueDate?: string;
+  dueTime?: string;
+  location?: string;
+  notes?: string;
+}
+
 export interface AuthUser {
   uid: string;
   email: string | null;

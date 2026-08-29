@@ -11,7 +11,7 @@ const items: Array<{ key: ViewKey; label: string; icon: IconName }> = [
   { key: 'today', label: '今日', icon: 'home' },
   { key: 'records', label: '紀錄', icon: 'records' },
   { key: 'guide', label: '指南', icon: 'book' },
-  { key: 'calendar', label: '日曆', icon: 'calendar' },
+  { key: 'calendar', label: '日程', icon: 'calendar' },
 ];
 
 export function SideNavigation({ active, onChange, onAdd }: NavigationProps) {
