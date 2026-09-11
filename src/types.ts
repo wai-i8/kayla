@@ -47,6 +47,15 @@ export interface QuickOption<T extends QuickOptionValue = QuickOptionValue> {
 
 export type QuickOptionsByField = Partial<Record<QuickOptionField, QuickOption[]>>;
 
+export type BabyEventKey = 'umbilicalCordDetachedAt' | 'firstToothDate' | 'startedSolidsAt' | 'firstRollAt';
+
+export interface BabyEvents {
+  umbilicalCordDetachedAt?: string;
+  firstToothDate?: string;
+  startedSolidsAt?: string;
+  firstRollAt?: string;
+}
+
 export interface BabyProfile {
   name: string;
   dateOfBirth: string;
@@ -54,6 +63,7 @@ export interface BabyProfile {
   gestationalWeeks?: number;
   birthWeightKg?: number;
   feedingMethod?: 'breast' | 'formula' | 'mixed' | '';
+  events?: BabyEvents;
   gpName?: string;
   notes?: string;
   updatedAt?: number;

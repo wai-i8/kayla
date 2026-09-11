@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test:medicine": "node scripts/medicine-check.cjs",
     "validate:guides": "node scripts/validate-guides.mjs",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json --pretty false && tsc --noEmit -p tsconfig.node.json --pretty false"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json --pretty false && tsc --noEmit -p tsconfig.node.json --pretty false",
+    "test:reminders": "node scripts/reminder-check.mjs"
   },
   "dependencies": {
     "firebase": "^11.2.0",

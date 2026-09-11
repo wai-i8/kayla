@@ -5,6 +5,7 @@ import type { BabyProfile, BabyRecord, RecordFilter } from '../types';
 import { Icon } from '../components/Icon';
 import { formatMedicineAdministration } from '../lib/medicine';
 import { isRecordDraft } from '../lib/records';
+import { DailyBabyReminders } from '../components/DailyBabyReminders';
 
 interface TodayPageProps {
   profile: BabyProfile | null;
@@ -15,6 +16,7 @@ interface TodayPageProps {
   onOpenPhotos: () => void;
   onQuickCamera: () => void;
   onOpenSettings: () => void;
+  onSaveProfile: (profile: BabyProfile) => Promise<void>;
 }
 
 function currentGuideFor(days: number) {
@@ -67,7 +69,7 @@ function formatSleep(minutes: number | undefined) {
   return remainder ? `${hours}時${remainder}分` : `${hours}小時`;
 }
 
-export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onQuickCamera, onOpenSettings }: TodayPageProps) {
+export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onQuickCamera, onOpenSettings, onSaveProfile }: TodayPageProps) {
   const now = Date.now();
   const yesterdayStart = startOfUkDay(-1, now);
   const yesterdayDate = dateInputValue(yesterdayStart);
@@ -170,6 +172,8 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
               <span className="guide-card-summary">{dailyTip.text}</span>
               <span className="guide-card-cta" aria-hidden="true">了解多啲 <Icon name="chevron" size={17} /></span>
             </button>
+
+            <DailyBabyReminders profile={profile} onSaveProfile={onSaveProfile} onOpenGuide={onOpenGuide} />
 
             {guide ? (
               <button

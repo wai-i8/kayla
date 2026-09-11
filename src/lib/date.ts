@@ -78,13 +78,21 @@ export function startOfToday() {
 }
 
 function calendarDayNumber(date: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return Number.NaN;
   const [year, month, day] = date.split('-').map(Number);
-  return Math.floor(Date.UTC(year, month - 1, day) / 86_400_000);
+  const timestamp = Date.UTC(year, month - 1, day);
+  const parsed = new Date(timestamp);
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return Number.NaN;
+  return Math.floor(timestamp / 86_400_000);
 }
 
 export function describeAge(dateOfBirth?: string) {
   if (!dateOfBirth) return '尚未設定出生日期';
-  const days = Math.max(0, calendarDayNumber(dateInputValue()) - calendarDayNumber(dateOfBirth));
+  const todayDay = calendarDayNumber(dateInputValue());
+  const birthDay = calendarDayNumber(dateOfBirth);
+  if (!Number.isFinite(todayDay) || !Number.isFinite(birthDay)) return '出生日期未可用';
+  if (birthDay > todayDay) return '出生日期未可用';
+  const days = todayDay - birthDay;
   if (days === 0) return '出生第 1 日';
   if (days < 14) return `出生第 ${days + 1} 日`;
   if (days < 56) return `${Math.floor(days / 7)} 週 ${days % 7} 日`;
@@ -95,7 +103,8 @@ export function describeAge(dateOfBirth?: string) {
 
 export function ageInDays(dateOfBirth?: string) {
   if (!dateOfBirth) return 0;
-  return Math.max(0, calendarDayNumber(dateInputValue()) - calendarDayNumber(dateOfBirth));
+  const days = calendarDayNumber(dateInputValue()) - calendarDayNumber(dateOfBirth);
+  return Number.isFinite(days) ? Math.max(0, days) : 0;
 }
 
 export function dateFromBirth(dateOfBirth: string, weeks: number) {

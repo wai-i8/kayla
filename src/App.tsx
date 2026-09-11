@@ -113,7 +113,7 @@ export default function App() {
             <div className="content-loading"><span /><p>載入家庭資料…</p></div>
           ) : (
             <Suspense fallback={<div className="content-loading page-loading"><span /><p>載入頁面…</p></div>}>
-              {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={openQuickAdd} onOpenRecords={openFilteredRecords} onOpenGuide={openGuide} onOpenPhotos={() => changeView('photos')} onQuickCamera={openQuickCamera} onOpenSettings={() => changeView('settings')} />}
+              {view === 'today' && <TodayPage profile={data.profile} records={data.records} onAdd={openQuickAdd} onOpenRecords={openFilteredRecords} onOpenGuide={openGuide} onOpenPhotos={() => changeView('photos')} onQuickCamera={openQuickCamera} onOpenSettings={() => changeView('settings')} onSaveProfile={data.saveProfile} />}
               {view === 'records' && <RecordsPage records={data.records} filter={recordsFilter} onFilterChange={setRecordsFilter} currentUserId={authState.user.uid} canManageAll={isOwner} onAdd={openQuickAdd} onEdit={openEditRecord} onDelete={data.deleteRecord} />}
               {view === 'guide' && <GuidePageView key={guidePageKey} initialSectionId={guideFocus} onSectionOpened={clearGuideFocus} />}
               {view === 'calendar' && (

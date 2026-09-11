@@ -297,6 +297,51 @@ button.side-brand {
 .daily-tip-card .eyebrow { color: #a2694f; }
 .daily-tip-card .guide-card-summary { color: #5c6e68; }
 .daily-tip-card .guide-card-cta { color: var(--sage-dark); }
+.daily-reminders-card { padding: 22px; border: 1px solid #dfe6df; border-radius: var(--radius-lg); background: var(--card); box-shadow: 0 7px 0 rgba(104,77,52,.02); }
+.daily-reminders-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 14px; }
+.daily-reminders-heading h2 { margin: 0 0 5px; color: var(--ink); font-size: 21px; }
+.daily-reminders-heading p:last-child { max-width: 580px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.daily-reminders-count { flex: 0 0 auto; padding: 6px 8px; border-radius: 999px; background: var(--sage-soft); color: var(--sage-dark); font-size: 9px; font-weight: 800; white-space: nowrap; }
+.daily-reminder-list { display: grid; gap: 8px; }
+.daily-reminder-row { display: grid; min-width: 0; grid-template-columns: 37px minmax(0,1fr); gap: 11px; padding: 12px 13px; border: 1px solid #e7ebe5; border-radius: 15px; background: #fcfcf8; }
+.daily-reminder-row.priority-important { border-color: #efdfd5; background: #fffaf6; }
+.daily-reminder-row.priority-action { border-color: #e1e9e3; background: #fbfdfb; }
+.daily-reminder-emoji { display: grid; width: 37px; height: 37px; place-items: center; border-radius: 12px; background: var(--sage-soft); font-size: 20px; line-height: 1; }
+.priority-important .daily-reminder-emoji { background: var(--peach-soft); }
+.daily-reminder-copy { min-width: 0; }
+.daily-reminder-title-line { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.daily-reminder-title-line h3 { min-width: 0; margin: 0; color: var(--ink); font-size: 13px; line-height: 1.35; }
+.reminder-priority { display: inline-flex; min-height: 18px; align-items: center; padding: 0 6px; border-radius: 999px; color: transparent; font-size: 8px; font-weight: 800; white-space: nowrap; }
+.reminder-priority.priority-important { background: var(--peach-soft); color: #9c5f43; }
+.reminder-priority.priority-action { background: var(--sage-soft); color: var(--sage-dark); }
+.daily-reminder-copy > p { margin: 4px 0 7px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.daily-reminder-actions { display: flex; flex-wrap: wrap; gap: 11px; }
+.daily-reminder-actions .text-button { min-height: 28px; font-size: 10px; }
+.reminder-guide-link { display: inline-flex; align-items: center; gap: 2px; }
+.reminder-event-button { min-height: 36px; margin: 5px 0 0 48px; padding: 0 12px; border: 1px dashed #a9c3b6; border-radius: 10px; background: #f7fbf8; color: var(--sage-dark); font-size: 10px; font-weight: 800; }
+.reminder-event-button:hover { border-style: solid; background: var(--sage-soft); }
+.daily-reminders-event-error { margin: 9px 0 0 48px; color: var(--danger); font-size: 10px; line-height: 1.5; }
+.daily-reminders-view-all { display: inline-flex; min-height: 43px; align-items: center; gap: 4px; margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--sage-dark); font-size: 11px; font-weight: 800; }
+.daily-reminders-view-all span { color: var(--soft-muted); font-weight: 600; }
+.daily-reminders-view-all svg { margin-left: 2px; }
+.daily-reminders-empty > p, .daily-reminders-no-results { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+.daily-reminders-no-results { padding: 12px 2px 0; }
+.reminder-dialog-backdrop { z-index: 130; }
+.reminder-dialog { width: min(100%, 620px); max-height: min(90svh, 760px); overflow-y: auto; border-radius: 24px 24px 18px 18px; background: var(--paper); box-shadow: 0 24px 80px rgba(20,31,28,.28); }
+.reminder-dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; padding: 21px 23px 16px; border-bottom: 1px solid var(--line); }
+.reminder-dialog-header > div:first-child { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.reminder-dialog-header h2 { margin: 0; font-size: 22px; }
+.daily-reminder-dialog-emoji { display: grid; width: 43px; height: 43px; place-items: center; border-radius: 14px; background: var(--sage-soft); font-size: 23px; }
+.reminder-dialog-content { padding: 19px 23px 23px; }
+.reminder-dialog-content > p { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.reminder-disclaimer { display: flex; align-items: flex-start; gap: 8px; padding: 11px 12px; border-radius: 11px; background: var(--blue-soft); color: #4b6e7e; font-size: 10px; line-height: 1.6; }
+.reminder-disclaimer svg { flex: 0 0 auto; margin-top: 1px; }
+.reminder-dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 17px; }
+.reminder-dialog-actions .primary-button, .reminder-dialog-actions .secondary-button { min-height: 42px; font-size: 10px; text-decoration: none; }
+.reminder-all-list { display: grid; gap: 8px; padding: 16px 23px 0; }
+.reminder-all-item .daily-reminder-row { border-radius: 14px; }
+.reminder-all-item:not(.shown) .daily-reminder-row { background: #f5f7f2; }
+.reminder-dialog-footnote { margin: 15px 23px 22px; color: var(--soft-muted); font-size: 9px; line-height: 1.6; }
 .emergency-strip { display: flex; align-items: center; gap: 13px; margin-bottom: 13px; padding: 17px; border: 1px solid #eddddd; border-radius: var(--radius-md); background: #fcf4f1; }
 .emergency-icon { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: #eed1cf; color: #a24347; }
 .emergency-strip > div:nth-child(2) { flex: 1; }
@@ -898,6 +943,23 @@ button.side-brand {
   .guide-card-highlights { gap: 6px; margin-top: 12px; }
   .guide-card-highlights > span { font-size: 12px; line-height: 1.55; }
   .guide-card-cta { margin-top: 14px; }
+  .daily-reminders-card { padding: 18px; border-radius: 20px; }
+  .daily-reminders-heading { gap: 9px; margin-bottom: 12px; }
+  .daily-reminders-heading h2 { font-size: 19px; }
+  .daily-reminders-heading p:last-child { font-size: 10px; line-height: 1.55; }
+  .daily-reminders-count { padding: 5px 7px; font-size: 8px; }
+  .daily-reminder-row { grid-template-columns: 34px minmax(0,1fr); gap: 9px; padding: 11px; border-radius: 14px; }
+  .daily-reminder-emoji { width: 34px; height: 34px; border-radius: 11px; font-size: 18px; }
+  .daily-reminder-title-line h3 { font-size: 12px; }
+  .daily-reminder-copy > p { font-size: 10px; line-height: 1.58; }
+  .daily-reminder-actions .text-button { min-height: 30px; font-size: 10px; }
+  .reminder-event-button { margin-left: 43px; }
+  .reminder-dialog { width: 100%; max-height: 92svh; border-radius: 25px 25px 0 0; }
+  .reminder-dialog-header { padding: 18px 18px 14px; }
+  .reminder-dialog-content { padding: 17px 18px calc(20px + env(safe-area-inset-bottom)); }
+  .reminder-dialog-content > p { font-size: 12px; }
+  .reminder-all-list { padding: 13px 18px 0; }
+  .reminder-dialog-footnote { margin: 13px 18px calc(18px + env(safe-area-inset-bottom)); }
   .yesterday-block { margin-bottom: 12px; padding: 18px; border-radius: 20px; }
   .empty-profile-card { min-height: 520px; padding: 30px 24px; border-radius: 21px; }
 
@@ -1012,6 +1074,10 @@ button.side-brand {
   .filter-scroller { margin-right: -14px; padding-right: 14px; }
   .baby-avatar { width: 63px; height: 63px; }
   .baby-hero-copy h2 { font-size: 20px; }
+  .daily-reminders-heading { display: block; }
+  .daily-reminders-count { display: inline-flex; margin-top: 8px; }
+  .daily-reminder-title-line { align-items: flex-start; flex-wrap: wrap; }
+  .reminder-priority { margin-top: 1px; }
   .hero-add span { display: none; }
   .quick-grid { gap: 7px; }
   .quick-sheet { padding-right: 14px; padding-left: 14px; }
