@@ -69,7 +69,7 @@ function formatSleep(minutes: number | undefined) {
   return remainder ? `${hours}時${remainder}分` : `${hours}小時`;
 }
 
-export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onQuickCamera, onOpenSettings, onSaveProfile }: TodayPageProps) {
+export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide, onOpenPhotos, onQuickCamera, onOpenSettings }: TodayPageProps) {
   const now = Date.now();
   const yesterdayStart = startOfUkDay(-1, now);
   const yesterdayDate = dateInputValue(yesterdayStart);
@@ -159,6 +159,8 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
           </section>
 
           <section className="home-guide-stack" aria-label="BB 每日小知識及本週重點" data-testid="home-guide-stack">
+            <DailyBabyReminders profile={profile} onOpenGuide={onOpenGuide} />
+
             <button
               type="button"
               className="guide-feature daily-tip-card"
@@ -173,7 +175,6 @@ export function TodayPage({ profile, records, onAdd, onOpenRecords, onOpenGuide,
               <span className="guide-card-cta" aria-hidden="true">了解多啲 <Icon name="chevron" size={17} /></span>
             </button>
 
-            <DailyBabyReminders profile={profile} onSaveProfile={onSaveProfile} onOpenGuide={onOpenGuide} />
 
             {guide ? (
               <button
