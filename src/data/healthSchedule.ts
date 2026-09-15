@@ -51,6 +51,8 @@ const NHS_NEWBORN =
   "https://www.nhs.uk/pregnancy/labour-and-birth/getting-to-know-your-newborn/";
 const NHS_BABY_REVIEWS =
   "https://www.nhs.uk/baby/babys-development/height-weight-and-reviews/baby-reviews/";
+const NHS_POSTNATAL_CHECK =
+  "https://www.nhs.uk/baby/support-and-services/your-6-week-postnatal-check/";
 const NHS_PARENT_SUPPORT =
   "https://www.nhs.uk/baby/support-and-services/services-and-support-for-parents/";
 const NHS_GP_REGISTRATION =
@@ -391,6 +393,37 @@ const HEALTH_SCHEDULE_ITEMS: HealthScheduleDefinition[] = [
     sources: [
       { label: "NHS：Early days after birth", url: NHS_EARLY_DAYS },
       { label: "NHS：Services and support for parents", url: NHS_PARENT_SUPPORT },
+    ],
+  },
+  {
+    id: "maternal-six-to-eight-week-postnatal-check",
+    title: "媽媽 6 至 8 週產後檢查",
+    shortTitle: "媽媽產後檢查",
+    category: "visit",
+    audience: "universal",
+    startDay: 42,
+    endDay: 56,
+    displayTiming: "BB 出生後 6 至 8 週；由 GP surgery 提供",
+    summary:
+      "媽媽嘅 6 至 8 週產後檢查係獨立於 BB 身體檢查嘅安排，用嚟回顧身體恢復、情緒、傷口／會陰、排尿、避孕及其他需要跟進嘅問題。",
+    why:
+      "有啲產後身體或情緒問題未必會喺出院時完全顯現；提早準備問題清單，方便 GP 按你實際情況安排檢查、治療或轉介。",
+    whatToExpect: [
+      "GP 會問你身體恢復、惡露、傷口／會陰、情緒同整體 wellbeing。",
+      "如孕期或產後曾有血壓問題，可能會量血壓；亦可以傾排尿／排便、性生活疼痛、避孕、餵奶或維他命 D。",
+      "如有剖腹產或會陰傷口，按需要檢查癒合情況；實際內容會因人而異。",
+    ],
+    prepare: [
+      "由第 5 週開始留意 GP surgery 有冇提供預約；未收到安排時可以自己聯絡 GP。",
+      "列低出血、疼痛、傷口、排尿／排便、情緒、睡眠、餵奶、避孕同產後疑問。",
+      "確認呢次係媽媽檢查，唔好假設只完成 BB 6 至 8 週檢查就等於媽媽檢查完成。",
+    ],
+    followUp: [
+      "有任何持續或令人擔心嘅症狀，唔需要等到 6 至 8 週先求助；可提早聯絡 midwife、GP、health visitor 或 NHS 111。",
+      "如檢查後需要轉介、覆診或處方，將實際日期同安排加入家庭待辦。",
+    ],
+    sources: [
+      { label: "NHS：Your 6-week postnatal check", url: NHS_POSTNATAL_CHECK },
     ],
   },
   {

@@ -422,6 +422,8 @@ button.side-brand {
 .photo-viewer-footer > div:first-child { min-width: 0; }
 .photo-viewer-footer p { overflow: hidden; margin: 0 0 3px; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .photo-viewer-footer small { display: block; }
+.photo-caption-edit-button { display: inline-flex; min-height: 38px; align-items: center; gap: 6px; padding: 0 11px; border: 1px solid rgba(255,255,255,.2); border-radius: 10px; background: rgba(255,255,255,.08); color: #fff; font-size: 10px; font-weight: 800; white-space: nowrap; }
+.photo-caption-edit-button:hover { border-color: rgba(255,255,255,.36); background: rgba(255,255,255,.15); }
 .photo-delete-button { color: #f3acac; }
 .photo-viewer-nav { position: absolute; z-index: 3; top: 50%; display: grid; width: 46px; height: 54px; place-items: center; padding: 0; border: 0; border-radius: 13px; background: rgba(10,16,14,.7); color: #fff; transform: translateY(-50%); }
 .photo-viewer-nav.previous { left: 14px; }
@@ -433,6 +435,13 @@ button.side-brand {
 .photo-delete-confirm > span { display: block; margin-bottom: 10px; }
 .photo-delete-confirm > div { display: flex; justify-content: flex-end; gap: 8px; }
 .photo-delete-confirm .secondary-button { border-color: #775b5b; color: #fff; }
+.photo-caption-edit-panel { position: absolute; z-index: 5; right: 14px; bottom: 82px; width: min(calc(100% - 28px), 420px); padding: 16px; border: 1px solid #48695d; border-radius: 15px; background: #1d2b26; box-shadow: 0 15px 45px rgba(0,0,0,.38); }
+.photo-caption-edit-panel > p { margin: 0 0 10px; color: #f2f7f4; font-size: 12px; font-weight: 800; }
+.photo-caption-edit-panel textarea { display: block; width: 100%; min-height: 82px; resize: vertical; padding: 10px 11px; border: 1px solid #608276; border-radius: 10px; background: #13201c; color: #fff; font: inherit; font-size: 12px; line-height: 1.55; }
+.photo-caption-edit-panel textarea:focus { border-color: #a3cbb9; outline: 2px solid rgba(163,203,185,.25); outline-offset: 1px; }
+.photo-caption-edit-panel > .form-error { display: block; margin-top: 9px; font-size: 10px; }
+.photo-caption-edit-panel > div { display: flex; justify-content: flex-end; gap: 8px; margin-top: 11px; }
+.photo-caption-edit-panel .secondary-button { border-color: #627f73; color: #fff; }
 
 /* Records */
 .filter-scroller { display: flex; gap: 7px; overflow-x: auto; margin-bottom: 27px; padding-bottom: 3px; scrollbar-width: none; }
@@ -993,6 +1002,7 @@ button.side-brand {
   .photo-viewer-nav.previous { left: 8px; }
   .photo-viewer-nav.next { right: 8px; }
   .photo-delete-confirm { bottom: calc(83px + env(safe-area-inset-bottom)); }
+  .photo-caption-edit-panel { right: 8px; bottom: calc(83px + env(safe-area-inset-bottom)); width: calc(100% - 16px); }
 
   .guide-main-header { align-items: flex-start; padding: 22px 20px; }
   .edition-chip { padding: 8px 10px; }

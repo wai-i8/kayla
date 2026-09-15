@@ -44,6 +44,7 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, onUpdate, 
   const [editOpen, setEditOpen] = useState(false);
   const [editCaption, setEditCaption] = useState('');
   const [editing, setEditing] = useState(false);
+  const [editError, setEditError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const cameraInput = useRef<HTMLInputElement>(null);
@@ -80,6 +81,8 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, onUpdate, 
     setViewingId(null);
     setDeleteConfirm(false);
     setDeleteError('');
+    setEditOpen(false);
+    setEditError('');
   };
   const closeDeleteConfirm = () => {
     if (deleting) return;
@@ -167,15 +170,19 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, onUpdate, 
   const openEdit = () => {
     if (!viewing) return;
     setEditCaption(viewing.caption || '');
+    setEditError('');
     setEditOpen(true);
   };
 
   const saveEdit = async () => {
     if (!viewing) return;
     setEditing(true);
+    setEditError('');
     try {
-      await onUpdate(viewing, { caption: editCaption });
+      await onUpdate(viewing, { caption: editCaption.trim() });
       setEditOpen(false);
+    } catch (saveError) {
+      setEditError(saveError instanceof Error ? saveError.message : '未能儲存 caption，請再試。');
     } finally {
       setEditing(false);
     }
@@ -295,20 +302,23 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, onUpdate, 
             <button type="button" className="photo-viewer-nav previous" onClick={() => moveViewer(-1)} disabled={viewingIndex <= 0} aria-label="上一張相"><Icon name="chevron" /></button>
             <button type="button" className="photo-viewer-nav next" onClick={() => moveViewer(1)} disabled={viewingIndex >= ordered.length - 1} aria-label="下一張相"><Icon name="chevron" /></button>
             <footer className="photo-viewer-footer">
-              <div><p>{viewing.caption || '冇相片說明'}</p><small>由 {viewing.createdByLabel || '家庭成員'} 加入</small></div>
+              <div className="photo-viewer-caption"><p>{viewing.caption || '冇相片說明'}</p><small>由 {viewing.createdByLabel || '家庭成員'} 加入</small></div>
               {!deleteConfirm && <>
-                <button type="button" className="icon-button" onClick={openEdit} aria-label="修改相片">✏️</button>
+                <button type="button" className="photo-caption-edit-button" data-testid="edit-photo-caption" onClick={openEdit} aria-label="編輯相片 caption"><Icon name="edit" size={16} />編輯 caption</button>
                 <button type="button" className="icon-button photo-delete-button" onClick={() => setDeleteConfirm(true)} aria-label="刪除相片"><Icon name="trash" /></button>
               </>}
             </footer>
             {editOpen && (
-              <section className="photo-delete-confirm" role="dialog" aria-label="修改相片內容">
-                <p>修改相片內容</p>
-                <textarea value={editCaption} onChange={(event) => setEditCaption(event.target.value)} />
-                <button type="button" className="primary-button" disabled={editing} onClick={saveEdit}>
-                  {editing ? '儲存中…' : '儲存'}
-                </button>
-                <button type="button" className="secondary-button" onClick={() => setEditOpen(false)}>取消</button>
+              <section className="photo-caption-edit-panel" data-testid="photo-caption-editor" role="dialog" aria-modal="true" aria-labelledby="photo-caption-edit-title">
+                <p id="photo-caption-edit-title">編輯相片 caption</p>
+                <textarea aria-label="相片 caption" maxLength={500} rows={3} value={editCaption} onChange={(event) => setEditCaption(event.target.value)} />
+                {editError && <span className="form-error" role="alert">{editError}</span>}
+                <div>
+                  <button type="button" className="secondary-button" disabled={editing} onClick={() => setEditOpen(false)}>取消</button>
+                  <button type="button" className="primary-button" data-testid="save-photo-caption" disabled={editing} onClick={saveEdit}>
+                    {editing ? '儲存中…' : '儲存 caption'}
+                  </button>
+                </div>
               </section>
             )}
 

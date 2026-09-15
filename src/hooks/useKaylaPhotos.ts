@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { onValue, ref as databaseRef, remove, set } from 'firebase/database';
+import { onValue, ref as databaseRef, remove, set, update } from 'firebase/database';
 import {
   deleteObject,
   ref as storageRef,
@@ -195,16 +195,21 @@ export function useKaylaPhotos(user: AuthUser | null) {
   }, [user, isDemo]);
 
   const updatePhoto = useCallback(async (photo: BabyPhoto, patch: { caption?: string }) => {
+    if (!user) throw new Error('需要先登入');
+    const caption = patch.caption?.trim() || undefined;
+    if (caption && caption.length > 500) throw new Error('相片 caption 最多 500 字。');
+
     if (isDemo) {
-      setPhotos((current) => current.map((item) => item.id === photo.id ? { ...item, ...patch } : item));
+      setPhotos((current) => current.map((item) => item.id === photo.id ? { ...item, caption } : item));
       return;
     }
 
-    await set(databaseRef(database, `kayla/photos/${photo.id}`), {
-      ...photo,
-      ...patch,
+    // Update only the caption. This avoids sending the client-side id/demo
+    // object URLs and avoids overwriting unrelated metadata changes.
+    await update(databaseRef(database, `kayla/photos/${photo.id}`), {
+      caption: caption || null,
     });
-  }, [isDemo]);
+  }, [isDemo, user]);
 
   const deletePhoto = useCallback(async (photo: BabyPhoto) => {
     if (!user) throw new Error('需要先登入');
@@ -241,5 +246,5 @@ export function useKaylaPhotos(user: AuthUser | null) {
     addPhoto,
     deletePhoto,
     updatePhoto,
-  }), [belongsToCurrentUser, photos, userId, isDemo, loading, error, addPhoto, deletePhoto]);
+  }), [belongsToCurrentUser, photos, userId, isDemo, loading, error, addPhoto, deletePhoto, updatePhoto]);
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { BabyProfile } from '../types';
-import { getDailyBabyReminders } from '../lib/reminderEngine';
+import { getDailyBabyReminders, getEligibleBabyReminders } from '../lib/reminderEngine';
 import type { BabyReminder } from '../data/babyReminders';
 import { Icon } from './Icon';
 import { useDialogFocus } from '../hooks/useDialogFocus';
@@ -18,6 +18,7 @@ function ageLabel(days: number, weeks: number, months: number) {
 }
 
 function badgeLabel(reminder: BabyReminder) {
+  if (reminder.category === 'maternal') return '媽媽';
   if (reminder.priority === 'important') return '重要';
   if (reminder.kind === 'screening') return '檢查';
   if (reminder.kind === 'preparation') return '預備';
@@ -85,7 +86,9 @@ function ReminderDialog({ reminder, onClose, onOpenGuide }: { reminder: BabyRemi
 
 export function DailyBabyReminders({ profile, onOpenGuide }: DailyBabyRemindersProps) {
   const [detail, setDetail] = useState<BabyReminder | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const result = profile ? getDailyBabyReminders(profile) : null;
+  const eligible = profile ? getEligibleBabyReminders(profile).eligible : [];
 
   if (!profile) return null;
 
@@ -105,15 +108,22 @@ export function DailyBabyReminders({ profile, onOpenGuide }: DailyBabyRemindersP
           <div>
             <p className="eyebrow">TODAY · AGE-AWARE</p>
             <h2 id="daily-reminders-title">是日注意事項</h2>
-            <p>BB 而家係 {ageLabel(result.age.babyAgeDays, result.age.babyAgeWeeks, result.age.babyAgeMonths)}。只顯示今日真正值得知嘅成長／照顧重點。</p>
+            <p>BB 而家係 {ageLabel(result.age.babyAgeDays, result.age.babyAgeWeeks, result.age.babyAgeMonths)}。只顯示今日 BB 同媽媽真正值得知嘅成長／恢復重點。</p>
           </div>
         </div>
         {result.reminders.length ? (
-          <div className="daily-reminder-list">
-            {result.reminders.map((reminder) => <ReminderRow key={reminder.id} reminder={reminder} onOpenDetail={setDetail} onOpenGuide={onOpenGuide} />)}
-          </div>
+          <>
+            <div className="daily-reminder-list">
+              {(showAll ? eligible : result.reminders).map((reminder) => <ReminderRow key={reminder.id} reminder={reminder} onOpenDetail={setDetail} onOpenGuide={onOpenGuide} />)}
+            </div>
+            {result.eligibleCount > result.reminders.length && (
+              <button type="button" className="daily-reminders-view-all" data-testid="view-all-baby-reminders" onClick={() => setShowAll((current) => !current)} aria-expanded={showAll}>
+                {showAll ? '收起' : `查看更多（仲有 ${result.eligibleCount - result.reminders.length} 項）`} <Icon name="chevron" size={14} />
+              </button>
+            )}
+          </>
         ) : (
-          <p className="daily-reminders-no-results">今日冇值得硬塞畀你嘅成長資訊；有真正新階段／要準備嘅事項先會出現。</p>
+          <p className="daily-reminders-no-results">今日冇需要硬塞畀你嘅 BB 或媽媽資訊；有真正新階段／要準備嘅事項先會出現。</p>
         )}
       </section>
       {detail && <ReminderDialog reminder={detail} onClose={() => setDetail(null)} onOpenGuide={onOpenGuide} />}

@@ -10,6 +10,7 @@ export { babyReminders } from '../data/babyReminders';
 export interface DailyBabyRemindersResult {
   age: BabyAge;
   reminders: BabyReminder[];
+  eligibleCount: number;
 }
 
 const PRIORITY_SCORE = {
@@ -68,6 +69,13 @@ export function reminderMatchesAge(
     return eventReminderMatches(reminder, profile, timestamp);
   }
 
+  if (reminder.triggerType === 'day_range') {
+    return Number.isInteger(reminder.startDay)
+      && Number.isInteger(reminder.endDay)
+      && age.babyAgeDays >= reminder.startDay!
+      && age.babyAgeDays <= reminder.endDay!;
+  }
+
   return Number.isInteger(reminder.startDay) && age.babyAgeDays === reminder.startDay;
 }
 
@@ -105,8 +113,8 @@ export function getDailyBabyReminders(
   limit = 3,
 ): DailyBabyRemindersResult {
   const { age, eligible } = getEligibleBabyReminders(profile, timestamp);
-  if (!age.valid || age.future) return { age, reminders: [] };
+  if (!age.valid || age.future) return { age, reminders: [], eligibleCount: 0 };
 
   // Keep the home card deliberately short. Quality and timing beat volume.
-  return { age, reminders: eligible.slice(0, limit) };
+  return { age, reminders: eligible.slice(0, limit), eligibleCount: eligible.length };
 }
