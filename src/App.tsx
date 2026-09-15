@@ -130,7 +130,7 @@ export default function App() {
                   onDeleteFamilyTask={data.deleteFamilyTask}
                 />
               )}
-              {view === 'photos' && <PhotosPage photos={album.photos} loading={album.loading} error={album.error} onAdd={album.addPhoto} onDelete={album.deletePhoto} initialFile={cameraFile} onInitialFileConsumed={consumeCameraFile} />}
+              {view === 'photos' && <PhotosPage photos={album.photos} loading={album.loading} error={album.error} onAdd={album.addPhoto} onDelete={album.deletePhoto} onUpdate={album.updatePhoto} initialFile={cameraFile} onInitialFileConsumed={consumeCameraFile} />}
               {view === 'settings' && <SettingsPage user={authState.user} profile={data.profile} isDemo={authState.isDemo} canEditProfile={isOwner} onSaveProfile={data.saveProfile} onLogout={authState.logout} />}
             </Suspense>
           )}

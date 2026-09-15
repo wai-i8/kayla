@@ -194,14 +194,9 @@ export function useKaylaPhotos(user: AuthUser | null) {
     }
   }, [user, isDemo]);
 
-
-  const updatePhoto = useCallback(async (photo: BabyPhoto, patch: { caption?: string; capturedAt?: number }) => {
-    if (!user) throw new Error('需要先登入');
-
+  const updatePhoto = useCallback(async (photo: BabyPhoto, patch: { caption?: string }) => {
     if (isDemo) {
-      setPhotos((current) => current.map((item) =>
-        item.id === photo.id ? { ...item, ...patch } : item
-      ));
+      setPhotos((current) => current.map((item) => item.id === photo.id ? { ...item, ...patch } : item));
       return;
     }
 
@@ -209,7 +204,7 @@ export function useKaylaPhotos(user: AuthUser | null) {
       ...photo,
       ...patch,
     });
-  }, [user, isDemo]);
+  }, [isDemo]);
 
   const deletePhoto = useCallback(async (photo: BabyPhoto) => {
     if (!user) throw new Error('需要先登入');
