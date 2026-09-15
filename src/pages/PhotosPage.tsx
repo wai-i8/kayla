@@ -11,6 +11,7 @@ interface PhotosPageProps {
   error: string | null;
   onAdd: (input: NewPhotoInput) => Promise<void>;
   onDelete: (photo: BabyPhoto) => Promise<void>;
+  onUpdate: (photo: BabyPhoto, patch: { caption?: string; capturedAt?: number }) => Promise<void>;
   initialFile?: File | null;
   onInitialFileConsumed?: () => void;
 }
@@ -29,7 +30,7 @@ function groupPhotos(photos: BabyPhoto[]) {
   return [...groups.entries()];
 }
 
-export function PhotosPage({ photos, loading, error, onAdd, onDelete, initialFile, onInitialFileConsumed }: PhotosPageProps) {
+export function PhotosPage({ photos, loading, error, onAdd, onDelete, onUpdate, initialFile, onInitialFileConsumed }: PhotosPageProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -40,6 +41,9 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, initialFil
   const [formError, setFormError] = useState('');
   const [viewingId, setViewingId] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editCaption, setEditCaption] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const cameraInput = useRef<HTMLInputElement>(null);
@@ -70,6 +74,24 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, initialFil
     resetEditor();
   };
   const addDialogRef = useDialogFocus(addOpen, closeAdd, !saving);
+
+
+  const startEdit = () => {
+    if (!viewing) return;
+    setEditCaption(viewing.caption || '');
+    setEditOpen(true);
+  };
+
+  const saveEdit = async () => {
+    if (!viewing) return;
+    setEditSaving(true);
+    try {
+      await onUpdate(viewing, { caption: editCaption });
+      setEditOpen(false);
+    } finally {
+      setEditSaving(false);
+    }
+  };
 
   const closeViewer = () => {
     if (deleting) return;
@@ -275,8 +297,19 @@ export function PhotosPage({ photos, loading, error, onAdd, onDelete, initialFil
             <button type="button" className="photo-viewer-nav next" onClick={() => moveViewer(1)} disabled={viewingIndex >= ordered.length - 1} aria-label="下一張相"><Icon name="chevron" /></button>
             <footer className="photo-viewer-footer">
               <div><p>{viewing.caption || '冇相片說明'}</p><small>由 {viewing.createdByLabel || '家庭成員'} 加入</small></div>
-              {!deleteConfirm && <button type="button" className="icon-button photo-delete-button" onClick={() => setDeleteConfirm(true)} aria-label="刪除相片"><Icon name="trash" /></button>}
+              {!deleteConfirm && <><button type="button" className="icon-button" onClick={startEdit} aria-label="修改相片說明">✏️</button><button type="button" className="icon-button photo-delete-button" onClick={() => setDeleteConfirm(true)} aria-label="刪除相片"><Icon name="trash" /></button></>}
             </footer>
+
+            {editOpen && (
+              <section className="photo-delete-confirm" role="dialog" aria-label="修改相片資料">
+                <p>修改相片說明</p>
+                <textarea value={editCaption} onChange={(e) => setEditCaption(e.target.value)} maxLength={500} />
+                <div>
+                  <button type="button" className="secondary-button" onClick={() => setEditOpen(false)}>取消</button>
+                  <button type="button" className="primary-button" onClick={saveEdit} disabled={editSaving}>{editSaving ? '儲存中…' : '儲存'}</button>
+                </div>
+              </section>
+            )}
             {deleteConfirm && (
               <section ref={deleteDialogRef} className="photo-delete-confirm" role="alertdialog" aria-modal="true" aria-label="確認永久刪除相片">
                 <p>確定永久刪除呢張相？刪除後無法復原。</p>

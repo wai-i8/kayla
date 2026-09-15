@@ -4,7 +4,7 @@ export type ReminderCategory =
   | 'feeding' | 'nappy' | 'sleep' | 'bath' | 'umbilical' | 'vitamins'
   | 'physical' | 'vision' | 'hearing' | 'communication' | 'social'
   | 'teeth' | 'weaning' | 'allergens' | 'vaccination' | 'safety'
-  | 'play' | 'bonding' | 'newborn';
+  | 'play' | 'bonding' | 'newborn' | 'maternal';
 
 export type ReminderPriority = 'important' | 'action' | 'development' | 'tip';
 export type ReminderTrigger = 'exact_day' | 'event_based';
@@ -161,6 +161,33 @@ export const babyReminders: BabyReminder[] = [
   r({ id: "event-solids-allergen", emoji: "🥚", title: "既然已經開始 solids，常見致敏食物唔需要無限期拖後", shortText: "雞蛋、花生等可以按安全指引由少量、逐一引入，方便睇清楚有冇反應。", whyNow: "開始 solids 後就進入建立食物多樣性嘅階段；無原因長期拖延某啲常見 allergen 未必有好處。", normalText: "第一次只需要少量，而且最好日頭試，方便觀察。", actionText: "一次引入一種、少量開始；成功食過後可按指引繼續定期出現喺飲食。", whenToAsk: "如果 BB 有嚴重濕疹、已知食物過敏，或者曾經有即時過敏反應，先問 GP／allergy team。", category: "allergens", priority: "action", kind: "care_check", editorialValue: "essential", triggerType: "event_based", eventKey: "startedSolidsAt", eventOffsetDays: 2, guideTargetId: "months-5-6", source: SOURCES.allergens }),
   r({ id: "event-solids-cup", emoji: "🥤", title: "開始 solids 呢個星期，可以順便開始學飲杯", shortText: "餐時俾少量水，用 open cup 或 free-flow cup 練習；一開始倒多過飲好正常。", whyNow: "加固開始後正好建立飲杯技能，唔需要等到戒奶樽先學。", normalText: "最初只係學動作，唔靠水提供主要營養。", actionText: "每餐提供幾啖練習，成人幫手托杯，唔需要追求飲幾多。", whenToAsk: "如果 BB 飲任何液體都持續咳、嗆或吞嚥困難，問 health visitor／GP。", category: "weaning", priority: "development", kind: "care_check", editorialValue: "high", triggerType: "event_based", eventKey: "startedSolidsAt", eventOffsetDays: 5, guideTargetId: "months-5-6", source: SOURCES.weaning }),
   r({ id: "event-first-roll", emoji: "🛏️", title: "第一次翻身出現：睡眠安全設定要即刻再檢查", shortText: "一旦開始有翻身能力，唔好再假設 BB 會一直留喺原位；睡床要保持完全清空。", whyNow: "翻身代表活動能力跨咗一級，夜晚同無人直接望住時嘅環境安全變得更重要。", normalText: "初期可能只會單方向翻，甚至識翻過去未識翻返嚟。", actionText: "繼續每次仰睡放低 BB，cot 內唔加枕頭、定位墊、床圍或玩具。", whenToAsk: "如果翻身時似乎卡住呼吸、動作明顯只用單邊或你擔心肌肉控制，問 health visitor／GP。", category: "sleep", priority: "important", kind: "milestone", editorialValue: "essential", triggerType: "event_based", eventKey: "firstRollAt", eventOffsetDays: 0, guideTargetId: "sleep", source: SOURCES.sleep }),
+
+
+  {
+    id: 'maternal-postpartum-urination',
+    emoji: '🚽',
+    title: '產後第一次小便要留意',
+    shortText: '生產後幾小時內留意排尿情況，避免膀胱過脹影響恢復。',
+    detailText: '生產後膀胱感覺可能因麻醉、腫脹或疲累而改變。醫護人員通常會留意產後排尿情況；如果長時間未能小便，應主動告知。',
+    category: 'maternal',
+    priority: 'important',
+    kind: 'care_check',
+    editorialValue: 'essential',
+    trigger: { type: 'exact_day', day: 0 },
+  },
+
+  {
+    id: 'maternal-lochia-change',
+    emoji: '🩸',
+    title: '惡露會慢慢改變',
+    shortText: '由鮮紅逐漸變淡，再變成粉紅、黃色或白色通常是正常過程。',
+    detailText: '產後惡露是子宮恢復時排出的血液及組織。留意份量、氣味及身體感覺；如果大量出血、持續大血塊、惡臭或不適，需要尋求醫療意見。',
+    category: 'maternal',
+    priority: 'important',
+    kind: 'care_check',
+    editorialValue: 'essential',
+    trigger: { type: 'day_range', startDay: 1, endDay: 14 },
+  },
 ];
 
 export const BABY_REMINDER_COUNT = babyReminders.length;
