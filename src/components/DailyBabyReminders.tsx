@@ -1,9 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { BabyProfile } from '../types';
-import { getDailyBabyReminders, getEligibleBabyReminders } from '../lib/reminderEngine';
+import { getDailyBabyReminders } from '../lib/reminderEngine';
 import type { BabyReminder } from '../data/babyReminders';
 import { Icon } from './Icon';
 import { useDialogFocus } from '../hooks/useDialogFocus';
+
+
+const SEEN_STORAGE_PREFIX = 'kayla.daily-reminders.seen.v2';
+
+function localDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function readPreviouslySeenReminderIds(profile: BabyProfile) {
+  if (typeof window === 'undefined') return new Set<string>();
+  try {
+    const raw = window.localStorage.getItem(`${SEEN_STORAGE_PREFIX}:${profile.dateOfBirth}`);
+    if (!raw) return new Set<string>();
+    const parsed = JSON.parse(raw) as Record<string, string[]>;
+    const today = localDateKey();
+    return new Set(
+      Object.entries(parsed)
+        .filter(([date]) => date !== today)
+        .flatMap(([, ids]) => Array.isArray(ids) ? ids : []),
+    );
+  } catch {
+    return new Set<string>();
+  }
+}
+
+function rememberTodayReminders(profile: BabyProfile, ids: string[]) {
+  if (typeof window === 'undefined' || !ids.length) return;
+  try {
+    const storageKey = `${SEEN_STORAGE_PREFIX}:${profile.dateOfBirth}`;
+    const raw = window.localStorage.getItem(storageKey);
+    const parsed = raw ? JSON.parse(raw) as Record<string, string[]> : {};
+    parsed[localDateKey()] = ids;
+
+    // Keep roughly the first year only; prevents an ever-growing localStorage key.
+    const trimmed = Object.fromEntries(Object.entries(parsed).sort(([a], [b]) => b.localeCompare(a)).slice(0, 400));
+    window.localStorage.setItem(storageKey, JSON.stringify(trimmed));
+  } catch {
+    // Browsers can disable storage; reminders still work with deterministic rotation.
+  }
+}
 
 interface DailyBabyRemindersProps {
   profile: BabyProfile | null;
@@ -18,7 +61,6 @@ function ageLabel(days: number, weeks: number, months: number) {
 }
 
 function badgeLabel(reminder: BabyReminder) {
-  if (reminder.category === 'maternal') return '媽媽';
   if (reminder.priority === 'important') return '重要';
   if (reminder.kind === 'screening') return '檢查';
   if (reminder.kind === 'preparation') return '預備';
@@ -73,7 +115,7 @@ function ReminderDialog({ reminder, onClose, onOpenGuide }: { reminder: BabyRemi
             <DetailBlock label="而家可以點做" tone="action">{reminder.actionText}</DetailBlock>
             {reminder.whenToAsk && <DetailBlock label="咩情況要搵人問" tone="help">{reminder.whenToAsk}</DetailBlock>}
           </div>
-          <div className="reminder-disclaimer"><Icon name="shield" size={16} /><span>一般育兒資訊，不取代 midwife、health visitor 或醫生按你 BB 情況提供嘅個別建議。</span></div>
+          <div className="reminder-disclaimer"><Icon name="shield" size={16} /><span>一般育兒／產後恢復資訊，不取代 midwife、health visitor、GP 或醫生按你同 BB 情況提供嘅個別建議。</span></div>
           <div className="reminder-dialog-actions">
             {reminder.guideTargetId && <button type="button" className="primary-button" onClick={() => { onClose(); onOpenGuide(reminder.guideTargetId); }}>開啟相關指南 <Icon name="chevron" size={16} /></button>}
             {reminder.sourceUrl && <a className="secondary-button" href={reminder.sourceUrl} target="_blank" rel="noreferrer">參考：{reminder.sourceName || '官方資料'}</a>}
@@ -86,9 +128,13 @@ function ReminderDialog({ reminder, onClose, onOpenGuide }: { reminder: BabyRemi
 
 export function DailyBabyReminders({ profile, onOpenGuide }: DailyBabyRemindersProps) {
   const [detail, setDetail] = useState<BabyReminder | null>(null);
-  const [showAll, setShowAll] = useState(false);
-  const result = profile ? getDailyBabyReminders(profile) : null;
-  const eligible = profile ? getEligibleBabyReminders(profile).eligible : [];
+  const previouslySeen = useMemo(() => profile ? readPreviouslySeenReminderIds(profile) : new Set<string>(), [profile?.dateOfBirth]);
+  const result = profile ? getDailyBabyReminders(profile, Date.now(), 3, previouslySeen) : null;
+
+  useEffect(() => {
+    if (!profile || !result?.reminders.length) return;
+    rememberTodayReminders(profile, result.reminders.map((item) => item.id));
+  }, [profile?.dateOfBirth, result?.age.babyAgeDays, result?.reminders.map((item) => item.id).join('|')]);
 
   if (!profile) return null;
 
@@ -108,22 +154,15 @@ export function DailyBabyReminders({ profile, onOpenGuide }: DailyBabyRemindersP
           <div>
             <p className="eyebrow">TODAY · AGE-AWARE</p>
             <h2 id="daily-reminders-title">是日注意事項</h2>
-            <p>BB 而家係 {ageLabel(result.age.babyAgeDays, result.age.babyAgeWeeks, result.age.babyAgeMonths)}。只顯示今日 BB 同媽媽真正值得知嘅成長／恢復重點。</p>
+            <p>BB 而家係 {ageLabel(result.age.babyAgeDays, result.age.babyAgeWeeks, result.age.babyAgeMonths)}。只顯示今日真正值得知嘅 BB 成長／照顧同媽媽產後恢復重點。</p>
           </div>
         </div>
         {result.reminders.length ? (
-          <>
-            <div className="daily-reminder-list">
-              {(showAll ? eligible : result.reminders).map((reminder) => <ReminderRow key={reminder.id} reminder={reminder} onOpenDetail={setDetail} onOpenGuide={onOpenGuide} />)}
-            </div>
-            {result.eligibleCount > result.reminders.length && (
-              <button type="button" className="daily-reminders-view-all" data-testid="view-all-baby-reminders" onClick={() => setShowAll((current) => !current)} aria-expanded={showAll}>
-                {showAll ? '收起' : `查看更多（仲有 ${result.eligibleCount - result.reminders.length} 項）`} <Icon name="chevron" size={14} />
-              </button>
-            )}
-          </>
+          <div className="daily-reminder-list">
+            {result.reminders.map((reminder) => <ReminderRow key={reminder.id} reminder={reminder} onOpenDetail={setDetail} onOpenGuide={onOpenGuide} />)}
+          </div>
         ) : (
-          <p className="daily-reminders-no-results">今日冇需要硬塞畀你嘅 BB 或媽媽資訊；有真正新階段／要準備嘅事項先會出現。</p>
+          <p className="daily-reminders-no-results">今日暫時未配對到合適嘅階段知識；請檢查 BB 出生日期設定。</p>
         )}
       </section>
       {detail && <ReminderDialog reminder={detail} onClose={() => setDetail(null)} onOpenGuide={onOpenGuide} />}
